@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:thirdproject/CalendarDio/calendarDio.dart';
+import 'package:thirdproject/ReportDio/reportDio.dart';
 
 class Event {
   final String title;
@@ -26,6 +27,10 @@ class MainApp extends StatelessWidget {
       title: 'Layout',
       theme: ThemeData(primaryColor: const Color.fromARGB(255, 171, 199, 248)),
       home: CalendarPage(),
+      routes: {
+        '/calendar': (context) => CalendarPage(),
+        '/report': (context) => ReportPage(),
+      },
     );
   }
 }
@@ -67,7 +72,7 @@ class _CalendarState extends State<CalendarPage> {
                   _selectedDay = selectedDay;
                   _focusedDay = focusedDay;
                 });
-                 print(DateFormat("yyyy-MM-dd").format(selectedDay)); //맞음
+                print(DateFormat("yyyy-MM-dd").format(selectedDay)); //맞음
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -87,6 +92,11 @@ class _CalendarState extends State<CalendarPage> {
               _focusedDay = focusedDay;
             },
           ),
+          ElevatedButton(
+              onPressed: () async {
+                Navigator.pushNamed(context, '/report');
+              },
+              child: Text('to Report'))
         ],
       ),
     );
@@ -108,20 +118,21 @@ class _TableEventsState extends State<TableEvents> {
   @override
   void initState() {
     super.initState();
-    _selectedEvents = ValueNotifier(_getEventsForDay(widget.selectedDay ?? DateTime.now()));
+    _selectedEvents =
+        ValueNotifier(_getEventsForDay(widget.selectedDay ?? DateTime.now()));
   }
 
   Future<List<Event>> _getEventsForDay(DateTime day) async {
     try {
-      JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, day);  
+      JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, day);
       List<Event> events = jsonParser.scheduleText.split(',').map((text) {
-        return Event(text.trim()); 
+        return Event(text.trim());
       }).toList();
 
       return events;
     } catch (e) {
       print('Error: $e');
-      return []; 
+      return [];
     }
   }
 
@@ -144,7 +155,7 @@ class _TableEventsState extends State<TableEvents> {
               valueListenable: _selectedEvents,
               builder: (context, futureEvents, _) {
                 return FutureBuilder<List<Event>>(
-                  future: futureEvents, 
+                  future: futureEvents,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -180,6 +191,30 @@ class _TableEventsState extends State<TableEvents> {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+//전자결재 페이지
+class ReportPage extends StatefulWidget {
+  const ReportPage({super.key});
+
+  @override
+  State<ReportPage> createState() => _ReportPageState();
+}
+
+class _ReportPageState extends State<ReportPage> {
+  final Reportdio _reportdio = Reportdio();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("this is Report page"),
+      ),
+      body: Column(
+        children: [],
       ),
     );
   }
