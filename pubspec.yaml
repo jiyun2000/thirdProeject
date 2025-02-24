@@ -1,0 +1,27 @@
+name: thirdproject
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: ^3.6.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+  dio: ^5.8.0
+  flutter_svg: ^1.0.0
+  http: ^0.13.5
+  table_calendar: ^3.2.0
+  intl: ^0.18.1
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^5.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/image/logo.svg
