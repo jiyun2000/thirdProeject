@@ -112,18 +112,21 @@ class _TableEventsState extends State<TableEvents> {
   }
 
   Future<List<Event>> _getEventsForDay(DateTime day) async {
-    try {
-      JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, day);  
-      List<Event> events = jsonParser.scheduleText.split(',').map((text) {
-        return Event(text.trim()); 
-      }).toList();
+  try {
+    JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, day);
 
-      return events;
-    } catch (e) {
-      print('Error: $e');
-      return []; 
-    }
+    List<Event> events = jsonParser.scheduleText.split(',').map((text) {
+      String dateOnly = text.split(' ')[0]; 
+      return Event(dateOnly.trim()); 
+    }).toList();
+
+    return events;
+  } catch (e) {
+    print('Error: $e');
+    return [];
   }
+}
+
 
   @override
   void dispose() {

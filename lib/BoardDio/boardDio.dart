@@ -42,8 +42,32 @@ class JsonParser {
 class BoardDio {
   final dio = Dio();
 
-  Future<JsonParser> getAllList() async{
-    Response res = await dio.get("")
-  },
+  Future<List<JsonParser>> getAllList() async{
+    Response res = await dio.get("http://192.168.0.51:8080/api/board/list");
+    List<dynamic> mapRes = res.data;
+    List<JsonParser> perserList = mapRes.map((element)=>JsonParser.fromJson(element)).toList();
+    return perserList;
+  }
+
+  Future<JsonParser> addBoard() async {
+    Response res = await dio.post("http://192.168.0.51:8080/api/board/add");
+    Map<String, dynamic> mapRes = res.data;
+    JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    return jsonParser;
+  }
+  
+  Future<JsonParser> readBoard(int boardNo) async {
+    Response res = await dio.get("http://192.168.0.51:8080/api/board/read/$boardNo");
+    Map<String, dynamic> mapRes = res.data;
+    JsonParser jsonParser =JsonParser.fromJson(mapRes);
+    return jsonParser;
+  }
+
+  Future<JsonParser> modBoard(int boardNo) async {
+    Response res = await dio.put("http://192.168.0.51:8080/api/board/$boardNo");
+    Map<String, dynamic> mapRes = res.data;
+    JsonParser jsonParser =JsonParser.fromJson(mapRes);
+    return jsonParser;
+  }
 
 }
