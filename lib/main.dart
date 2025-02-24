@@ -42,7 +42,7 @@ class _CalendarState extends State<CalendarPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  List<Event> _events = [];
+  final List<Event> _events = [];
   final CalendarDio _calendarDio = CalendarDio();
 
   @override

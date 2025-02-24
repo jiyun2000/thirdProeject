@@ -18,8 +18,3 @@ Future authenticate(String username, String password) async {
   }
 }
 
-Future fetchApi(String jwtToken) async{
-  var response = await http.get(
-    Uri.parse(uri)
-  )
-}

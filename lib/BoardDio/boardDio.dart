@@ -38,12 +38,3 @@ class JsonParser {
       "modDate":modDate
     };
 }
-
-class BoardDio {
-  final dio = Dio();
-
-  Future<JsonParser> getAllList() async{
-    Response res = await dio.get("")
-  },
-
-}
