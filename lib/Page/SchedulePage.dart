@@ -12,7 +12,6 @@ class Event {
   String toString() => title;
 }
 
-
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
@@ -25,7 +24,7 @@ class _CalendarState extends State<CalendarPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  List<Event> _events = [];
+  final List<Event> _events = [];
   final CalendarDio _calendarDio = CalendarDio();
 
   @override
@@ -44,26 +43,29 @@ class _CalendarState extends State<CalendarPage> {
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },
-          onDaySelected: (selectedDay, focusedDay) {
-            if (!isSameDay(_selectedDay, selectedDay)) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
+            onDaySelected: (selectedDay, focusedDay) {
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
 
-              String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay); 
+                String formattedDate =
+                    DateFormat("yyyy-MM-dd").format(selectedDay);
 
-              String url = Uri.encodeFull("/empDeptSchedule/list/1/1/$formattedDate");
-              print("url: " + url); 
+                String url =
+                    Uri.encodeFull("/empDeptSchedule/list/1/1/$formattedDate");
+                print("url: $url");
 
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TableEvents(selectedDay: formattedDate),
-                ),
-              );
-            }
-          },
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        TableEvents(selectedDay: formattedDate),
+                  ),
+                );
+              }
+            },
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
                 setState(() {
@@ -83,7 +85,6 @@ class _CalendarState extends State<CalendarPage> {
 
 class TableEvents extends StatefulWidget {
   final String? selectedDay;
-  
 
   const TableEvents({super.key, this.selectedDay});
 
@@ -97,17 +98,18 @@ class _TableEventsState extends State<TableEvents> {
   @override
   void initState() {
     super.initState();
- 
-    _selectedEvents = ValueNotifier(_getEventsForDay(widget.selectedDay ?? DateFormat("yyyy-MM-dd").format(DateTime.now())));
+
+    _selectedEvents = ValueNotifier(_getEventsForDay(
+        widget.selectedDay ?? DateFormat("yyyy-MM-dd").format(DateTime.now())));
   }
 
   Future<List<Event>> _getEventsForDay(String? day) async {
     try {
-
-      JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
+      JsonParser jsonParser =
+          await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
       List<Event> events = jsonParser.scheduleText.split(',').map((text) {
-        String dateOnly = text.split(' ')[0]; 
-        return Event(dateOnly.trim()); 
+        String dateOnly = text.split(' ')[0];
+        return Event(dateOnly.trim());
       }).toList();
       return events;
     } catch (e) {
@@ -131,7 +133,7 @@ class _TableEventsState extends State<TableEvents> {
       body: Column(
         children: [
           Expanded(
-            child: ValueListenableBuilder<Future<List<Event>>>( 
+            child: ValueListenableBuilder<Future<List<Event>>>(
               valueListenable: _selectedEvents,
               builder: (context, futureEvents, _) {
                 return FutureBuilder<List<Event>>(

@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 import 'package:thirdproject/Page/BoardReadPage.dart';
@@ -8,7 +6,7 @@ class BoardPage extends StatefulWidget {
   const BoardPage({super.key});
 
   @override
-  State<StatefulWidget> createState()=>_BoardState();
+  State<StatefulWidget> createState() => _BoardState();
 }
 
 class _BoardState extends State<BoardPage> {
@@ -21,20 +19,20 @@ class _BoardState extends State<BoardPage> {
       body: Column(
         children: [
           FutureBuilder<resDto>(
-            future: BoardDio().getAllList(), 
+            future: BoardDio().getAllList(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator()); 
+                return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
                 //print(snapshot.error);
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else if (snapshot.hasData) {
-                print("데이터 존재함"); 
+                print("데이터 존재함");
                 resDto parsingList = snapshot.data!;
 
-                return Expanded( 
+                return Expanded(
                   child: ListView.separated(
-                    itemCount: parsingList.dtolist.length, 
+                    itemCount: parsingList.dtolist.length,
                     separatorBuilder: (context, index) {
                       return Divider(
                         color: const Color.fromARGB(255, 255, 255, 255),
@@ -46,11 +44,15 @@ class _BoardState extends State<BoardPage> {
                       return ListTile(
                         leading: Icon(Icons.ac_unit_outlined),
                         title: Text('${parsingList.dtolist[index]['boardNo']}'),
-                        subtitle: Text('${parsingList.dtolist[index]['title']}'),
-                        trailing: Text('${parsingList.dtolist[index]['mailAddress']}'),
+                        subtitle:
+                            Text('${parsingList.dtolist[index]['title']}'),
+                        trailing: Text(
+                            '${parsingList.dtolist[index]['mailAddress']}'),
                         onTap: () {
-                          Navigator.push(context, MaterialPageRoute(builder: 
-                          (context) => BoardReadpage()));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BoardReadpage()));
                         },
                       );
                     },
