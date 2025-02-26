@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 
 class JsonParser {
   final int empSchNo;
@@ -38,13 +39,40 @@ class JsonParser {
       };
 }
 
+
+class empDto{
+  final List<dynamic> empSchedule;
+  final List<dynamic> deptSchedule;
+
+  empDto({
+    required this.empSchedule,
+    required this.deptSchedule
+  });
+
+  factory empDto.fromData(dynamic data)=>empDto(
+    empSchedule:data['empSchedule'],
+    deptSchedule:data['deptSchedule']
+  );
+
+  Map<String, dynamic> toJson() => {
+    "empSchedule" : empSchedule,
+    "deptSchedule" : deptSchedule
+  };
+
+}
+
+
+
+
 class CalendarDio {
   final dio = Dio();
 
   //전체 일정 리스트
   Future<Map<String, dynamic>> findByMap(int empNo, int deptNo) async {
-    Response res = await dio
-        .get("http://192.168.0.13:8080/empDeptSchedule/read/$deptNo/$empNo");
+
+    Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/read/$deptNo/$empNo");
+    print(res.data);
+
     print("dio = > ${res.data}");
     return res.data;
   }
@@ -66,11 +94,22 @@ class CalendarDio {
   }
 
   //해당 날짜 일정만 가져오기
-  Future<JsonParser> todaySchedule(
-      int empNo, int deptNo, DateTime selectDate) async {
-    Response res = await dio.get(
-        "http://192.168.0.13:8080/empDeptSchedule/list/$deptNo/$empNo/$selectDate");
-    print("dio = > ${res.data}");
-    return JsonParser.fromJson(res.data);
+
+
+  // Future<List<JsonParser>> todaySchedule(int empNo, int deptNo, DateTime selectDate) async {
+  //   String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
+  //   Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
+  //   print(res.data);
+  //   return res.data;
+  // }
+
+  Future<empDto> todaySchedule(int empNo, int deptNo, DateTime selectDate) async {
+    String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
+    Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
+    // print(res.data);
+    // print(res.data['empSchedule']);
+    // print(res.data['empSchedule'][0]['empSchNo']);
+    return empDto.fromData(res.data);
   }
 }
+

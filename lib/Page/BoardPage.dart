@@ -3,13 +3,15 @@ import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 import 'package:thirdproject/Page/BoardReadPage.dart';
 
 class BoardPage extends StatefulWidget {
+  
   const BoardPage({super.key});
-
+  
   @override
   State<StatefulWidget> createState() => _BoardState();
 }
 
 class _BoardState extends State<BoardPage> {
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,10 +51,10 @@ class _BoardState extends State<BoardPage> {
                         trailing: Text(
                             '${parsingList.dtolist[index]['mailAddress']}'),
                         onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => BoardReadpage()));
+
+                          Navigator.push(context, MaterialPageRoute(builder: 
+                          (context) => BoardReadpage(BoardNo: '${parsingList.dtolist[index]['boardNo']}')));
+
                         },
                       );
                     },
