@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 
 class BoardReadpage extends StatefulWidget {
+
   final String BoardNo;
 
   BoardReadpage({super.key, required this.BoardNo});
+
 
   @override
   State<StatefulWidget> createState() => _BoardState();
@@ -19,6 +20,7 @@ class _BoardState extends State<BoardReadpage> {
       appBar: AppBar(
         title: Text("공지사항"),
       ),
+
       body: Column(
         children: [
           FutureBuilder(
@@ -42,6 +44,7 @@ class _BoardState extends State<BoardReadpage> {
           ),
         ],
       ),
+
     );
   }
 }

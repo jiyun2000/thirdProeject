@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+
 import 'package:thirdproject/Page/BoardPage.dart';
 import 'package:thirdproject/Page/SchedulePage.dart';
+import 'package:thirdproject/Page/report/received_report_list_page.dart';
+
 import 'package:thirdproject/Page/TodayDayOffPage.dart';
+
 
 void main() async {
   runApp(MainApp());
@@ -17,7 +20,7 @@ class MainApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'DDT Web',
       theme: ThemeData(primaryColor: const Color.fromARGB(255, 255, 255, 255)),
-      home: MainPage(), 
+      home: MainPage(),
     );
   }
 }
@@ -42,9 +45,7 @@ class MainPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
-
                 );
               },
               child: const Text('📆일정'),
@@ -62,6 +63,15 @@ class MainPage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const ReceivedReportListPage()),
+                );
+              },
+              child: const Text('🍔🍟보고서'),
+
                 print(DateFormat("yyyy-MM-dd").parse(strToday)); //이놈이 시간까지 보내는데..
 
                 Navigator.push(
@@ -70,6 +80,7 @@ class MainPage extends StatelessWidget {
                 );
               },
               child: const Text('🧳연차인원'),
+
             ),
           ],
         ),
