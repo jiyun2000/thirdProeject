@@ -1,36 +1,38 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
-import 'package:provider/provider.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
-import 'models/model_calendar.dart'; // 예시로 모델 추가
 
-class SchedulePage extends StatefulWidget {
-  const SchedulePage({super.key});
+class Event {
+  final String title;
+
+  Event(this.title);
 
   @override
-  State<SchedulePage> createState() => _SchedulePageState();
+  String toString() => title;
 }
 
-class _SchedulePageState extends State<SchedulePage> {
+
+class CalendarPage extends StatefulWidget {
+  const CalendarPage({super.key});
+
+  @override
+  State<CalendarPage> createState() => _CalendarState();
+}
+
+class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+
+  List<Event> _events = [];
+  final CalendarDio _calendarDio = CalendarDio();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Table Calendar'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.view_list),
-            onPressed: () {
-              // BoardPage로 네비게이션
-              Navigator.pushNamed(context, '/board');
-            },
-          ),
-        ],
+        title: const Text('📆일정'),
       ),
       body: Column(
         children: [
@@ -42,21 +44,26 @@ class _SchedulePageState extends State<SchedulePage> {
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },
-            onDaySelected: (selectedDay, focusedDay) {
-              if (!isSameDay(_selectedDay, selectedDay)) {
-                setState(() {
-                  _selectedDay = selectedDay;
-                  _focusedDay = focusedDay;
-                });
-                print(DateFormat("yyyy-MM-dd").format(selectedDay));
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TableEvents(selectedDay: selectedDay),
-                  ),
-                );
-              }
-            },
+          onDaySelected: (selectedDay, focusedDay) {
+            if (!isSameDay(_selectedDay, selectedDay)) {
+              setState(() {
+                _selectedDay = selectedDay;
+                _focusedDay = focusedDay;
+              });
+
+              String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay); 
+
+              String url = Uri.encodeFull("/empDeptSchedule/list/1/1/$formattedDate");
+              print("url: " + url); 
+
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => TableEvents(selectedDay: formattedDate),
+                ),
+              );
+            }
+          },
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
                 setState(() {
@@ -75,7 +82,8 @@ class _SchedulePageState extends State<SchedulePage> {
 }
 
 class TableEvents extends StatefulWidget {
-  final DateTime? selectedDay;
+  final String? selectedDay;
+  
 
   const TableEvents({super.key, this.selectedDay});
 
@@ -89,21 +97,18 @@ class _TableEventsState extends State<TableEvents> {
   @override
   void initState() {
     super.initState();
-    _selectedEvents = ValueNotifier(_getEventsForDay(widget.selectedDay ?? DateTime.now()));
+ 
+    _selectedEvents = ValueNotifier(_getEventsForDay(widget.selectedDay ?? DateFormat("yyyy-MM-dd").format(DateTime.now())));
   }
 
-  Future<List<Event>> _getEventsForDay(DateTime day) async {
+  Future<List<Event>> _getEventsForDay(String? day) async {
     try {
-      String formattedDate = DateFormat("yyyy-MM-dd").format(day);
-      DateTime parsedDate = DateTime.parse(formattedDate);
 
-      JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, parsedDate);
-
+      JsonParser jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
       List<Event> events = jsonParser.scheduleText.split(',').map((text) {
-        String dateOnly = text.split(' ')[0];
-        return Event(dateOnly.trim());
+        String dateOnly = text.split(' ')[0]; 
+        return Event(dateOnly.trim()); 
       }).toList();
-
       return events;
     } catch (e) {
       print('Error: $e');
@@ -126,14 +131,14 @@ class _TableEventsState extends State<TableEvents> {
       body: Column(
         children: [
           Expanded(
-            child: ValueListenableBuilder<Future<List<Event>>>(  // ValueListenableBuilder로 비동기 데이터 처리
+            child: ValueListenableBuilder<Future<List<Event>>>( 
               valueListenable: _selectedEvents,
               builder: (context, futureEvents, _) {
                 return FutureBuilder<List<Event>>(
-                  future: futureEvents, 
+                  future: futureEvents,
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(child: CircularProgressIndicator());
+                      return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (snapshot.hasData) {
@@ -158,7 +163,7 @@ class _TableEventsState extends State<TableEvents> {
                         },
                       );
                     } else {
-                      return const Center(child: Text('일정이 없습니다.'));
+                      return Center(child: Text('일정이 없습니다.'));
                     }
                   },
                 );

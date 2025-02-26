@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:dio/dio.dart';
 
 class JsonParser {
@@ -39,14 +41,58 @@ class JsonParser {
     };
 }
 
+class resDto{
+  final List<dynamic> dtolist;
+  final Map<String ,dynamic> pageReqDto;
+  final int totalCount;
+  final List<dynamic> pageNumList;
+  final bool prev;
+  final bool next;
+  final int prevPage;
+  final int nextPage;
+  final int totalPage;
+  final int current;
+
+  resDto({
+    required this.dtolist,
+    required this.pageReqDto,
+    required this.totalCount,
+    required this.pageNumList,
+    required this.prev,
+    required this.next,
+    required this.prevPage,
+    required this.nextPage,
+    required this.totalPage,
+    required this.current
+  });
+
+  factory resDto.fromdata(dynamic data)=>resDto(
+    dtolist : data['dtoList'],
+    pageReqDto : data['pageRequestDTO'],
+    totalCount : data['totalCount'],
+    pageNumList : data['pageNumList'],
+    prev : data['prev'],
+    next : data['next'],
+    prevPage : data['prevPage'],
+    nextPage : data['nextPage'],
+    totalPage : data['totalPage'],
+    current : data['current']);
+}
+
 class BoardDio {
   final dio = Dio();
 
-  Future<List<JsonParser>> getAllList() async{
+  Future<resDto> getAllList() async{
     Response res = await dio.get("http://192.168.0.51:8080/api/board/list");
-    List<dynamic> mapRes = res.data;
-    List<JsonParser> perserList = mapRes.map((element)=>JsonParser.fromJson(element)).toList();
-    return perserList;
+    print("list"); //ok
+    print(res.data['dtoList']);
+    resDto dto = resDto.fromdata(res.data);
+    print(dto);
+    // JsonParser.fromJson(res.data);
+    //List<JsonParser> perserList = mapRes.map((element){ log(element); return JsonParser.fromJson(element);}).toList();
+    //print(mapRes);
+    //print(perserList);
+    return dto;
   }
 
   Future<JsonParser> addBoard() async {

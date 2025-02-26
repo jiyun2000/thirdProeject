@@ -40,26 +40,28 @@ class CalendarDio {
   //전체 일정 리스트
   Future<Map<String, dynamic>> findByMap(int empNo, int deptNo) async {
     Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/read/$deptNo/$empNo");
+    print("dio = > ${res.data}");
     return res.data;  
   }
 
   //개인 일정 등록
   Future<Map<String, dynamic>> registerEmp(int empNo) async {
     Response res = await dio.post("http://192.168.0.51:8080/empDeptSchedule/register/$empNo");
+    print("dio = > ${res.data}");
     return res.data;
   }
 
   //부서 일정 등록
   Future<Map<String, dynamic>> registerDept(int empNo, int deptNo) async {
     Response res = await dio.post("http://192.168.0.51:8080/deptSchedule/register/$deptNo/$empNo");
+    print("dio = > ${res.data}");
     return res.data;
   }
 
   //해당 날짜 일정만 가져오기
   Future<JsonParser> todaySchedule(int empNo, int deptNo, DateTime selectDate) async {
   Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$selectDate");
-  print("API Response: ${res.data}");
+  print("dio = > ${res.data}");
   return JsonParser.fromJson(res.data);
 }
-
 }

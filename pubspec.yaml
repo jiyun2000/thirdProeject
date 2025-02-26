@@ -15,6 +15,7 @@ dependencies:
   table_calendar: ^3.0.9
   intl: ^0.18.1  
   provider: ^6.1.2
+  logger: ^2.5.0
 
 dev_dependencies:
   flutter_test:
