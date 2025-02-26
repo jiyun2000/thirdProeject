@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
-import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
 import 'package:thirdproject/Page/BoardPage.dart';
 import 'package:thirdproject/Page/SchedulePage.dart';
+import 'package:thirdproject/Page/TodayDayOffPage.dart';
 
 void main() async {
   runApp(MainApp());
@@ -24,7 +23,10 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+   MainPage({super.key});
+  String strToday = DateFormat("yyyy-mm-dd").format(DateTime.now());
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -56,6 +58,18 @@ class MainPage extends StatelessWidget {
                 );
               },
               child: const Text('🎙️공지사항'),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                print(DateFormat("yyyy-MM-dd").parse(strToday)); //이놈이 시간까지 보내는데..
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>   TodayDayOffPage(dayOffDate : DateFormat("yyyy-MM-dd").parse(strToday))),
+                );
+              },
+              child: const Text('🧳연차인원'),
             ),
           ],
         ),
