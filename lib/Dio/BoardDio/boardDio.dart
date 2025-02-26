@@ -91,7 +91,7 @@ class BoardDio {
     // JsonParser.fromJson(res.data);
     //List<JsonParser> perserList = mapRes.map((element){ log(element); return JsonParser.fromJson(element);}).toList();
     //print(mapRes);
-
+    //print(perserList);
     return dto;
   }
 
