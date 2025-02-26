@@ -40,7 +40,9 @@ class MainPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
+
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
+
                 );
               },
               child: const Text('📆일정'),
