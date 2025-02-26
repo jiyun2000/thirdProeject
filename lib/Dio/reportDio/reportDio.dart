@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:dio/dio.dart';
 
 class JsonParser {
@@ -10,9 +8,9 @@ class JsonParser {
   final String reportingDate;
   final String reportStatus;
   final int sender;
-  final String receivers;
+  final List<dynamic> receivers;
   final bool isDayOff;
-  final File files;
+  final List<dynamic> files;
 
   JsonParser(
       {required this.reportNo,
@@ -26,7 +24,7 @@ class JsonParser {
       required this.isDayOff,
       required this.files});
 
-  factory JsonParser.fromJson(Map<String, dynamic> json) => JsonParser(
+  factory JsonParser.fromJson(dynamic json) => JsonParser(
       reportNo: json['reportNo'],
       deadLine: json['deadLine'],
       title: json['title'],
@@ -95,6 +93,7 @@ class ReportDio {
   Future<ResDto> getReceivedList(int receiver) async {
     Response res = await dio
         .get("http://192.168.0.13:8080/api/report/list/received/$receiver");
+    print(res.data);
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -117,7 +116,7 @@ class ReportDio {
     Response res =
         await dio.get("http://192.168.0.13:8080/api/report/read/$reportNo");
     Map<String, dynamic> mapRes = res.data;
-    JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    JsonParser jsonParser = JsonParser.fromJson(res.data);
     return jsonParser;
   }
 

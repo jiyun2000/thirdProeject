@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
+import 'package:thirdproject/Page/report/report_read_page.dart';
 import 'package:thirdproject/Page/report/sent_report_list_page.dart';
 
 class ReceivedReportListPage extends StatefulWidget {
@@ -14,7 +15,7 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('🍔🍟보고서'),
+        title: Text('🍔🍟받은 보고서'),
       ),
       body: Column(
         children: [
@@ -77,13 +78,14 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
                             Text('${parsingList.dtolist[index]['title']}'),
                         trailing: Text(
                             '${parsingList.dtolist[index]['reportStatus']}'),
-                        // onTap: () {
-                        //   Navigator.push(
-                        //       context,
-                        //       MaterialPageRoute(
-                        //           builder: (context) =>
-                        //               recieved_report_read_page()));
-                        // },
+                        onTap: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => ReportReadpage(
+                                      reportNo: int.parse(
+                                          '${parsingList.dtolist[index]['reportNo']}'))));
+                        },
                       );
                     },
                   ),
