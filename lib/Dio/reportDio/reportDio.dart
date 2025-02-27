@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 
-class JsonParser {
+class ReportJsonParser {
   final int reportNo;
   final String deadLine;
   final String title;
@@ -13,7 +13,7 @@ class JsonParser {
   final List<dynamic> files;
   final List<dynamic> uploadFileNames;
 
-  JsonParser(
+  ReportJsonParser(
       {required this.reportNo,
       required this.deadLine,
       required this.title,
@@ -26,7 +26,7 @@ class JsonParser {
       required this.files,
       required this.uploadFileNames});
 
-  factory JsonParser.fromJson(dynamic json) => JsonParser(
+  factory ReportJsonParser.fromJson(dynamic json) => ReportJsonParser(
       reportNo: json['reportNo'],
       deadLine: json['deadLine'],
       title: json['title'],
@@ -109,27 +109,27 @@ class ReportDio {
     return dto;
   }
 
-  Future<JsonParser> addReport() async {
+  Future<ReportJsonParser> addReport() async {
     Response res = await dio.post("http://192.168.0.13:8080/api/report/add");
     Map<String, dynamic> mapRes = res.data;
-    JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
     print(jsonParser);
     return jsonParser;
   }
 
-  Future<JsonParser> readReport(int reportNo) async {
+  Future<ReportJsonParser> readReport(int reportNo) async {
     Response res =
         await dio.get("http://192.168.0.13:8080/api/report/read/$reportNo");
     Map<String, dynamic> mapRes = res.data;
-    JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
     return jsonParser;
   }
 
-  Future<JsonParser> modReport(int reportNo) async {
+  Future<ReportJsonParser> modReport(int reportNo) async {
     Response res =
         await dio.put("http://192.168.0.13:8080/api/report/$reportNo");
     Map<String, dynamic> mapRes = res.data;
-    JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
     return jsonParser;
   }
 }

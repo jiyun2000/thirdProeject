@@ -39,8 +39,9 @@ class Employeesdio {
   final dio = Dio();
 
   Future<JsonParser?> findByEmpNo(int empNo) async {
-      Response res = await dio.get("http://10.0.2.2:8080/api/employees/read/$empNo");
-        Map<String, dynamic> mapRes = res.data;
-        return JsonParser.fromJson(mapRes);
+    Response res =
+        await dio.get("http://192.168.0.13:8080/api/employees/read/$empNo");
+    Map<String, dynamic> mapRes = res.data;
+    return JsonParser.fromJson(mapRes);
   }
 }
