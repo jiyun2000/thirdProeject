@@ -9,6 +9,11 @@ class JsonParser {
   final String phoneNum;
   final String gender;
   final String citizenId;
+  final DateTime hireDate;
+  final int salary;
+  final int deptNo;
+  final int jobNo;
+  final DateTime birthday;
 
   JsonParser({
     required this.empNo,
@@ -19,10 +24,14 @@ class JsonParser {
     required this.phoneNum,
     required this.gender,
     required this.citizenId,
+    required this.hireDate,
+    required this.salary,
+    required this.deptNo,
+    required this.jobNo,
+    required this.birthday,
   });
 
-  factory JsonParser.fromJson(Map<String, dynamic> json) {
-    return JsonParser(
+  factory JsonParser.fromJson(Map<String, dynamic> json) => JsonParser (
       empNo: json['empNo'],
       firstName: json['firstName'],
       lastName: json['lastName'],
@@ -31,16 +40,43 @@ class JsonParser {
       phoneNum: json['phoneNum'],
       gender: json['gender'],
       citizenId: json['citizenId'],
+      hireDate:DateTime.parse(json['hireDate']),
+      salary: json['salary'],
+      deptNo: json['deptNo'],
+      jobNo:json['jobNo'],
+      birthday: DateTime.parse(json['birthday']),
     );
+
+    Map<String, dynamic> toJson() => {
+      "empNo":empNo,
+      "firstName":firstName,
+      "lastName":lastName,
+      "mailAddress":mailAddress,
+      "address":address,
+      "phoneNum":phoneNum,
+      "gender":gender,
+      "citizenId":citizenId,
+      "hireDate":hireDate,
+      "salary":salary,
+      "deptNo":deptNo,
+      "jobNo":jobNo,
+      "birthday":birthday,
+
+    };
   }
-}
+
 
 class Employeesdio {
   final dio = Dio();
 
-  Future<JsonParser?> findByEmpNo(int empNo) async {
-      Response res = await dio.get("http://10.0.2.2:8080/api/employees/read/$empNo");
-        Map<String, dynamic> mapRes = res.data;
-        return JsonParser.fromJson(mapRes);
+  //mypage
+  Future<JsonParser> findByEmpNo(int empNo) async {
+    print("read emp dio");
+    Response res = await dio.get("http://192.168.0.51:8080/api/employees/read/$empNo");
+    print(res.data);
+    Map<String, dynamic> mapRes = res.data;
+    JsonParser parser = JsonParser.fromJson(mapRes);
+    print(parser.empNo);
+    return parser;
   }
 }
