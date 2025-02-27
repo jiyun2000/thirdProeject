@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
-import 'package:thirdproject/Page/BoardPage.dart';
+import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/SchedulePage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 
@@ -63,7 +64,6 @@ class MainPage extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -71,8 +71,9 @@ class MainPage extends StatelessWidget {
                 );
               },
               child: const Text('🍔🍟보고서'),
-
-                print(DateFormat("yyyy-MM-dd").parse(strToday)); //이놈이 시간까지 보내는데..
+            ), const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
 
                 Navigator.push(
                   context,

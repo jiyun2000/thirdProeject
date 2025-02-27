@@ -80,7 +80,7 @@ class CalendarDio {
   //개인 일정 등록
   Future<Map<String, dynamic>> registerEmp(int empNo) async {
     Response res = await dio
-        .post("http://192.168.0.13:8080/empDeptSchedule/register/$empNo");
+        .post("http://192.168.0.51:8080/empDeptSchedule/register/$empNo");
     print("dio = > ${res.data}");
     return res.data;
   }
@@ -88,7 +88,7 @@ class CalendarDio {
   //부서 일정 등록
   Future<Map<String, dynamic>> registerDept(int empNo, int deptNo) async {
     Response res = await dio
-        .post("http://192.168.0.13:8080/deptSchedule/register/$deptNo/$empNo");
+        .post("http://192.168.0.51:8080/deptSchedule/register/$deptNo/$empNo");
     print("dio = > ${res.data}");
     return res.data;
   }

@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
-import 'package:thirdproject/Page/BoardReadPage.dart';
+import 'package:thirdproject/Page/board/BoardAddPage.dart';
+import 'package:thirdproject/Page/board/BoardReadPage.dart';
 
 class BoardPage extends StatefulWidget {
-  
   const BoardPage({super.key});
-  
+
   @override
   State<StatefulWidget> createState() => _BoardState();
 }
 
 class _BoardState extends State<BoardPage> {
-  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +25,6 @@ class _BoardState extends State<BoardPage> {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
               } else if (snapshot.hasError) {
-                //print(snapshot.error);
                 return Center(child: Text('에러 발생: ${snapshot.error}'));
               } else if (snapshot.hasData) {
                 print("데이터 존재함");
@@ -46,15 +44,17 @@ class _BoardState extends State<BoardPage> {
                       return ListTile(
                         leading: Icon(Icons.ac_unit_outlined),
                         title: Text('${parsingList.dtolist[index]['boardNo']}'),
-                        subtitle:
-                            Text('${parsingList.dtolist[index]['title']}'),
-                        trailing: Text(
-                            '${parsingList.dtolist[index]['mailAddress']}'),
+                        subtitle: Text('${parsingList.dtolist[index]['title']}'),
+                        trailing: Text('${parsingList.dtolist[index]['mailAddress']}'),
                         onTap: () {
-
-                          Navigator.push(context, MaterialPageRoute(builder: 
-                          (context) => BoardReadpage(BoardNo: '${parsingList.dtolist[index]['boardNo']}')));
-
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => BoardReadpage(
+                                BoardNo: '${parsingList.dtolist[index]['boardNo']}',
+                              ),
+                            ),
+                          );
                         },
                       );
                     },
@@ -66,6 +66,15 @@ class _BoardState extends State<BoardPage> {
             },
           ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BoardAddPage()),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
