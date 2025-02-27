@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import 'package:thirdproject/Page/board/BoardPage.dart';
-import 'package:thirdproject/Page/SchedulePage.dart';
+import 'package:thirdproject/Page/employee/MyPage.dart';
+import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 
-import 'package:thirdproject/Page/TodayDayOffPage.dart';
+import 'package:thirdproject/Page/schedule/TodayDayOffPage.dart';
 
 
 void main() async {
@@ -81,8 +82,18 @@ class MainPage extends StatelessWidget {
                 );
               },
               child: const Text('🧳연차인원'),
-
             ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MyPage()),
+                );
+              },
+              child: const Text('🙋‍♀️My Page'),
+            )
           ],
         ),
       ),
