@@ -94,21 +94,15 @@ class CalendarDio {
   }
 
   //해당 날짜 일정만 가져오기
-
-
-  // Future<List<JsonParser>> todaySchedule(int empNo, int deptNo, DateTime selectDate) async {
-  //   String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
-  //   Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
-  //   print(res.data);
-  //   return res.data;
-  // }
-
   Future<empDto> todaySchedule(int empNo, int deptNo, DateTime selectDate) async {
     String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
     Response res = await dio.get("http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
     // print(res.data);
     // print(res.data['empSchedule']);
     // print(res.data['empSchedule'][0]['empSchNo']);
+    print(res.data);
+    print(res.data['deptSchedule']);
+    print("zz");
     return empDto.fromData(res.data);
   }
 }
