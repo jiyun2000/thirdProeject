@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
+import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
+import 'package:thirdproject/Page/schedule/ScheduleModPage.dart';
 
 class Event {
   final String title;
@@ -24,8 +26,8 @@ class _CalendarState extends State<CalendarPage> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
 
-  final List<Event> _events = [];
-  final CalendarDio _calendarDio = CalendarDio();
+  // final List<Event> _events = [];
+  // final CalendarDio _calendarDio = CalendarDio();
 
   @override
   Widget build(BuildContext context) {
@@ -167,8 +169,12 @@ class _TableEventsState extends State<TableEvents> {
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             child: ListTile(
-                              onTap: () => print('${events[index]}'),
-                              title: Text('${events[index]}'),
+                              // onTap: () => print('이벤트 =>  ${events[index]}'),
+                              // title: Text('${events[index]}'),
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleModPage()));
+                              },
+                              title: Text('${events[index]}')
                             ),
                           );
                         },
@@ -182,6 +188,15 @@ class _TableEventsState extends State<TableEvents> {
             ),
           ),
         ],
+      ),
+     floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ScheduleAddPage()),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
