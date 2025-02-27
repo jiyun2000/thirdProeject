@@ -1,17 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class BoardModPage extends StatefulWidget{
+class BoardModPage extends StatefulWidget {
   final String BoardNo;
-  BoardModPage({super.key, required this.BoardNo});
+  const BoardModPage({super.key, required this.BoardNo});
 
   @override
-  State<StatefulWidget> createState()=>_BoardModState();
+  State<StatefulWidget> createState() => _BoardModState();
 }
 
-
-
-class _BoardModState extends State<BoardModPage>{
+class _BoardModState extends State<BoardModPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

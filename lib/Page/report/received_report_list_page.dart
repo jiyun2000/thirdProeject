@@ -4,7 +4,8 @@ import 'package:thirdproject/Page/report/report_read_page.dart';
 import 'package:thirdproject/Page/report/sent_report_list_page.dart';
 
 class ReceivedReportListPage extends StatefulWidget {
-  const ReceivedReportListPage({super.key});
+  final int empNo;
+  const ReceivedReportListPage({super.key, required this.empNo});
 
   @override
   State<StatefulWidget> createState() => _ReceivedReportListState();
@@ -24,13 +25,14 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (context) => const SentReportListPage()),
+                    builder: (context) =>
+                        SentReportListPage(empNo: widget.empNo)),
               );
             },
             child: const Text('🍔🍟보낸 보고서'),
           ),
           FutureBuilder<ResDto>(
-            future: ReportDio().getReceivedList(1),
+            future: ReportDio().getReceivedList(widget.empNo),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -68,6 +70,7 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
                               context,
                               MaterialPageRoute(
                                   builder: (context) => ReportReadpage(
+                                      empNo: widget.empNo,
                                       reportNo: int.parse(
                                           '${parsingList.dtolist[index]['reportNo']}'))));
                         },
