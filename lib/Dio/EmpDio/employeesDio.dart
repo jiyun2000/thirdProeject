@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class JsonParser {
   final int empNo;
@@ -76,5 +77,25 @@ class Employeesdio {
     JsonParser parser = JsonParser.fromJson(mapRes);
 
     return parser;
+  }
+
+  Future<List<DropdownItem<int>>> getAllEmpListToDropDown(int empNo) async {
+    Response res =
+        await dio.get("http://192.168.0.13:8080/api/employees/list/all");
+    List<dynamic> data = List.from(res.data);
+    // 서버에서 반환된 리스트 데이터를 JsonParser로 변환
+    List<JsonParser> jsonList =
+        data.map((item) => JsonParser.fromJson(item)).toList();
+
+    // JsonParser를 DropdownItem으로 변환
+    List<DropdownItem<int>> dropdownItems = jsonList
+        .where((jsonParser) => jsonParser.empNo != empNo) // empNo 제외
+        .map((jsonParser) => DropdownItem<int>(
+              value: jsonParser.empNo,
+              label: '${jsonParser.firstName}${jsonParser.lastName}',
+            ))
+        .toList();
+
+    return dropdownItems;
   }
 }

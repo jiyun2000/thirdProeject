@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class ReportJsonParser {
   final int reportNo;
@@ -97,7 +102,6 @@ class ReportDio {
   Future<ResDto> getReceivedList(int receiver) async {
     Response res = await dio
         .get("http://192.168.0.13:8080/api/report/list/received/$receiver");
-    print(res.data);
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -109,11 +113,26 @@ class ReportDio {
     return dto;
   }
 
-  Future<ReportJsonParser> addReport() async {
-    Response res = await dio.post("http://192.168.0.13:8080/api/report/add");
-    Map<String, dynamic> mapRes = res.data;
-    ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
-    return jsonParser;
+  Future<http.Response> addReport(DateTime title, int contents,
+      List<DropdownItem<int>> receivers, int empNo) async {
+    var uri =
+        Uri.parse("http://192.168.0.13:8080/api/report/register/mobile/$empNo");
+    Map<String, String> headers = {"Content-Type": "application/json"};
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(title);
+    List<String> rList =
+        receivers.map((item) => item.value.toString()).toList();
+    Map data = {
+      'isDayOff': 'true',
+      'deadLine': formattedDate,
+      'title': formattedDate,
+      'contents': '$contents',
+      'reportStatus': '진행중',
+      'receivers': rList
+    };
+    var body = json.encode(data);
+    var response = await http.post(uri, headers: headers, body: body);
+    return response;
   }
 
   Future<ReportJsonParser> readReport(int reportNo) async {

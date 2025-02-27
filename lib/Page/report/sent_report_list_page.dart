@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
+import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/report/report_read_page.dart';
 
 class SentReportListPage extends StatefulWidget {
@@ -20,16 +21,35 @@ class _SentReportListState extends State<SentReportListPage> {
       ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) =>
-                        ReceivedReportListPage(empNo: widget.empNo)),
-              );
-            },
-            child: const Text('🍔🍟받은 보고서'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReceivedReportListPage(empNo: widget.empNo)),
+                  );
+                },
+                child: const Text('🍔🍟받은 보고서'),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReportAddPage(empNo: widget.empNo)),
+                  );
+                },
+                child: const Text('연차 등록💩'),
+              ),
+            ],
           ),
           FutureBuilder<ResDto>(
             future: ReportDio().getSentList(widget.empNo),

@@ -104,28 +104,22 @@ class _TableEventsState extends State<TableEvents> {
   }
 
   Future<List<Event>> _getEventsForDay(String? day) async {
+    try {
+      print("flag");
+      empDto jsonParser =
+          await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
 
-  try {
-    print("flag");
-    empDto jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
-
-    if (jsonParser != null) {
       List<Event> events = jsonParser.empSchedule.map((text) {
-        String dateOnly = text['scheduleText'] + "  " + text['startDate']; 
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
         print(text['startDate']);
         return Event(dateOnly);
-
       }).toList();
       return events;
-    } else {
+    } catch (e) {
+      print('오류: $e');
       return [];
     }
-  } catch (e) {
-    print('오류: $e');
-    return [];
   }
-}
-
 
   @override
   void dispose() {
