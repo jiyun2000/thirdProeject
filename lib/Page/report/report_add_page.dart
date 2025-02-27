@@ -112,7 +112,6 @@ class _ReportAddState extends State<ReportAddPage> {
                         // 에러 처리
                         print('에러 발생: $e');
                       }
-                      ;
                     },
                     child: Text('등록')),
               )

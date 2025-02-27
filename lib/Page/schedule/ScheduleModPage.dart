@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 
-class ScheduleModPage extends StatefulWidget{
-
-  ScheduleModPage({super.key});
+class ScheduleModPage extends StatefulWidget {
+  const ScheduleModPage({super.key});
 
   @override
   State<StatefulWidget> createState() => _ScheduleModState();
 }
 
-class _ScheduleModState extends State<ScheduleModPage>{
+class _ScheduleModState extends State<ScheduleModPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

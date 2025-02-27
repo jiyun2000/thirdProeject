@@ -14,11 +14,11 @@ class BoardModPage extends StatefulWidget {
 }
 
 class _BoardModState extends State<BoardModPage> {
-  TextEditingController _titleController = TextEditingController();
-  TextEditingController _contentController = TextEditingController();
-  TextEditingController _categoryController = TextEditingController();
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _boardNoController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
+  final TextEditingController _contentController = TextEditingController();
+  final TextEditingController _categoryController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _boardNoController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +37,7 @@ class _BoardModState extends State<BoardModPage> {
               return Center(child: Text('에러 발생: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               JsonParser jsonParser = snapshot.data!;
-              
+
               _titleController.text = jsonParser.title;
               _contentController.text = jsonParser.content;
               _emailController.text = jsonParser.mailAddress;
@@ -48,77 +48,68 @@ class _BoardModState extends State<BoardModPage> {
                 children: [
                   TextField(
                     controller: _titleController,
-                    decoration: InputDecoration(
-                      labelText: '제목'
-                    ),
+                    decoration: InputDecoration(labelText: '제목'),
                   ),
                   SizedBox(height: 16),
                   TextField(
                     controller: _contentController,
-                    decoration: InputDecoration(
-                      labelText: '내용'
-                    ),
+                    decoration: InputDecoration(labelText: '내용'),
                   ),
                   SizedBox(height: 16),
                   TextField(
                     controller: _categoryController,
-                    decoration: InputDecoration(
-                      labelText: '카테고리'
-                    ),
-                  ),
-                   SizedBox(height: 16),
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(
-                      labelText: '작성자'
-                    ),
+                    decoration: InputDecoration(labelText: '카테고리'),
                   ),
                   SizedBox(height: 16),
-                
-                 
-                 
+                  TextField(
+                    controller: _emailController,
+                    decoration: InputDecoration(labelText: '작성자'),
+                  ),
+                  SizedBox(height: 16),
                   SizedBox(height: 50),
                   SizedBox(
                     width: 200,
                     child: ElevatedButton(
-                    onPressed: () {
-                      print(_titleController.text);
-                      print( _contentController.text);
-                      print(_categoryController.text);
-                      print(_emailController.text);
-                      print(int.parse(_boardNoController.text));
+                      onPressed: () {
+                        print(_titleController.text);
+                        print(_contentController.text);
+                        print(_categoryController.text);
+                        print(_emailController.text);
+                        print(int.parse(_boardNoController.text));
 
-                      BoardDio().modBoard(
-                        _titleController.text,
-                        _contentController.text,
-                        _categoryController.text,
-                        _emailController.text, 
-                        int.parse(_boardNoController.text),
-                      );
-                    },child: Text('수정완료'),
-                  ),
+                        BoardDio().modBoard(
+                          _titleController.text,
+                          _contentController.text,
+                          _categoryController.text,
+                          _emailController.text,
+                          int.parse(_boardNoController.text),
+                        );
+                      },
+                      child: Text('수정완료'),
+                    ),
                   ),
                   SizedBox(
                     height: 20,
                   ),
-                   SizedBox(
+                  SizedBox(
                     width: 200,
                     child: ElevatedButton(
-                    onPressed: () {
-                      print(_titleController.text);
-                      print( _contentController.text);
-                      print(_categoryController.text);
-                      print(_emailController.text);
-                      print(int.parse(_boardNoController.text));
-                      BoardDio().delBoard(
-                        _titleController.text,
-                        _contentController.text,
-                        _categoryController.text,
-                        _emailController.text,
-                        int.parse(_boardNoController.text),
-                      );
-                    },child: Text('삭제'),
-                  ),
+                      onPressed: () {
+                        print(_titleController.text);
+                        print(_contentController.text);
+                        print(_categoryController.text);
+                        print(_emailController.text);
+                        print(int.parse(_boardNoController.text));
+                        BoardDio().delBoard(
+                          _titleController.text,
+                          _contentController.text,
+                          _categoryController.text,
+                          _emailController.text,
+                          int.parse(_boardNoController.text),
+                        );
+                      },
+                      child: Text('삭제'),
+                    ),
                   )
                 ],
               );
