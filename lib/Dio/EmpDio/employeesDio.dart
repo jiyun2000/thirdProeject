@@ -69,6 +69,7 @@ class JsonParser {
 class Employeesdio {
   final dio = Dio();
 
+
   //mypage
   Future<JsonParser> findByEmpNo(int empNo) async {
     print("read emp dio");
@@ -78,5 +79,6 @@ class Employeesdio {
     JsonParser parser = JsonParser.fromJson(mapRes);
     print(parser.empNo);
     return parser;
+
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
-import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
 
 class Event {
   final String title;
@@ -111,18 +110,13 @@ class _TableEventsState extends State<TableEvents> {
           await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
 
       List<Event> events = jsonParser.empSchedule.map((text) {
-
-        String dateOnly = text['scheduleText'] + "  " + text['startDate']; 
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        print(text['startDate']);
         return Event(dateOnly);
       }).toList();
-
-       List<Event> events2 = jsonParser.deptSchedule.map((text) {
-        String dateOnly = text['scheduleText'] + "  " + text['startDate']; 
-        return Event(dateOnly);
-      }).toList();
-      return events;events2;
-    } else {
-
+      return events;
+    } catch (e) {
+      print('오류: $e');
       return [];
     }
   }
@@ -182,15 +176,6 @@ class _TableEventsState extends State<TableEvents> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ScheduleAddPage()),
-          );
-        },
-        child: Icon(Icons.add),
       ),
     );
   }
