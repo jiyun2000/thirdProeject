@@ -11,6 +11,7 @@ class JsonParser {
   final List<dynamic> receivers;
   final bool isDayOff;
   final List<dynamic> files;
+  final List<dynamic> uploadFileNames;
 
   JsonParser(
       {required this.reportNo,
@@ -22,7 +23,8 @@ class JsonParser {
       required this.sender,
       required this.receivers,
       required this.isDayOff,
-      required this.files});
+      required this.files,
+      required this.uploadFileNames});
 
   factory JsonParser.fromJson(dynamic json) => JsonParser(
       reportNo: json['reportNo'],
@@ -34,6 +36,7 @@ class JsonParser {
       sender: json['sender'],
       receivers: json['receivers'],
       files: json['files'],
+      uploadFileNames: json['uploadFileNames'],
       isDayOff: json['isDayOff']);
 
   Map<String, dynamic> toJson() => {
@@ -46,7 +49,8 @@ class JsonParser {
         "sender": sender,
         "receivers": receivers,
         "isDayOff": isDayOff,
-        "files": files
+        "files": files,
+        "uploadFileNames": uploadFileNames
       };
 }
 
@@ -92,7 +96,7 @@ class ReportDio {
 
   Future<ResDto> getReceivedList(int receiver) async {
     Response res = await dio
-        .get("http://192.168.0.51:8080/api/report/list/received/$receiver");
+        .get("http://192.168.0.13:8080/api/report/list/received/$receiver");
     print(res.data);
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
@@ -100,29 +104,30 @@ class ReportDio {
 
   Future<ResDto> getSentList(int sender) async {
     Response res =
-        await dio.get("http://192.168.0.51:8080/api/report/list/sent/$sender");
+        await dio.get("http://192.168.0.13:8080/api/report/list/sent/$sender");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
 
   Future<JsonParser> addReport() async {
-    Response res = await dio.post("http://192.168.0.51:8080/api/report/add");
+    Response res = await dio.post("http://192.168.0.13:8080/api/report/add");
     Map<String, dynamic> mapRes = res.data;
     JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    print(jsonParser);
     return jsonParser;
   }
 
   Future<JsonParser> readReport(int reportNo) async {
     Response res =
-        await dio.get("http://192.168.0.51:8080/api/report/read/$reportNo");
+        await dio.get("http://192.168.0.13:8080/api/report/read/$reportNo");
     Map<String, dynamic> mapRes = res.data;
-    JsonParser jsonParser = JsonParser.fromJson(res.data);
+    JsonParser jsonParser = JsonParser.fromJson(mapRes);
     return jsonParser;
   }
 
   Future<JsonParser> modReport(int reportNo) async {
     Response res =
-        await dio.put("http://192.168.0.51:8080/api/report/$reportNo");
+        await dio.put("http://192.168.0.13:8080/api/report/$reportNo");
     Map<String, dynamic> mapRes = res.data;
     JsonParser jsonParser = JsonParser.fromJson(mapRes);
     return jsonParser;

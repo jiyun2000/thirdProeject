@@ -1,10 +1,4 @@
-
-import 'dart:convert';
-import 'dart:developer';
-
-
 import 'package:dio/dio.dart';
-import 'package:intl/intl.dart';
 
 class JsonParser {
   final int boardNo;
@@ -15,36 +9,32 @@ class JsonParser {
   final DateTime modDate;
   final String mailAddress;
 
-
-  JsonParser({
-    required this.boardNo,
-    required this.title,
-    required this.content,
-    required this.category,
-    required this.regDate,
-    required this.modDate,
-    required this.mailAddress
-  });
+  JsonParser(
+      {required this.boardNo,
+      required this.title,
+      required this.content,
+      required this.category,
+      required this.regDate,
+      required this.modDate,
+      required this.mailAddress});
 
   factory JsonParser.fromJson(Map<String, dynamic> json) => JsonParser(
-    boardNo: json['boardNo'], 
-    title: json['title'], 
-    content: json['contents'],
-    category: json['category'], 
-    regDate: DateTime.parse(json['regdate']), 
-    modDate: DateTime.parse( json['moddate']),
-    mailAddress: json['mailAddress']
-  );
+      boardNo: json['boardNo'],
+      title: json['title'],
+      content: json['contents'],
+      category: json['category'],
+      regDate: DateTime.parse(json['regdate']),
+      modDate: DateTime.parse(json['moddate']),
+      mailAddress: json['mailAddress']);
 
-    Map<String, dynamic> toJson() => {
-      "boardNo":boardNo,
-      "title":title,
-      "content":content,
-      "category":category,
-      "regDate":regDate,
-      "modDate":modDate
-    };
-
+  Map<String, dynamic> toJson() => {
+        "boardNo": boardNo,
+        "title": title,
+        "content": content,
+        "category": category,
+        "regDate": regDate,
+        "modDate": modDate
+      };
 }
 
 class resDto {
@@ -88,11 +78,11 @@ class BoardDio {
   final dio = Dio();
 
   Future<resDto> getAllList() async {
-    Response res = await dio.get("http://192.168.0.51:8080/api/board/list");
-    print("list"); //ok
-    print(res.data['dtoList']);
+    Response res = await dio.get("http://192.168.0.13:8080/api/board/list");
+    // print("list"); //ok
+    // print(res.data['dtoList']);
     resDto dto = resDto.fromdata(res.data);
-    print(dto);
+    // print(dto);
     // JsonParser.fromJson(res.data);
     //List<JsonParser> perserList = mapRes.map((element){ log(element); return JsonParser.fromJson(element);}).toList();
     //print(mapRes);
@@ -101,37 +91,35 @@ class BoardDio {
   }
 
   // Future<JsonParser> addBoard() async {
-  //   Response res = await dio.post("http://192.168.0.51:8080/api/board/add");
+  //   Response res = await dio.post("http://192.168.0.13:8080/api/board/add");
   //   Map<String, dynamic> mapRes = res.data;
   //   JsonParser jsonParser = JsonParser.fromJson(mapRes);
   //   return jsonParser;
   // }
 
   Future<JsonParser> addBoard(Map<String, dynamic> requestBody) async {
-      Response res = await dio.post(
-        "http://192.168.0.51:8080/api/board/add",
-        data: requestBody, 
-      );
-      Map<String, dynamic> mapRes = res.data;
-      JsonParser jsonParser = JsonParser.fromJson(mapRes);
-      return jsonParser;
-
+    Response res = await dio.post(
+      "http://192.168.0.13:8080/api/board/add",
+      data: requestBody,
+    );
+    Map<String, dynamic> mapRes = res.data;
+    JsonParser jsonParser = JsonParser.fromJson(mapRes);
+    return jsonParser;
   }
 
   Future<JsonParser> readBoard(int boardNo) async {
-
     print("readpage");
-    Response res = await dio.get("http://192.168.0.51:8080/api/board/read/$boardNo");
+    Response res =
+        await dio.get("http://192.168.0.13:8080/api/board/read/$boardNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
     print(parser.boardNo);
     return parser;
-
   }
 
   Future<JsonParser> modBoard(int boardNo) async {
-    Response res = await dio.put("http://192.168.0.51:8080/api/board/$boardNo");
+    Response res = await dio.put("http://192.168.0.13:8080/api/board/$boardNo");
     Map<String, dynamic> mapRes = res.data;
     JsonParser jsonParser = JsonParser.fromJson(mapRes);
     return jsonParser;

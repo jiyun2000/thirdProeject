@@ -19,33 +19,15 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const SentReportListPage()),
-                  );
-                },
-                child: const Text('🍔🍟보낸 보고서'),
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const ReceivedReportListPage()),
-                  );
-                },
-                child: const Text('💩보고서 등록'),
-              ),
-            ],
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const SentReportListPage()),
+              );
+            },
+            child: const Text('🍔🍟보낸 보고서'),
           ),
           FutureBuilder<ResDto>(
             future: ReportDio().getReceivedList(1),
@@ -72,10 +54,13 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
                     itemBuilder: (context, index) {
                       return ListTile(
                         leading: Icon(Icons.ac_unit_outlined),
-                        title:
-                            Text('${parsingList.dtolist[index]['reportNo']}'),
-                        subtitle:
-                            Text('${parsingList.dtolist[index]['title']}'),
+                        title: parsingList.dtolist[index]['isDayOff']
+                            ? Text('연차')
+                            : Text('일반'),
+                        subtitle: parsingList.dtolist[index]['isDayOff']
+                            ? Text(
+                                '사용 날짜 : ${parsingList.dtolist[index]['title']} | 시간 : ${parsingList.dtolist[index]['contents']}')
+                            : Text('${parsingList.dtolist[index]['title']}'),
                         trailing: Text(
                             '${parsingList.dtolist[index]['reportStatus']}'),
                         onTap: () {
