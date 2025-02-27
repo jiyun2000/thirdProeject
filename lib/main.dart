@@ -6,7 +6,7 @@ import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 
-import 'package:thirdproject/Page/schedule/TodayDayOffPage.dart';
+import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 
 void main() async {
   runApp(MainApp());

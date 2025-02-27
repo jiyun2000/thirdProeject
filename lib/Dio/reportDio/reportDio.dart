@@ -108,7 +108,7 @@ class ReportDio {
 
   Future<ResDto> getSentList(int sender) async {
     Response res =
-        await dio.get("http://192.168.0.13:8080/api/report/list/sent/$sender");
+        await dio.get("http://192.168.0.51:8080/api/report/list/sent/$sender");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -137,7 +137,7 @@ class ReportDio {
 
   Future<ReportJsonParser> readReport(int reportNo) async {
     Response res =
-        await dio.get("http://192.168.0.13:8080/api/report/read/$reportNo");
+        await dio.get("http://192.168.0.51:8080/api/report/read/$reportNo");
     Map<String, dynamic> mapRes = res.data;
     ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
     return jsonParser;

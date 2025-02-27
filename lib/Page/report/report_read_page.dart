@@ -144,7 +144,7 @@ class _ReportState extends State<ReportReadpage> {
                                     String fileName =
                                         reportJsonParser.uploadFileNames[index];
                                     String fileUrl =
-                                        'http://192.168.0.13:8080/api/report/view/$fileName';
+                                        'http://192.168.0.51:8080/api/report/view/$fileName';
                                     return ListTile(
                                       title: Text('첨부서류${index + 1}'),
                                       onTap: () async {
