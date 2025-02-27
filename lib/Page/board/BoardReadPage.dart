@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
+import 'package:thirdproject/Page/board/BoardModPage.dart';
 
 class BoardReadpage extends StatefulWidget {
 
@@ -64,6 +65,14 @@ class _BoardState extends State<BoardReadpage> {
                     '내용: ${jsonParser.content}',
                     style: TextStyle(fontSize: 16),
                   ),
+                  SizedBox(
+                    height: 50,
+                  ),
+                  SizedBox(
+                    height: 50,
+                    child: ElevatedButton(onPressed: (){
+                      Navigator.push(context, MaterialPageRoute(builder: (context) => BoardModPage(BoardNo : '${jsonParser.boardNo}')));
+                    }, child: Text('수정')),), 
                 ],
               );
             } else {
