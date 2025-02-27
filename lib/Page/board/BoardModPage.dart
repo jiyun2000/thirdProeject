@@ -98,28 +98,6 @@ class _BoardModState extends State<BoardModPage> {
                     },child: Text('수정완료'),
                   ),
                   ),
-                  SizedBox(
-                    height: 20,
-                  ),
-                   SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                    onPressed: () {
-                      print(_titleController.text);
-                      print( _contentController.text);
-                      print(_categoryController.text);
-                      print(_emailController.text);
-                      print(int.parse(_boardNoController.text));
-                      BoardDio().delBoard(
-                        _titleController.text,
-                        _contentController.text,
-                        _categoryController.text,
-                        _emailController.text,
-                        int.parse(_boardNoController.text),
-                      );
-                    },child: Text('삭제'),
-                  ),
-                  )
                 ],
               );
             } else {
