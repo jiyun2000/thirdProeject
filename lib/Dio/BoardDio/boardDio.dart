@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class JsonParser {
   final int boardNo;
   final String title;
@@ -90,6 +88,7 @@ class BoardDio {
   }
 
 
+
   Future<http.Response> addBoard(String title, String contents, String category, int empNo, String mailAddress) async{
     var uri = Uri.parse("http://192.168.0.51:8080/api/board/add");
     Map<String, String> headers = {
@@ -146,7 +145,6 @@ class BoardDio {
       print("${response.body}");
       return response;
     }
-
 
 
   Future<JsonParser> readBoard(int boardNo) async {

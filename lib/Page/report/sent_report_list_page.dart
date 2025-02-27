@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
+import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/report/report_read_page.dart';
 
 class SentReportListPage extends StatefulWidget {
-  const SentReportListPage({super.key});
+  final int empNo;
+  const SentReportListPage({super.key, required this.empNo});
 
   @override
   State<StatefulWidget> createState() => _SentReportListState();
@@ -19,18 +21,38 @@ class _SentReportListState extends State<SentReportListPage> {
       ),
       body: Column(
         children: [
-          ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (context) => const ReceivedReportListPage()),
-              );
-            },
-            child: const Text('🍔🍟받은 보고서'),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReceivedReportListPage(empNo: widget.empNo)),
+                  );
+                },
+                child: const Text('🍔🍟받은 보고서'),
+              ),
+              const SizedBox(
+                width: 8,
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) =>
+                            ReportAddPage(empNo: widget.empNo)),
+                  );
+                },
+                child: const Text('연차 등록💩'),
+              ),
+            ],
           ),
           FutureBuilder<ResDto>(
-            future: ReportDio().getSentList(1),
+            future: ReportDio().getSentList(widget.empNo),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -68,6 +90,7 @@ class _SentReportListState extends State<SentReportListPage> {
                             context,
                             MaterialPageRoute(
                                 builder: (context) => ReportReadpage(
+                                    empNo: widget.empNo,
                                     reportNo: int.parse(
                                         '${parsingList.dtolist[index]['reportNo']}'))));
                       },

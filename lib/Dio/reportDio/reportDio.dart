@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
+import 'package:multi_dropdown/multi_dropdown.dart';
 
 class ReportJsonParser {
   final int reportNo;
@@ -96,8 +101,7 @@ class ReportDio {
 
   Future<ResDto> getReceivedList(int receiver) async {
     Response res = await dio
-        .get("http://192.168.0.51:8080/api/report/list/received/$receiver");
-    print(res.data);
+        .get("http://192.168.0.13:8080/api/report/list/received/$receiver");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -109,12 +113,26 @@ class ReportDio {
     return dto;
   }
 
-  Future<ReportJsonParser> addReport() async {
-    Response res = await dio.post("http://192.168.0.51:8080/api/report/add");
-    Map<String, dynamic> mapRes = res.data;
-    ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
-    print(jsonParser);
-    return jsonParser;
+  Future<http.Response> addReport(DateTime title, int contents,
+      List<DropdownItem<int>> receivers, int empNo) async {
+    var uri =
+        Uri.parse("http://192.168.0.13:8080/api/report/register/mobile/$empNo");
+    Map<String, String> headers = {"Content-Type": "application/json"};
+
+    String formattedDate = DateFormat('yyyy-MM-dd').format(title);
+    List<String> rList =
+        receivers.map((item) => item.value.toString()).toList();
+    Map data = {
+      'isDayOff': 'true',
+      'deadLine': formattedDate,
+      'title': formattedDate,
+      'contents': '$contents',
+      'reportStatus': '진행중',
+      'receivers': rList
+    };
+    var body = json.encode(data);
+    var response = await http.post(uri, headers: headers, body: body);
+    return response;
   }
 
   Future<ReportJsonParser> readReport(int reportNo) async {
@@ -125,11 +143,31 @@ class ReportDio {
     return jsonParser;
   }
 
-  Future<ReportJsonParser> modReport(int reportNo) async {
-    Response res =
-        await dio.put("http://192.168.0.51:8080/api/report/$reportNo");
-    Map<String, dynamic> mapRes = res.data;
-    ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
-    return jsonParser;
+  Future<ReportJsonParser> modReport(int reportNo, String reportStatus) async {
+    try {
+      // 1️⃣ 기존 데이터를 가져옴
+      ReportJsonParser reportData = await readReport(reportNo);
+
+      // 2️⃣ 기존 데이터를 Map 형태로 변환
+      Map<String, dynamic> reportMap = reportData.toJson();
+
+      // 3️⃣ reportStatus 값만 변경
+      reportMap["reportStatus"] = reportStatus;
+
+      // 4️⃣ 서버에 PUT 요청으로 수정된 데이터 전송
+      Response res = await dio.put(
+        "http://192.168.0.13:8080/api/report/modify/$reportNo",
+        data: reportMap, // 수정된 데이터 전송
+      );
+
+      // 5️⃣ 요청이 성공했으면 최신 데이터 다시 가져오기
+      if (res.statusCode == 200) {
+        return await readReport(reportNo);
+      } else {
+        throw Exception("보고서 수정 실패 (응답 코드: ${res.statusCode})");
+      }
+    } catch (e) {
+      throw Exception("보고서 수정 중 오류 발생: $e");
+    }
   }
 }

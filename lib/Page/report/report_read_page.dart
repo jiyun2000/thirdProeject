@@ -1,11 +1,14 @@
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
+import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
 
 class ReportReadpage extends StatefulWidget {
   final int reportNo;
-  const ReportReadpage({super.key, required this.reportNo});
+  final int empNo;
+  const ReportReadpage(
+      {super.key, required this.reportNo, required this.empNo});
 
   @override
   State<StatefulWidget> createState() => _ReportState();
@@ -24,14 +27,44 @@ class _ReportState extends State<ReportReadpage> {
           Row(
             children: [
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    await ReportDio().modReport(widget.reportNo, '진행중');
+                    // 성공적으로 modReport가 완료되면 화면 이동
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ReceivedReportListPage(empNo: widget.empNo),
+                      ),
+                    );
+                  } catch (e) {
+                    // 에러 처리
+                    print('에러 발생: $e');
+                  }
+                },
                 child: const Text('승인👌'),
               ),
               const SizedBox(
                 width: 8,
               ),
               ElevatedButton(
-                onPressed: () {},
+                onPressed: () async {
+                  try {
+                    await ReportDio().modReport(widget.reportNo, '반려');
+                    // 성공적으로 modReport가 완료되면 화면 이동
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            ReceivedReportListPage(empNo: widget.empNo),
+                      ),
+                    );
+                  } catch (e) {
+                    // 에러 처리
+                    print('에러 발생: $e');
+                  }
+                },
                 child: const Text('반려🙏'),
               ),
             ],
@@ -60,8 +93,8 @@ class _ReportState extends State<ReportReadpage> {
                         //print(snapshot.error);
                         return Center(child: Text('에러 발생: ${snapshot.error}'));
                       } else if (snapshot1.hasData) {
-                        JsonParser jsonParserSender = snapshot1.data![0]!;
-                        JsonParser jsonParserReceiver = snapshot1.data![1]!;
+                        JsonParser jsonParserSender = snapshot1.data![0];
+                        JsonParser jsonParserReceiver = snapshot1.data![1];
                         return Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

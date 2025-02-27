@@ -6,7 +6,7 @@ class JsonParser {
   final String deptAddress;
   final String phoneNo;
 
-  JsonParser ({
+  JsonParser({
     required this.deptNo,
     required this.deptName,
     required this.deptAddress,
@@ -14,31 +14,30 @@ class JsonParser {
   });
 
   factory JsonParser.fromJson(Map<String, dynamic> json) => JsonParser(
-    deptNo: json['deptNo'], 
-    deptName: json['deptName'], 
-    deptAddress: json['deptAddress'], 
-    phoneNo: json['phoneNo']);
+      deptNo: json['deptNo'],
+      deptName: json['deptName'],
+      deptAddress: json['deptAddress'],
+      phoneNo: json['phoneNo']);
 
   Map<String, dynamic> toJson() => {
-    "deptNo":deptNo,
-    "deptName":deptName,
-    "deptAddress":deptAddress,
-    "phoneNo":phoneNo
-  };
+        "deptNo": deptNo,
+        "deptName": deptName,
+        "deptAddress": deptAddress,
+        "phoneNo": phoneNo
+      };
 }
 
-class DeparmentDio{
+class DeparmentDio {
   final dio = Dio();
 
   Future<JsonParser> findByDept(int deptNo) async {
     print("read dept dio");
-    Response res = await dio.get("http://192.168.0.51:8080/api/deptinfo/read/$deptNo");
+    Response res =
+        await dio.get("http://192.168.0.13:8080/api/deptinfo/read/$deptNo");
     print(res.data);
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
     print(parser.deptName);
     return parser;
   }
-
-
 }

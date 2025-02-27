@@ -8,7 +8,6 @@ import 'package:thirdproject/Page/report/received_report_list_page.dart';
 
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 
-
 void main() async {
   runApp(MainApp());
 }
@@ -28,10 +27,8 @@ class MainApp extends StatelessWidget {
 }
 
 class MainPage extends StatelessWidget {
-   MainPage({super.key});
+  MainPage({super.key});
   String strToday = DateFormat("yyyy-mm-dd").format(DateTime.now());
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -68,17 +65,22 @@ class MainPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ReceivedReportListPage()),
+                      builder: (context) => const ReceivedReportListPage(
+                            empNo: 2,
+                          )),
                 );
               },
               child: const Text('🍔🍟보고서'),
-            ), const SizedBox(height: 20),
+            ),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>   TodayDayOffPage(dayOffDate : DateFormat("yyyy-MM-dd").parse(strToday))),
+                  MaterialPageRoute(
+                      builder: (context) => TodayDayOffPage(
+                          dayOffDate:
+                              DateFormat("yyyy-MM-dd").parse(strToday))),
                 );
               },
               child: const Text('🧳연차인원'),
@@ -88,8 +90,7 @@ class MainPage extends StatelessWidget {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) => MyPage()),
+                  MaterialPageRoute(builder: (context) => MyPage()),
                 );
               },
               child: const Text('🙋‍♀️My Page'),
