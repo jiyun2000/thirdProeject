@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; 
+import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
-import 'package:thirdproject/Page/schedule/DeptScheduleAdd.dart';  
+import 'package:thirdproject/Page/schedule/DeptScheduleAdd.dart';
 
 class ScheduleAddPage extends StatefulWidget {
   const ScheduleAddPage({super.key});
@@ -11,10 +11,10 @@ class ScheduleAddPage extends StatefulWidget {
 }
 
 class _ScheduleAddState extends State<ScheduleAddPage> {
-  TextEditingController _startDateController = TextEditingController();
-  TextEditingController _endDateController = TextEditingController();
-  TextEditingController _scheduleTextController = TextEditingController();
-  TextEditingController _empNoContorller = TextEditingController();
+  final TextEditingController _startDateController = TextEditingController();
+  final TextEditingController _endDateController = TextEditingController();
+  final TextEditingController _scheduleTextController = TextEditingController();
+  final TextEditingController _empNoContorller = TextEditingController();
 
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -89,11 +89,13 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                 child: ElevatedButton(
                   onPressed: () {
                     try {
-                      DateTime startDate = format.parse(_startDateController.text);
+                      DateTime startDate =
+                          format.parse(_startDateController.text);
                       DateTime endDate = format.parse(_endDateController.text);
                       int empNo = int.tryParse(_empNoContorller.text) ?? 0;
                       if (startDate.isBefore(endDate) && empNo > 0) {
-                        CalendarDio().addEmpSchedule(startDate, endDate, _scheduleTextController.text, empNo);
+                        CalendarDio().addEmpSchedule(startDate, endDate,
+                            _scheduleTextController.text, empNo);
                       } else {
                         print("틀림림");
                       }
@@ -108,7 +110,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
           ),
         ),
       ),
-       floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,

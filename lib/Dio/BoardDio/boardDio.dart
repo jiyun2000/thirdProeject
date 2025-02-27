@@ -3,8 +3,6 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
-
-
 class JsonParser {
   final int boardNo;
   final String title;
@@ -39,7 +37,7 @@ class JsonParser {
         "category": category,
         "regDate": regDate,
         "modDate": modDate,
-        "mailAddress":mailAddress,
+        "mailAddress": mailAddress,
       };
 }
 
@@ -89,29 +87,30 @@ class BoardDio {
     return dto;
   }
 
-
-  Future<http.Response> addBoard(String title, String contents, String category, int empNo, String mailAddress) async{
+  Future<http.Response> addBoard(String title, String contents, String category,
+      int empNo, String mailAddress) async {
     var uri = Uri.parse("http://192.168.0.51:8080/api/board/add");
-    Map<String, String> headers = {
-      "Content-Type":"application/json"};
+    Map<String, String> headers = {"Content-Type": "application/json"};
 
-      Map data = {
-        'title' :'$title',
-        'contents':'$contents',
-        'category':'$category',
-        'empNo':'$empNo',
-        'mailAddress':'$mailAddress'
-      };
-      var body = json.encode(data);
-      var response = await http.post(uri, headers: headers, body: body);
-      print("${response.body}");
-      return response;
-    }
+    Map data = {
+      'title': title,
+      'contents': contents,
+      'category': category,
+      'empNo': '$empNo',
+      'mailAddress': mailAddress
+    };
+    var body = json.encode(data);
+    var response = await http.post(uri, headers: headers, body: body);
+    print(response.body);
+    return response;
+  }
 
-    Future<http.Response> modBoard(String title, String contents, String category, String mailAddress, int boardNo) async{
+  Future<http.Response> modBoard(String title, String contents, String category,
+      String mailAddress, int boardNo) async {
     print('zz');
     var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
     print(uri);
+
     Map<String, String> headers = {
       "Content-Type":"application/json"};
 
@@ -128,6 +127,7 @@ class BoardDio {
       print("${response.body}");
       return response;
     }
+
 
 
   Future<JsonParser> readBoard(int boardNo) async {
