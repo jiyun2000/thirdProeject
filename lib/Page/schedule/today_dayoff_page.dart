@@ -25,7 +25,6 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
             future: todayDayOffDio().getAllList(DateTime.parse(dayOff)),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                print('데이터 있음');
                 List<JsonParser> parsingList = snapshot.data!;
                 return ListView.separated(
                   shrinkWrap: true,

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
-import 'package:thirdproject/Page/board/BoardPage.dart';
 
 class BoardAddPage extends StatefulWidget{
   const BoardAddPage({super.key});

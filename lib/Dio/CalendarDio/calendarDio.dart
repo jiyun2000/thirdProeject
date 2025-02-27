@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class JsonParser {
   final int empSchNo;
@@ -58,7 +60,7 @@ class CalendarDio {
   //전체 일정 리스트
   Future<Map<String, dynamic>> findByMap(int empNo, int deptNo) async {
     Response res = await dio
-        .get("http://192.168.0.13:8080/empDeptSchedule/read/$deptNo/$empNo");
+        .get("http://192.168.0.51:8080/empDeptSchedule/read/$deptNo/$empNo");
     print(res.data);
 
     print("dio = > ${res.data}");
@@ -66,28 +68,50 @@ class CalendarDio {
   }
 
   //개인 일정 등록
-  Future<Map<String, dynamic>> registerEmp(int empNo) async {
-    Response res = await dio
-        .post("http://192.168.0.13:8080/empDeptSchedule/register/$empNo");
-    print("dio = > ${res.data}");
-    return res.data;
-  }
+    Future<http.Response> addEmpSchedule(DateTime startDate, DateTime endDate, String scheduleText, int empNo) async{
+    var uri = Uri.parse("http://192.168.0.51:8080/empSchedule/register/$empNo");
+    Map<String, String> headers = {
+      "Content-Type":"application/json"};
 
-  //부서 일정 등록
-  Future<Map<String, dynamic>> registerDept(int empNo, int deptNo) async {
-    Response res = await dio
-        .post("http://192.168.0.13:8080/deptSchedule/register/$deptNo/$empNo");
-    print("dio = > ${res.data}");
-    return res.data;
-  }
+      Map data = {
+        'startDate':startDate.toIso8601String(),
+        'endDate':endDate.toIso8601String(),
+        'scheduleText':'$scheduleText',
+        'empNo':'$empNo'
+      };
+      var body = json.encode(data);
+      var response = await http.post(uri, headers: headers, body: body);
+      print("${response.body}");
+      return response;
+    }
+
+    
+    //부서 일정 등록
+    Future<http.Response> addDeptSche(DateTime startDate, DateTime endDate, String scheduleText, int empNo, int deptNo) async{
+    var uri = Uri.parse("http://192.168.0.51:8080/deptSchedule/register/$deptNo/$empNo");
+    Map<String, String> headers = {
+      "Content-Type":"application/json"};
+
+      Map data = {
+        'startDate':startDate.toIso8601String(),
+        'endDate':endDate.toIso8601String(),
+        'scheduleText':'$scheduleText',
+        'empNo':'$empNo',
+        'deptNo':'$deptNo'
+      };
+      var body = json.encode(data);
+      var response = await http.post(uri, headers: headers, body: body);
+      print("${response.body}");
+      return response;
+    }
+
 
   //해당 날짜 일정만 가져오기
-
   Future<empDto> todaySchedule(int empNo, int deptNo, DateTime selectDate) async {
 
     String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
     Response res = await dio.get(
-        "http://192.168.0.13:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
+        "http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
     // print(res.data);
     // print(res.data['empSchedule']);
     // print(res.data['empSchedule'][0]['empSchNo']);
