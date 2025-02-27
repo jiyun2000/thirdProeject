@@ -110,39 +110,25 @@ class BoardDio {
     print('zz');
     var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
     print(uri);
-    Map<String, String> headers = {"Content-Type": "application/json"};
 
-    Map data = {
-      'title': title,
-      'contents': contents,
-      'category': category,
-      'mailAddress': mailAddress,
-      'boardNo': '$boardNo'
-    };
-    var body = json.encode(data);
-    print(body);
-    var response = await http.put(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
-  }
+    Map<String, String> headers = {
+      "Content-Type":"application/json"};
 
-  Future<http.Response> delBoard(String title, String contents, String category,
-      String mailAddress, int boardNo) async {
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
-    Map<String, String> headers = {"Content-Type": "application/json"};
+      Map data = {
+        'title' :'$title',
+        'contents':'$contents',
+        'category':'$category',
+        'mailAddress':'$mailAddress',
+        'boardNo':'$boardNo'
+      };
+      var body = json.encode(data);
+      print(body);
+      var response = await http.put(uri, headers: headers, body: body);
+      print("${response.body}");
+      return response;
+    }
 
-    Map data = {
-      'title': title,
-      'contents': contents,
-      'category': category,
-      'mailAddress': mailAddress,
-      'boardNo': '$boardNo',
-    };
-    var body = json.encode(data);
-    var response = await http.delete(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
-  }
+
 
   Future<JsonParser> readBoard(int boardNo) async {
     print("readpage");
@@ -155,10 +141,5 @@ class BoardDio {
     return parser;
   }
 
-  // Future<JsonParser> modBoard(int boardNo) async {
-  //   Response res = await dio.put("http://192.168.0.51:8080/api/board/$boardNo");
-  //   Map<String, dynamic> mapRes = res.data;
-  //   JsonParser jsonParser = JsonParser.fromJson(mapRes);
-  //   return jsonParser;
-  // }
+ 
 }
