@@ -1,5 +1,5 @@
 name: thirdproject
-description: "A new Flutter project."
+description: 'A new Flutter project.'
 publish_to: 'none'
 version: 0.1.0
 
@@ -13,7 +13,7 @@ dependencies:
   flutter_svg: ^1.0.0
   http: ^0.13.5
   table_calendar: ^3.0.9
-  intl: ^0.18.1  
+  intl: ^0.18.1
   provider: ^6.1.2
   logger: ^2.5.0
   url_launcher: ^6.3.1
