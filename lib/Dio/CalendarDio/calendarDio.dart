@@ -3,6 +3,8 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
+import 'package:thirdproject/diointercept.dart';
+
 class JsonParser {
   final int empSchNo;
   final int deptSchNo;
@@ -59,8 +61,8 @@ class CalendarDio {
 
   //전체 일정 리스트
   Future<Map<String, dynamic>> findByMap(int empNo, int deptNo) async {
-    Response res = await dio
-        .get("http://localhost:8080/empDeptSchedule/read/$deptNo/$empNo");
+    Response res = await DioInterceptor.dio
+        .get("http://192.168.0.51:8080/empDeptSchedule/readSche/$deptNo/$empNo");
     print(res.data);
 
     print("dio = > ${res.data}");
@@ -110,8 +112,8 @@ class CalendarDio {
   Future<empDto> todaySchedule(
       int empNo, int deptNo, DateTime selectDate) async {
     String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
-    Response res = await dio.get(
-        "http://localhost:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
+    Response res = await DioInterceptor.dio.get(
+        "http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
     // print(res.data);
     // print(res.data['empSchedule']);
     // print(res.data['empSchedule'][0]['empSchNo']);

@@ -23,6 +23,9 @@ class Event {
   String toString() => title;
 }
 
+
+
+
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
 
@@ -34,6 +37,45 @@ class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  List<Event> _allEvents = []; 
+
+  @override
+  void initState() {
+    super.initState();
+    _loadAllEvents(); 
+  }
+
+  void _loadAllEvents() async {
+    try {
+      Map<String, dynamic> events = await CalendarDio().findByMap(1, 1);
+      
+      List<Event> empEvents = (events['empSchedule'] as List).map((text) {
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        int empSchNo = text['empSchNo'];
+        return Event(
+          title: dateOnly,
+          type: 'emp',
+          empSchNo: empSchNo,
+        );
+      }).toList();
+
+      List<Event> deptEvents = (events['deptSchedule'] as List).map((text) {
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        int deptSchNo = text['deptSchNo'];
+        return Event(
+          title: dateOnly,
+          type: 'dept',
+          deptSchNo: deptSchNo,
+        );
+      }).toList();
+
+      setState(() {
+        _allEvents = [...empEvents, ...deptEvents];  
+      });
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +93,27 @@ class _CalendarState extends State<CalendarPage> {
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
             },
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (context, day, List<dynamic> events) {
+
+                List<Event> dayEvents = _allEvents.where((event) {
+                  DateTime eventDate = DateTime.parse(event.title.split("  ")[1]);
+                  return isSameDay(day, eventDate);
+                }).toList();
+
+                if (dayEvents.isNotEmpty) {
+                  return Container(
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 253, 158, 158).withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                } else {
+                  return SizedBox();  
+                }
+              },
+            ),
             onDaySelected: (selectedDay, focusedDay) {
               if (!isSameDay(_selectedDay, selectedDay)) {
                 setState(() {
@@ -86,6 +149,7 @@ class _CalendarState extends State<CalendarPage> {
   }
 }
 
+
 class TableEvents extends StatefulWidget {
   final String? selectedDay;
 
@@ -109,10 +173,11 @@ class _TableEventsState extends State<TableEvents> {
     empDto jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
 
     List<Event> empEvents = jsonParser.empSchedule.map((text) {
+
       String dateOnly = text['scheduleText'] + "  " + text['startDate'];
       int empSchNo = text['empSchNo'];  
       return Event(
-        title: dateOnly,
+        title: '[개인]  ' + dateOnly,
         type: 'emp',
         empSchNo: empSchNo, 
       );
@@ -120,9 +185,9 @@ class _TableEventsState extends State<TableEvents> {
 
     List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
       String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-      int deptSchNo = text['deptSchNo'];  // Getting the actual deptSchNo
+      int deptSchNo = text['deptSchNo']; 
       return Event(
-        title: dateOnly,
+        title: '[부서]  ' + dateOnly,
         type: 'dept',
         deptSchNo: deptSchNo,  
       );
@@ -184,7 +249,6 @@ class _TableEventsState extends State<TableEvents> {
                                     MaterialPageRoute(
                                       builder: (context) => ScheduleEmpModPage(
                                         empSchNo: event.empSchNo,  
-                                        //empNo:event.empNo
                                       ),
                                     ),
                                   );
@@ -201,8 +265,9 @@ class _TableEventsState extends State<TableEvents> {
                               },
                               title: Text(
                                 event.title,
+                                
                                 style: TextStyle(
-                                  color: event.type == 'emp' ? Colors.blue : Colors.green,
+                                  color: event.type == 'emp' ? const Color.fromARGB(251, 0, 0, 0) : Colors.purple,
                                 ),
                               ),
                             ),
