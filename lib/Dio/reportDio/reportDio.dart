@@ -3,8 +3,6 @@ import 'package:http/http.dart' as http;
 
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
-import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:thirdproject/diointercept.dart';
 
 class ReportJsonParser {
   final int reportNo;
@@ -114,15 +112,14 @@ class ReportDio {
     return dto;
   }
 
-  Future<http.Response> addReport(DateTime title, int contents,
-      List<DropdownItem<int>> receivers, int empNo) async {
+  Future<http.Response> addReport(
+      DateTime title, int contents, List<int> receivers, int empNo) async {
     var uri =
         Uri.parse("http://192.168.0.51:8080/api/report/register/mobile/$empNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(title);
-    List<String> rList =
-        receivers.map((item) => item.value.toString()).toList();
+    List<String> rList = receivers.map((item) => item.toString()).toList();
     Map data = {
       'isDayOff': 'true',
       'deadLine': formattedDate,

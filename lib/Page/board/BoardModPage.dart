@@ -1,7 +1,4 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 
 class BoardModPage extends StatefulWidget {
@@ -22,8 +19,7 @@ class _BoardModState extends State<BoardModPage> {
 
   String _selectedCategory = '일반';
 
-  final List<String> _categories = ['일반', '공지', '긴급','완료'];
-
+  final List<String> _categories = ['일반', '공지', '긴급', '완료'];
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +110,6 @@ class _BoardModState extends State<BoardModPage> {
                       child: Text('수정완료'),
                     ),
                   ),
-
                 ],
               );
             } else {

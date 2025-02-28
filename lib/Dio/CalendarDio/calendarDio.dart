@@ -72,7 +72,7 @@ class CalendarDio {
   //개인 일정 등록
   Future<http.Response> addEmpSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo) async {
-    var uri = Uri.parse("http://192.168.0.51:8080/empSchedule/register/$empNo");
+    var uri = Uri.parse("http://localhost:8080/empSchedule/register/$empNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
@@ -88,13 +88,11 @@ class CalendarDio {
     return response;
   }
 
-  
-
   //부서 일정 등록
   Future<http.Response> addDeptSche(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo) async {
-    var uri = Uri.parse(
-        "http://192.168.0.51:8080/deptSchedule/register/$deptNo/$empNo");
+    var uri =
+        Uri.parse("http://localhost:8080/deptSchedule/register/$deptNo/$empNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
@@ -124,5 +122,4 @@ class CalendarDio {
     print("zz");
     return empDto.fromData(res.data);
   }
-  
 }
