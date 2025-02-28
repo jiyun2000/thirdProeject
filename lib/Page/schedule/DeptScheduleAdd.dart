@@ -19,6 +19,45 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
 
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
 
+  // 날짜 및 시간 선택 함수
+  Future<void> _selectDateTime(
+      BuildContext context, TextEditingController controller, bool isStart) async {
+    DateTime now = DateTime.now();
+    DateTime initialDate = now;
+
+    if (controller.text.isNotEmpty) {
+      initialDate = format.parse(controller.text);
+    }
+
+    // 날짜 선택
+    DateTime? selectedDate = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2100),
+    );
+
+    if (selectedDate != null) {
+      // 시간 선택
+      TimeOfDay? selectedTime = await showTimePicker(
+        context: context,
+        initialTime: TimeOfDay.fromDateTime(initialDate),
+      );
+
+      if (selectedTime != null) {
+        DateTime finalDateTime = DateTime(
+          selectedDate.year,
+          selectedDate.month,
+          selectedDate.day,
+          selectedTime.hour,
+          selectedTime.minute,
+        );
+
+        controller.text = format.format(finalDateTime);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,10 +72,12 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
               child: TextField(
                 controller: _startDateController,
                 decoration: InputDecoration(
-                  hintText: '시작 시간을 입력하세요 ',
+                  hintText: '시작 시간을 입력하세요',
                   labelText: '시작 시간',
                   border: OutlineInputBorder(),
                 ),
+                onTap: () => _selectDateTime(context, _startDateController, true),
+                readOnly: true,  // 텍스트 필드를 읽기 전용으로 설정하여 날짜 선택만 가능하도록 함
               ),
             ),
             SizedBox(
@@ -47,10 +88,12 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
               child: TextField(
                 controller: _endDateController,
                 decoration: InputDecoration(
-                  hintText: '끝난 시간을 입력하세요 ',
+                  hintText: '끝난 시간을 입력하세요',
                   labelText: '끝난 시간',
                   border: OutlineInputBorder(),
                 ),
+                onTap: () => _selectDateTime(context, _endDateController, false),
+                readOnly: true,  // 텍스트 필드를 읽기 전용으로 설정하여 날짜 선택만 가능하도록 함
               ),
             ),
             SizedBox(
@@ -61,7 +104,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
               child: TextField(
                 controller: _scheduleTextController,
                 decoration: InputDecoration(
-                  hintText: '내용을 입력하세요 ',
+                  hintText: '내용을 입력하세요',
                   labelText: '내용',
                   border: OutlineInputBorder(),
                 ),
@@ -75,7 +118,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
               child: TextField(
                 controller: _empNoController,
                 decoration: InputDecoration(
-                  hintText: '사원번호를 입력하세요 ',
+                  hintText: '사원번호를 입력하세요',
                   labelText: '사원번호',
                   border: OutlineInputBorder(),
                 ),
@@ -89,7 +132,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
               child: TextField(
                 controller: _deptNoController,
                 decoration: InputDecoration(
-                  hintText: '부서번호를를 입력하세요 ',
+                  hintText: '부서번호를 입력하세요',
                   labelText: '부서번호',
                   border: OutlineInputBorder(),
                 ),
@@ -112,7 +155,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                       CalendarDio().addDeptSche(startDate, endDate,
                           _scheduleTextController.text, empNo, deptNo);
                     } else {
-                      print("틀림");
+                      print("시간 입력이 잘못되었습니다.");
                     }
                   } catch (e) {
                     print("오류 발생: $e");

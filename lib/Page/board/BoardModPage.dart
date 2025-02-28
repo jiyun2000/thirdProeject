@@ -20,6 +20,11 @@ class _BoardModState extends State<BoardModPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _boardNoController = TextEditingController();
 
+  String _selectedCategory = '일반';
+
+  final List<String> _categories = ['일반', '공지', '긴급','완료'];
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -56,9 +61,30 @@ class _BoardModState extends State<BoardModPage> {
                     decoration: InputDecoration(labelText: '내용'),
                   ),
                   SizedBox(height: 16),
-                  TextField(
-                    controller: _categoryController,
-                    decoration: InputDecoration(labelText: '카테고리'),
+                  // TextField(
+                  //   controller: _categoryController,
+                  //   decoration: InputDecoration(labelText: '카테고리'),
+                  // ),
+                  SizedBox(
+                    width: 200,
+                    child: DropdownButtonFormField<String>(
+                      value: _selectedCategory,
+                      decoration: InputDecoration(
+                        labelText: '카테고리',
+                        border: OutlineInputBorder(),
+                      ),
+                      items: _categories.map((String category) {
+                        return DropdownMenuItem<String>(
+                          value: category,
+                          child: Text(category),
+                        );
+                      }).toList(),
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          _selectedCategory = newValue!;
+                        });
+                      },
+                    ),
                   ),
                   SizedBox(height: 16),
                   TextField(

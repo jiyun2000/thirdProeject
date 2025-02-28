@@ -12,8 +12,11 @@ class _BoardAddState extends State<BoardAddPage> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _empNoController = TextEditingController();
-  final TextEditingController _categoryController = TextEditingController();
   final TextEditingController _emailController = TextEditingController();
+
+  String _selectedCategory = '일반';
+
+  final List<String> _categories = ['일반', '공지', '긴급'];
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +56,23 @@ class _BoardAddState extends State<BoardAddPage> {
               ),
               SizedBox(
                 width: 200,
-                child: TextField(
-                  controller: _categoryController,
-                  maxLines: 1,
+                child: DropdownButtonFormField<String>(
+                  value: _selectedCategory,
                   decoration: InputDecoration(
-                      hintText: '일반 | 공지 | 긴급',
-                      labelText: '카테고리',
-                      border: OutlineInputBorder()),
+                    labelText: '카테고리',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _categories.map((String category) {
+                    return DropdownMenuItem<String>(
+                      value: category,
+                      child: Text(category),
+                    );
+                  }).toList(),
+                  onChanged: (String? newValue) {
+                    setState(() {
+                      _selectedCategory = newValue!;
+                    });
+                  },
                 ),
               ),
               SizedBox(
@@ -96,7 +109,7 @@ class _BoardAddState extends State<BoardAddPage> {
                       BoardDio().addBoard(
                           _titleController.text,
                           _contentController.text,
-                          _categoryController.text,
+                          _selectedCategory,
                           int.parse(_empNoController.text),
                           _emailController.text);
                     },
