@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:thirdproject/diointercept.dart';
 
 class JsonParser {
   final int empSchNo;
@@ -36,7 +37,7 @@ class EmpScheDio {
   final dio = Dio();
   Future<JsonParser> readEmpSche(int empNo, int empSchNo) async {
     Response res =
-        await dio.get("http://192.168.0.51:8080/empSchedule/read/$empNo/$empSchNo");
+        await DioInterceptor.dio.get("http://192.168.0.51:8080/empSchedule/read/$empNo/$empSchNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
