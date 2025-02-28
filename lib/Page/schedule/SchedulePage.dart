@@ -11,20 +11,21 @@ class Event {
   final String type;
   final int empSchNo; 
   final int deptSchNo; 
+  final DateTime startDate;
+  final DateTime endDate;
 
- Event({
+  Event({
     required this.title,
     required this.type,
     this.empSchNo = 0,   
     this.deptSchNo = 0,  
+    required this.startDate,
+    required this.endDate,
   });
 
   @override
   String toString() => title;
 }
-
-
-
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -50,22 +51,30 @@ class _CalendarState extends State<CalendarPage> {
       Map<String, dynamic> events = await CalendarDio().findByMap(1, 1);
       
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
+        DateTime startDate = DateTime.parse(text['startDate']);
+        DateTime endDate = DateTime.parse(text['endDate']);
         String dateOnly = text['scheduleText'] + "  " + text['startDate'];
         int empSchNo = text['empSchNo'];
         return Event(
           title: dateOnly,
           type: 'emp',
           empSchNo: empSchNo,
+          startDate: startDate,
+          endDate: endDate,
         );
       }).toList();
 
       List<Event> deptEvents = (events['deptSchedule'] as List).map((text) {
+        DateTime startDate = DateTime.parse(text['startDate']);
+        DateTime endDate = DateTime.parse(text['endDate']);
         String dateOnly = text['scheduleText'] + "  " + text['startDate'];
         int deptSchNo = text['deptSchNo'];
         return Event(
           title: dateOnly,
           type: 'dept',
           deptSchNo: deptSchNo,
+          startDate: startDate,
+          endDate: endDate,
         );
       }).toList();
 
@@ -95,10 +104,9 @@ class _CalendarState extends State<CalendarPage> {
             },
             calendarBuilders: CalendarBuilders(
               markerBuilder: (context, day, List<dynamic> events) {
-
                 List<Event> dayEvents = _allEvents.where((event) {
-                  DateTime eventDate = DateTime.parse(event.title.split("  ")[1]);
-                  return isSameDay(day, eventDate);
+                  return day.isAfter(event.startDate.subtract(Duration(days: 1))) &&
+                         day.isBefore(event.endDate.add(Duration(days: 0)));
                 }).toList();
 
                 if (dayEvents.isNotEmpty) {
@@ -122,7 +130,6 @@ class _CalendarState extends State<CalendarPage> {
                 });
 
                 String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
-                print("Selected Date: $formattedDate");
 
                 Navigator.push(
                   context,
@@ -149,7 +156,6 @@ class _CalendarState extends State<CalendarPage> {
   }
 }
 
-
 class TableEvents extends StatefulWidget {
   final String? selectedDay;
 
@@ -169,37 +175,43 @@ class _TableEventsState extends State<TableEvents> {
   }
 
   Future<List<Event>> _getEventsForDay(String? day) async {
-  try {
-    empDto jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
+    try {
+      empDto jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
 
-    List<Event> empEvents = jsonParser.empSchedule.map((text) {
+      List<Event> empEvents = jsonParser.empSchedule.map((text) {
+        DateTime startDate = DateTime.parse(text['startDate']);
+        DateTime endDate = DateTime.parse(text['endDate']);
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        int empSchNo = text['empSchNo'];  
+        return Event(
+          title: '[개인]  ' + dateOnly,
+          type: 'emp',
+          empSchNo: empSchNo, 
+          startDate: startDate,
+          endDate: endDate,
+        );
+      }).toList();
 
-      String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-      int empSchNo = text['empSchNo'];  
-      return Event(
-        title: '[개인]  ' + dateOnly,
-        type: 'emp',
-        empSchNo: empSchNo, 
-      );
-    }).toList();
+      List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
+        DateTime startDate = DateTime.parse(text['startDate']);
+        DateTime endDate = DateTime.parse(text['endDate']);
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        int deptSchNo = text['deptSchNo']; 
+        return Event(
+          title: '[부서]  ' + dateOnly,
+          type: 'dept',
+          deptSchNo: deptSchNo,  
+          startDate: startDate,
+          endDate: endDate,
+        );
+      }).toList();
 
-    List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
-      String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-      int deptSchNo = text['deptSchNo']; 
-      return Event(
-        title: '[부서]  ' + dateOnly,
-        type: 'dept',
-        deptSchNo: deptSchNo,  
-      );
-    }).toList();
-
-    return [...empEvents, ...deptEvents];
-  } catch (e) {
-    print('Error: $e');
-    return [];
+      return [...empEvents, ...deptEvents];
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
   }
-}
-
 
   @override
   void dispose() {
@@ -265,7 +277,6 @@ class _TableEventsState extends State<TableEvents> {
                               },
                               title: Text(
                                 event.title,
-                                
                                 style: TextStyle(
                                   color: event.type == 'emp' ? const Color.fromARGB(251, 0, 0, 0) : Colors.purple,
                                 ),
