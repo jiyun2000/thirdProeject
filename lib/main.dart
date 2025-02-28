@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:intl/intl.dart';
 
 import 'package:thirdproject/Page/board/BoardPage.dart';
@@ -10,6 +11,55 @@ import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 
 void main() async {
   runApp(MainApp());
+}
+
+class MainApp extends StatelessWidget {
+  const MainApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text(
+            '',
+            style: TextStyle(fontSize: 28),
+          ),
+          centerTitle: true,
+        ),
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(100),
+            child: Column(children: [
+              Padding(
+                padding: const EdgeInsets.all(30),
+                child: SvgPicture.asset(
+                  "assets/images/logo.svg",
+                  width: 150,
+                ),
+              ),
+              TextFormField(
+                decoration: InputDecoration(labelText: '이메일'),
+              ),
+              TextFormField(
+                obscureText: true,
+                decoration: InputDecoration(labelText: '비밀번호'),
+              ),
+              Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(top: 16),
+                child: ElevatedButton(
+                  onPressed: () {},
+                  child: Text('로그인'),
+                ),
+              )
+            ]),
+          ),
+        ),
+      ),
+    );
+  }
 }
 
 class MainApp extends StatelessWidget {
