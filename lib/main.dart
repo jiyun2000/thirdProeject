@@ -35,7 +35,7 @@ class MainApp extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(30),
                 child: SvgPicture.asset(
-                  "assets/images/logo.svg",
+                  "assets/image/logo.svg",
                   width: 150,
                 ),
               ),
@@ -62,8 +62,8 @@ class MainApp extends StatelessWidget {
   }
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class BasicApp extends StatelessWidget {
+  const BasicApp({super.key});
 
   @override
   Widget build(BuildContext context) {
