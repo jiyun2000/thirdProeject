@@ -39,21 +39,30 @@ class _ReportAddState extends State<ReportAddPage> {
       body: Center(
         child: Column(
           children: <Widget>[
-            ElevatedButton(
-              onPressed: () async {
-                final selectedDate = await showDatePicker(
-                  context: context,
-                  initialDate: date,
-                  firstDate: DateTime.now(),
-                  lastDate: DateTime(date.year + 100, date.month, date.day),
-                );
-                if (selectedDate != null) {
-                  date = selectedDate;
-                }
-              },
-              child: Text(
-                "${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('사용할 날짜 : '),
+                SizedBox(
+                  width: 10,
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    final selectedDate = await showDatePicker(
+                      context: context,
+                      initialDate: date,
+                      firstDate: DateTime.now(),
+                      lastDate: DateTime(date.year + 100, date.month, date.day),
+                    );
+                    if (selectedDate != null) {
+                      date = selectedDate;
+                    }
+                  },
+                  child: Text(
+                    "${date.year.toString()}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+                  ),
+                ),
+              ],
             ),
             SizedBox(height: 20),
             SizedBox(
@@ -130,7 +139,8 @@ class _ReportAddState extends State<ReportAddPage> {
                                   .label)
                               .toList();
 
-                          return Text('보고 순서: ${selectedLabels.join(" -> ")}');
+                          return Text(
+                              '보고 순서: ${selectedLabels.join("  ->  ")}');
                         },
                       ),
                     ],
