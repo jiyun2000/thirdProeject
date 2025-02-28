@@ -28,7 +28,6 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
       initialDate = format.parse(controller.text);
     }
 
-    // 날짜 선택
     DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -37,7 +36,6 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
     );
 
     if (selectedDate != null) {
-      // 시간 선택
       TimeOfDay? selectedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(initialDate),

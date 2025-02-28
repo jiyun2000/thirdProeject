@@ -31,7 +31,7 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
         if(snapshot.connectionState == ConnectionState.waiting){
           return Center(child: CircularProgressIndicator());
          } else if (snapshot.hasError) {
-              return Center(child: Text('에러 발생: ${snapshot.error}')); //여기서 에러가 발생한건데...
+              return Center(child: Text('에러 발생: ${snapshot.error}')); 
         } else if (snapshot.hasData) {
           JsonParser jsonParser = snapshot.data!;
           print("!!!!");

@@ -110,11 +110,11 @@ class _TableEventsState extends State<TableEvents> {
 
     List<Event> empEvents = jsonParser.empSchedule.map((text) {
       String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-      int empSchNo = text['empSchNo'];  // Getting the actual empSchNo
+      int empSchNo = text['empSchNo'];  
       return Event(
         title: dateOnly,
         type: 'emp',
-        empSchNo: empSchNo,  // Pass the empSchNo value
+        empSchNo: empSchNo, 
       );
     }).toList();
 
@@ -124,7 +124,7 @@ class _TableEventsState extends State<TableEvents> {
       return Event(
         title: dateOnly,
         type: 'dept',
-        deptSchNo: deptSchNo,  // Pass the deptSchNo value
+        deptSchNo: deptSchNo,  
       );
     }).toList();
 
