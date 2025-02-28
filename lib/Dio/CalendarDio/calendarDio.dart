@@ -24,8 +24,8 @@ class JsonParser {
   factory JsonParser.fromJson(Map<String, dynamic> json) => JsonParser(
       empSchNo: json['empSchNo'],
       deptSchNo: json['deptSchNo'],
-      startDate: json['startDate'],
-      endDate: json['endDate'],
+      startDate: DateTime.parse(json['startDate']),
+      endDate: DateTime.parse(json['endDate']),
       scheduleText: json['scheduleText'],
       empNo: json['empNo'],
       deptNo: json['deptNo']);
@@ -85,6 +85,8 @@ class CalendarDio {
     return response;
   }
 
+  
+
   //부서 일정 등록
   Future<http.Response> addDeptSche(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo) async {
@@ -119,4 +121,5 @@ class CalendarDio {
     print("zz");
     return empDto.fromData(res.data);
   }
+  
 }

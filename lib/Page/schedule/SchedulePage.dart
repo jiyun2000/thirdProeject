@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
 import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
-import 'package:thirdproject/Page/schedule/ScheduleModPage.dart';
+import 'package:thirdproject/Page/schedule/ScheduleDeptModPage.dart';
+import 'package:thirdproject/Page/schedule/ScheduleEmpModPage.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 class Event {
   final String title;
+  final String type;
+  final int empSchNo; 
+  final int deptSchNo; 
 
-  Event(this.title);
+ Event({
+    required this.title,
+    required this.type,
+    this.empSchNo = 0,   
+    this.deptSchNo = 0,  
+  });
 
   @override
   String toString() => title;
@@ -25,9 +34,6 @@ class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-
-  // final List<Event> _events = [];
-  // final CalendarDio _calendarDio = CalendarDio();
 
   @override
   Widget build(BuildContext context) {
@@ -52,18 +58,13 @@ class _CalendarState extends State<CalendarPage> {
                   _focusedDay = focusedDay;
                 });
 
-                String formattedDate =
-                    DateFormat("yyyy-MM-dd").format(selectedDay);
-
-                String url =
-                    Uri.encodeFull("/empDeptSchedule/list/1/1/$formattedDate");
-                print("url: $url");
+                String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
+                print("Selected Date: $formattedDate");
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) =>
-                        TableEvents(selectedDay: formattedDate),
+                    builder: (context) => TableEvents(selectedDay: formattedDate),
                   ),
                 );
               }
@@ -100,28 +101,40 @@ class _TableEventsState extends State<TableEvents> {
   @override
   void initState() {
     super.initState();
-
-    _selectedEvents = ValueNotifier(_getEventsForDay(
-        widget.selectedDay ?? DateFormat("yyyy-MM-dd").format(DateTime.now())));
+    _selectedEvents = ValueNotifier(_getEventsForDay(widget.selectedDay));
   }
 
   Future<List<Event>> _getEventsForDay(String? day) async {
-    try {
-      print("flag");
-      empDto jsonParser =
-          await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
+  try {
+    empDto jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
 
-      List<Event> events = jsonParser.empSchedule.map((text) {
-        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-        print(text['startDate']);
-        return Event(dateOnly);
-      }).toList();
-      return events;
-    } catch (e) {
-      print('오류: $e');
-      return [];
-    }
+    List<Event> empEvents = jsonParser.empSchedule.map((text) {
+      String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+      int empSchNo = text['empSchNo'];  // Getting the actual empSchNo
+      return Event(
+        title: dateOnly,
+        type: 'emp',
+        empSchNo: empSchNo,  // Pass the empSchNo value
+      );
+    }).toList();
+
+    List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
+      String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+      int deptSchNo = text['deptSchNo'];  // Getting the actual deptSchNo
+      return Event(
+        title: dateOnly,
+        type: 'dept',
+        deptSchNo: deptSchNo,  // Pass the deptSchNo value
+      );
+    }).toList();
+
+    return [...empEvents, ...deptEvents];
+  } catch (e) {
+    print('Error: $e');
+    return [];
   }
+}
+
 
   @override
   void dispose() {
@@ -153,6 +166,7 @@ class _TableEventsState extends State<TableEvents> {
                       return ListView.builder(
                         itemCount: events.length,
                         itemBuilder: (context, index) {
+                          Event event = events[index];
                           return Container(
                             margin: const EdgeInsets.symmetric(
                               horizontal: 12.0,
@@ -163,12 +177,34 @@ class _TableEventsState extends State<TableEvents> {
                               borderRadius: BorderRadius.circular(12.0),
                             ),
                             child: ListTile(
-                              // onTap: () => print('이벤트 =>  ${events[index]}'),
-                              // title: Text('${events[index]}'),
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleModPage()));
+                                if (event.type == 'emp') {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ScheduleEmpModPage(
+                                        empSchNo: event.empSchNo,  
+                                        //empNo:event.empNo
+                                      ),
+                                    ),
+                                  );
+                                } else {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => ScheduleDeptModPage(
+                                        deptSchNo: event.deptSchNo,  
+                                      ),
+                                    ),
+                                  );
+                                }
                               },
-                              title: Text('${events[index]}')
+                              title: Text(
+                                event.title,
+                                style: TextStyle(
+                                  color: event.type == 'emp' ? Colors.blue : Colors.green,
+                                ),
+                              ),
                             ),
                           );
                         },
@@ -183,7 +219,7 @@ class _TableEventsState extends State<TableEvents> {
           ),
         ],
       ),
-     floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton(
         onPressed: () {
           Navigator.push(
             context,

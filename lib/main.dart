@@ -28,7 +28,7 @@ class MainApp extends StatelessWidget {
 
 class MainPage extends StatelessWidget {
   MainPage({super.key});
-  String strToday = DateFormat("yyyy-mm-dd").format(DateTime.now());
+  String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   @override
   Widget build(BuildContext context) {
