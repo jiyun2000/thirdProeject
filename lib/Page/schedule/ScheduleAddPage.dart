@@ -18,7 +18,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
 
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
 
-  // 날짜 선택을 위한 함수
+
   Future<void> _selectDateTime(
       BuildContext context, TextEditingController controller, bool isStart) async {
     DateTime now = DateTime.now();
@@ -77,7 +77,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                     border: OutlineInputBorder(),
                   ),
                   onTap: () => _selectDateTime(context, _startDateController, true),
-                  readOnly: true,  // 텍스트 필드를 읽기 전용으로 설정하여 날짜 선택만 가능하도록 함
+                  readOnly: true,  
                 ),
               ),
               SizedBox(
@@ -93,7 +93,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                     border: OutlineInputBorder(),
                   ),
                   onTap: () => _selectDateTime(context, _endDateController, false),
-                  readOnly: true,  // 텍스트 필드를 읽기 전용으로 설정하여 날짜 선택만 가능하도록 함
+                  readOnly: true, 
                 ),
               ),
               SizedBox(
