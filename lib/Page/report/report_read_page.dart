@@ -101,10 +101,19 @@ class _ReportState extends State<ReportReadpage> {
                             children: [
                               reportJsonParser.isDayOff
                                   ? Text(
-                                      '날짜: ${reportJsonParser.title}',
+                                      '연차 사용',
                                       style: const TextStyle(
                                           fontSize: 24,
                                           fontWeight: FontWeight.bold),
+                                    )
+                                  : Text(''),
+                              reportJsonParser.isDayOff
+                                  ? const SizedBox(height: 8)
+                                  : Text(''),
+                              reportJsonParser.isDayOff
+                                  ? Text(
+                                      '날짜: ${reportJsonParser.title}',
+                                      style: const TextStyle(fontSize: 16),
                                     )
                                   : Text(
                                       '제목: ${reportJsonParser.title}',
@@ -144,7 +153,7 @@ class _ReportState extends State<ReportReadpage> {
                                     String fileName =
                                         reportJsonParser.uploadFileNames[index];
                                     String fileUrl =
-                                        'http://192.168.0.51:8080/api/report/view/$fileName';
+                                        'http://localhost:8080/api/report/view/$fileName';
                                     return ListTile(
                                       title: Text('첨부서류${index + 1}'),
                                       onTap: () async {

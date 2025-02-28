@@ -21,35 +21,19 @@ class _SentReportListState extends State<SentReportListPage> {
       ),
       body: Column(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ReceivedReportListPage(empNo: widget.empNo)),
-                  );
-                },
-                child: const Text('🍔🍟받은 보고서'),
-              ),
-              const SizedBox(
-                width: 8,
-              ),
-              ElevatedButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) =>
-                            ReportAddPage(empNo: widget.empNo)),
-                  );
-                },
-                child: const Text('연차 등록💩'),
-              ),
-            ],
+          ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        ReceivedReportListPage(empNo: widget.empNo)),
+              );
+            },
+            child: const Text('🍔🍟받은 보고서'),
+          ),
+          SizedBox(
+            height: 8,
           ),
           FutureBuilder<ResDto>(
             future: ReportDio().getSentList(widget.empNo),
@@ -103,6 +87,22 @@ class _SentReportListState extends State<SentReportListPage> {
             },
           ),
         ],
+      ),
+      floatingActionButton: SizedBox(
+        height: 50,
+        width: 100,
+        child: FloatingActionButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ReportAddPage(
+                        empNo: widget.empNo,
+                      )),
+            );
+          },
+          child: Text('연차 등록💩'),
+        ),
       ),
     );
   }

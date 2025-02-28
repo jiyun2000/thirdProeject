@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 
@@ -82,14 +81,14 @@ class BoardDio {
   final dio = Dio();
 
   Future<resDto> getAllList() async {
-    Response res = await dio.get("http://192.168.0.51:8080/api/board/list");
+    Response res = await dio.get("http://localhost:8080/api/board/list");
     resDto dto = resDto.fromdata(res.data);
     return dto;
   }
 
   Future<http.Response> addBoard(String title, String contents, String category,
       int empNo, String mailAddress) async {
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/add");
+    var uri = Uri.parse("http://localhost:8080/api/board/add");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
@@ -108,38 +107,33 @@ class BoardDio {
   Future<http.Response> modBoard(String title, String contents, String category,
       String mailAddress, int boardNo) async {
     print('zz');
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
+    var uri = Uri.parse("http://localhost:8080/api/board/$boardNo");
     print(uri);
 
-    Map<String, String> headers = {
-      "Content-Type":"application/json"};
+    Map<String, String> headers = {"Content-Type": "application/json"};
 
-      Map data = {
-        'title' :'$title',
-        'contents':'$contents',
-        'category':'$category',
-        'mailAddress':'$mailAddress',
-        'boardNo':'$boardNo'
-      };
-      var body = json.encode(data);
-      print(body);
-      var response = await http.put(uri, headers: headers, body: body);
-      print("${response.body}");
-      return response;
-    }
-
-
+    Map data = {
+      'title': title,
+      'contents': contents,
+      'category': category,
+      'mailAddress': mailAddress,
+      'boardNo': '$boardNo'
+    };
+    var body = json.encode(data);
+    print(body);
+    var response = await http.put(uri, headers: headers, body: body);
+    print(response.body);
+    return response;
+  }
 
   Future<JsonParser> readBoard(int boardNo) async {
     print("readpage");
     Response res =
-        await dio.get("http://192.168.0.51:8080/api/board/read/$boardNo");
+        await dio.get("http://localhost:8080/api/board/read/$boardNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
     print(parser.boardNo);
     return parser;
   }
-
- 
 }

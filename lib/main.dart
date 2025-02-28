@@ -11,7 +11,7 @@ import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 
 void main() async {
-  runApp(MainApp());
+  runApp(BasicApp());
 }
 
 class MainApp extends StatelessWidget {
@@ -116,8 +116,8 @@ class MainPage extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => const ReceivedReportListPage(
-                            empNo: 2,
+                      builder: (context) => ReceivedReportListPage(
+                            empNo: 1,
                           )),
                 );
               },
