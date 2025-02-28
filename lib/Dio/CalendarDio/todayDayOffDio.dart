@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:thirdproject/diointercept.dart';
 
 class JsonParser {
   final int dayOffNo;
@@ -33,7 +34,7 @@ class todayDayOffDio {
   Future<List<JsonParser>> getAllList(DateTime dayOffDate) async {
     String formated = (DateFormat("yyyy-MM-dd").format(DateTime.now()));
     print("ff$formated"); //잘나옴
-    Response res = await dio
+    Response res = await DioInterceptor.dio
         .get("http://192.168.0.51:8080/api/dayoff/todayList/$formated");
     print(res.data); //잘나옴
     print("~~~~~~~~~~~~~~~~`");
