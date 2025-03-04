@@ -61,9 +61,9 @@ class DeptScheDio {
     return response;
   }
 
-   Future<JsonParser> readDeptSche(int deptNo, int empNo, int deptSchNo) async {
-    Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/deptSchedule/read/$deptNo/$empNo/$deptSchNo");
+  Future<JsonParser> readDeptSche(int deptNo, int empNo, int deptSchNo) async {
+    Response res = await DioInterceptor.dio.get(
+        "http://localhost:8080/deptSchedule/read/$deptNo/$empNo/$deptSchNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
