@@ -9,22 +9,19 @@ import 'package:table_calendar/table_calendar.dart';
 class Event {
   final String title;
   final String type;
-  final int empSchNo; 
-  final int deptSchNo; 
+  final int empSchNo;
+  final int deptSchNo;
 
- Event({
+  Event({
     required this.title,
     required this.type,
-    this.empSchNo = 0,   
-    this.deptSchNo = 0,  
+    this.empSchNo = 0,
+    this.deptSchNo = 0,
   });
 
   @override
   String toString() => title;
 }
-
-
-
 
 class CalendarPage extends StatefulWidget {
   const CalendarPage({super.key});
@@ -37,18 +34,18 @@ class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  List<Event> _allEvents = []; 
+  List<Event> _allEvents = [];
 
   @override
   void initState() {
     super.initState();
-    _loadAllEvents(); 
+    _loadAllEvents();
   }
 
   void _loadAllEvents() async {
     try {
       Map<String, dynamic> events = await CalendarDio().findByMap(1, 1);
-      
+
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
         String dateOnly = text['scheduleText'] + "  " + text['startDate'];
         int empSchNo = text['empSchNo'];
@@ -70,7 +67,7 @@ class _CalendarState extends State<CalendarPage> {
       }).toList();
 
       setState(() {
-        _allEvents = [...empEvents, ...deptEvents];  
+        _allEvents = [...empEvents, ...deptEvents];
       });
     } catch (e) {
       print('Error: $e');
@@ -95,9 +92,9 @@ class _CalendarState extends State<CalendarPage> {
             },
             calendarBuilders: CalendarBuilders(
               markerBuilder: (context, day, List<dynamic> events) {
-
                 List<Event> dayEvents = _allEvents.where((event) {
-                  DateTime eventDate = DateTime.parse(event.title.split("  ")[1]);
+                  DateTime eventDate =
+                      DateTime.parse(event.title.split("  ")[1]);
                   return isSameDay(day, eventDate);
                 }).toList();
 
@@ -105,12 +102,13 @@ class _CalendarState extends State<CalendarPage> {
                   return Container(
                     width: 35,
                     decoration: BoxDecoration(
-                      color: const Color.fromARGB(255, 253, 158, 158).withOpacity(0.5),
+                      color: const Color.fromARGB(255, 253, 158, 158)
+                          .withOpacity(0.5),
                       shape: BoxShape.circle,
                     ),
                   );
                 } else {
-                  return SizedBox();  
+                  return SizedBox();
                 }
               },
             ),
@@ -121,13 +119,15 @@ class _CalendarState extends State<CalendarPage> {
                   _focusedDay = focusedDay;
                 });
 
-                String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
+                String formattedDate =
+                    DateFormat("yyyy-MM-dd").format(selectedDay);
                 print("Selected Date: $formattedDate");
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => TableEvents(selectedDay: formattedDate),
+                    builder: (context) =>
+                        TableEvents(selectedDay: formattedDate),
                   ),
                 );
               }
@@ -149,7 +149,6 @@ class _CalendarState extends State<CalendarPage> {
   }
 }
 
-
 class TableEvents extends StatefulWidget {
   final String? selectedDay;
 
@@ -169,37 +168,36 @@ class _TableEventsState extends State<TableEvents> {
   }
 
   Future<List<Event>> _getEventsForDay(String? day) async {
-  try {
-    empDto jsonParser = await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
+    try {
+      empDto jsonParser =
+          await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
 
-    List<Event> empEvents = jsonParser.empSchedule.map((text) {
+      List<Event> empEvents = jsonParser.empSchedule.map((text) {
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        int empSchNo = text['empSchNo'];
+        return Event(
+          title: '[개인]  $dateOnly',
+          type: 'emp',
+          empSchNo: empSchNo,
+        );
+      }).toList();
 
-      String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-      int empSchNo = text['empSchNo'];  
-      return Event(
-        title: '[개인]  ' + dateOnly,
-        type: 'emp',
-        empSchNo: empSchNo, 
-      );
-    }).toList();
+      List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
+        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        int deptSchNo = text['deptSchNo'];
+        return Event(
+          title: '[부서]  $dateOnly',
+          type: 'dept',
+          deptSchNo: deptSchNo,
+        );
+      }).toList();
 
-    List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
-      String dateOnly = text['scheduleText'] + "  " + text['startDate'];
-      int deptSchNo = text['deptSchNo']; 
-      return Event(
-        title: '[부서]  ' + dateOnly,
-        type: 'dept',
-        deptSchNo: deptSchNo,  
-      );
-    }).toList();
-
-    return [...empEvents, ...deptEvents];
-  } catch (e) {
-    print('Error: $e');
-    return [];
+      return [...empEvents, ...deptEvents];
+    } catch (e) {
+      print('Error: $e');
+      return [];
+    }
   }
-}
-
 
   @override
   void dispose() {
@@ -248,7 +246,7 @@ class _TableEventsState extends State<TableEvents> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ScheduleEmpModPage(
-                                        empSchNo: event.empSchNo,  
+                                        empSchNo: event.empSchNo,
                                       ),
                                     ),
                                   );
@@ -257,7 +255,7 @@ class _TableEventsState extends State<TableEvents> {
                                     context,
                                     MaterialPageRoute(
                                       builder: (context) => ScheduleDeptModPage(
-                                        deptSchNo: event.deptSchNo,  
+                                        deptSchNo: event.deptSchNo,
                                       ),
                                     ),
                                   );
@@ -265,9 +263,10 @@ class _TableEventsState extends State<TableEvents> {
                               },
                               title: Text(
                                 event.title,
-                                
                                 style: TextStyle(
-                                  color: event.type == 'emp' ? const Color.fromARGB(251, 0, 0, 0) : Colors.purple,
+                                  color: event.type == 'emp'
+                                      ? const Color.fromARGB(251, 0, 0, 0)
+                                      : Colors.purple,
                                 ),
                               ),
                             ),

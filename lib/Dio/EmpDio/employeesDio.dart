@@ -71,8 +71,8 @@ class Employeesdio {
 
   //mypage
   Future<JsonParser> findByEmpNo(int empNo) async {
-    Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/employees/read/$empNo");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/api/employees/read/$empNo");
 
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
@@ -81,8 +81,8 @@ class Employeesdio {
   }
 
   Future<List<DropdownItem<int>>> getAllEmpListToDropDown(int empNo) async {
-    Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/employees/list/all");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/api/employees/list/all");
     List<dynamic> data = List.from(res.data);
     // 서버에서 반환된 리스트 데이터를 JsonParser로 변환
     List<JsonParser> jsonList =

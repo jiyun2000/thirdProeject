@@ -62,7 +62,7 @@ class CalendarDio {
   //전체 일정 리스트
   Future<Map<String, dynamic>> findByMap(int empNo, int deptNo) async {
     Response res = await DioInterceptor.dio
-        .get("http://192.168.0.51:8080/empDeptSchedule/readSche/$deptNo/$empNo");
+        .get("http://localhost:8080/empDeptSchedule/readSche/$deptNo/$empNo");
     print(res.data);
 
     print("dio = > ${res.data}");
@@ -113,7 +113,7 @@ class CalendarDio {
       int empNo, int deptNo, DateTime selectDate) async {
     String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
     Response res = await DioInterceptor.dio.get(
-        "http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
+        "http://localhost:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
     // print(res.data);
     // print(res.data['empSchedule']);
     // print(res.data['empSchedule'][0]['empSchNo']);

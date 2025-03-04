@@ -3,6 +3,7 @@ import 'package:http/http.dart' as http;
 
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
+import 'package:thirdproject/diointercept.dart';
 
 class ReportJsonParser {
   final int reportNo;
@@ -100,14 +101,14 @@ class ReportDio {
 
   Future<ResDto> getReceivedList(int receiver) async {
     Response res = await DioInterceptor.dio
-        .get("http://192.168.0.51:8080/api/report/list/received/$receiver");
+        .get("http://localhost:8080/api/report/list/received/$receiver");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
 
   Future<ResDto> getSentList(int sender) async {
-    Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/report/list/sent/$sender");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/api/report/list/sent/$sender");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -115,7 +116,7 @@ class ReportDio {
   Future<http.Response> addReport(
       DateTime title, int contents, List<int> receivers, int empNo) async {
     var uri =
-        Uri.parse("http://192.168.0.51:8080/api/report/register/mobile/$empNo");
+        Uri.parse("http://localhost:8080/api/report/register/mobile/$empNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(title);
@@ -134,8 +135,8 @@ class ReportDio {
   }
 
   Future<ReportJsonParser> readReport(int reportNo) async {
-    Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/report/read/$reportNo");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/api/report/read/$reportNo");
     Map<String, dynamic> mapRes = res.data;
     ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
     return jsonParser;
@@ -154,7 +155,7 @@ class ReportDio {
 
       // 4️⃣ 서버에 PUT 요청으로 수정된 데이터 전송
       Response res = await DioInterceptor.dio.put(
-        "http://192.168.0.51:8080/api/report/modify/$reportNo",
+        "http://localhost:8080/api/report/modify/$reportNo",
         data: reportMap, // 수정된 데이터 전송
       );
 
