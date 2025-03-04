@@ -32,6 +32,7 @@ class _BoardState extends State<BoardPage> {
 
                 return Expanded(
                   child: ListView.separated(
+                    shrinkWrap: true,
                     itemCount: parsingList.dtolist.length,
                     separatorBuilder: (context, index) {
                       return Divider(
@@ -41,21 +42,23 @@ class _BoardState extends State<BoardPage> {
                       );
                     },
                     itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Icon(Icons.ac_unit_outlined),
-                        title: Text('${parsingList.dtolist[index]['boardNo']}'),
-                        subtitle: Text('${parsingList.dtolist[index]['title']}'),
-                        trailing: Text('${parsingList.dtolist[index]['mailAddress']}'),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => BoardReadpage(
-                                BoardNo: '${parsingList.dtolist[index]['boardNo']}',
+                      return Card(
+                        child: ListTile(
+                          leading: Icon(Icons.circle),
+                          //title: Text('${parsingList.dtolist[index]['boardNo']}'),
+                          title: Text('${parsingList.dtolist[index]['title']}'),
+                          trailing: Text('${parsingList.dtolist[index]['mailAddress']}'),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BoardReadpage(
+                                  BoardNo: '${parsingList.dtolist[index]['boardNo']}',
+                                ),
                               ),
-                            ),
-                          );
-                        },
+                            );
+                          },
+                        ),
                       );
                     },
                   ),

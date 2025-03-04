@@ -228,7 +228,7 @@ class _TableEventsState extends State<TableEvents> {
       body: Column(
         children: [
           Expanded(
-            child: ValueListenableBuilder<Future<List<Event>>>(
+            child: ValueListenableBuilder<Future<List<Event>>>( 
               valueListenable: _selectedEvents,
               builder: (context, futureEvents, _) {
                 return FutureBuilder<List<Event>>(
@@ -238,7 +238,7 @@ class _TableEventsState extends State<TableEvents> {
                       return Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
                       return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
+                    } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                       List<Event> events = snapshot.data!;
                       return ListView.builder(
                         itemCount: events.length,
@@ -286,7 +286,7 @@ class _TableEventsState extends State<TableEvents> {
                         },
                       );
                     } else {
-                      return Center(child: Text('일정이 없습니다.'));
+                      return Center(child: Text('오늘은 일정이 없어요'));
                     }
                   },
                 );

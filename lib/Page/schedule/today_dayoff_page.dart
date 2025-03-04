@@ -24,7 +24,11 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
           FutureBuilder(
             future: todayDayOffDio().getAllList(DateTime.parse(dayOff)),
             builder: (context, snapshot) {
-              if (snapshot.hasData) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('error'));
+              } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
                 List<JsonParser> parsingList = snapshot.data!;
                 return ListView.separated(
                   shrinkWrap: true,
@@ -43,7 +47,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                   itemCount: parsingList.length,
                 );
               } else {
-                return CircularProgressIndicator();
+                return Center(child: Text('오늘은 전체 직원 출근‼️‼️‼️'));
               }
             },
           )
