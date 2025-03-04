@@ -21,7 +21,6 @@ class _ReportAddState extends State<ReportAddPage> {
   List<int> sendingItems = [];
   int count = 0;
 
-  // UI 업데이트를 위한 ValueNotifier
   final ValueNotifier<List<int>> _sendingItemsNotifier = ValueNotifier([]);
 
   @override
@@ -43,9 +42,7 @@ class _ReportAddState extends State<ReportAddPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text('사용할 날짜 : '),
-                SizedBox(
-                  width: 10,
-                ),
+                SizedBox(width: 10),
                 ElevatedButton(
                   onPressed: () async {
                     final selectedDate = await showDatePicker(
@@ -55,7 +52,9 @@ class _ReportAddState extends State<ReportAddPage> {
                       lastDate: DateTime(date.year + 100, date.month, date.day),
                     );
                     if (selectedDate != null) {
-                      date = selectedDate;
+                      setState(() {
+                        date = selectedDate;
+                      });
                     }
                   },
                   child: Text(
@@ -90,57 +89,53 @@ class _ReportAddState extends State<ReportAddPage> {
 
                   return Column(
                     children: [
-                      SizedBox(
-                        width: 200,
-                        height: 50,
-                        child: MultiDropdown(
-                          controller: _receiversController,
-                          items: parser,
-                          searchEnabled: true,
-                          onSelectionChange: (List<int> e) {
-                            // 기존 selectedItems와 비교하여 변경된 항목 찾기
-                            List<int> addedItems = e
-                                .where((item) => !selectedItems.contains(item))
-                                .toList();
-                            List<int> removedItems = selectedItems
-                                .where((item) => !e.contains(item))
-                                .toList();
+                      Wrap(
+                        children: [
+                          SizedBox(
+                            width:
+                                MediaQuery.of(context).size.width * 0.5 >= 250
+                                    ? MediaQuery.of(context).size.width * 0.5
+                                    : 250,
+                            child: MultiDropdown(
+                              controller: _receiversController,
+                              items: parser,
+                              searchEnabled: true,
+                              onSelectionChange: (List<int> e) {
+                                List<int> addedItems = e
+                                    .where(
+                                        (item) => !selectedItems.contains(item))
+                                    .toList();
+                                List<int> removedItems = selectedItems
+                                    .where((item) => !e.contains(item))
+                                    .toList();
 
-                            // 추가된 값은 sendingItems 마지막에 추가
-                            sendingItems.addAll(addedItems);
+                                sendingItems.addAll(addedItems);
+                                sendingItems.removeWhere(
+                                    (item) => removedItems.contains(item));
 
-                            // 빠진 값은 sendingItems에서 제거
-                            sendingItems.removeWhere(
-                                (item) => removedItems.contains(item));
-
-                            // selectedItems 업데이트
-                            selectedItems = List.from(e);
-
-                            // UI 갱신
-                            _sendingItemsNotifier.value =
-                                List.from(sendingItems);
-                          },
-                        ),
+                                selectedItems = List.from(e);
+                                _sendingItemsNotifier.value =
+                                    List.from(sendingItems);
+                              },
+                            ),
+                          ),
+                        ],
                       ),
                       SizedBox(height: 20),
-
-                      // 선택된 값들의 label 값을 출력
                       ValueListenableBuilder<List<int>>(
                         valueListenable: _sendingItemsNotifier,
                         builder: (context, value, child) {
-                          // sendingItems 리스트의 int 값들을 label 값으로 변환
                           List<String> selectedLabels = value
                               .map((id) => parser
-                                  .firstWhere(
-                                    (item) => item.value == id,
-                                    orElse: () => DropdownItem(
-                                        label: '알 수 없음', value: id),
-                                  )
+                                  .firstWhere((item) => item.value == id,
+                                      orElse: () => DropdownItem(
+                                          label: '알 수 없음', value: id))
                                   .label)
                               .toList();
-
                           return Text(
-                              '보고 순서: ${selectedLabels.join("  ->  ")}');
+                            '보고 순서: \n${selectedLabels.join("\n->")}',
+                            softWrap: true,
+                          );
                         },
                       ),
                     ],
@@ -160,7 +155,6 @@ class _ReportAddState extends State<ReportAddPage> {
                     sendingItems,
                     widget.empNo,
                   );
-                  // 성공적으로 완료되면 화면 이동
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -169,7 +163,6 @@ class _ReportAddState extends State<ReportAddPage> {
                     ),
                   );
                 } catch (e) {
-                  // 에러 처리
                   print('에러 발생: $e');
                 }
               },
