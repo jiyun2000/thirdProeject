@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
 import 'package:intl/intl.dart';
+import 'package:thirdproject/Dio/CalendarDio/dept_sche_dio.dart' as dept;
+import 'package:thirdproject/Dio/CalendarDio/emp_sche_dio.dart' as emp;
 
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
@@ -77,6 +79,8 @@ class BasicApp extends StatelessWidget {
   }
 }
 
+String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
 class MainPage extends StatelessWidget {
   MainPage({super.key});
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
@@ -84,36 +88,56 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('메인페이지'),
+      appBar: AppBar(title: Text('DDT'),
+      centerTitle: true,
+      elevation: 0.0,
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+      drawer: Drawer(
+        child: ListView(
           children: [
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CalendarPage()),
-                );
+            UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage("assets/image/logo.svg"),
+              ), accountEmail: Text("admin"),
+              accountName: Text("관리자"),
+              onDetailsPressed: (){},
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                )
+              ),
+            ),ListTile(
+              leading: Icon(Icons.home),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('홈'),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
               },
-              child: const Text('📆일정'),
+              trailing: Icon(Icons.navigate_next),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+            ListTile(
+              leading: Icon(Icons.notifications_none_sharp),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('공지사항'),
+              onTap: (){
+                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
               },
-              child: const Text('🎙️공지사항'),
+              trailing: Icon(Icons.navigate_next),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+            ListTile(
+              leading: Icon(Icons.report),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('보고서'),
+              onTap: (){
+                 Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ReceivedReportListPage(
@@ -121,11 +145,27 @@ class MainPage extends StatelessWidget {
                           )),
                 );
               },
-              child: const Text('🍔🍟보고서'),
+              trailing: Icon(Icons.navigate_next),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
+            ListTile(
+              leading: Icon(Icons.calendar_month),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('일정'),
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
+              },
+              trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.travel_explore_sharp),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('오늘 연차'),
+              onTap: (){
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -134,21 +174,116 @@ class MainPage extends StatelessWidget {
                               DateFormat("yyyy-MM-dd").parse(strToday))),
                 );
               },
-              child: const Text('🧳연차인원'),
+              trailing: Icon(Icons.navigate_next),
             ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.push(
+            ListTile(
+              leading: Icon(Icons.person),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('마이페이지'),
+              onTap: (){
+                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
               },
-              child: const Text('🙋‍♀️My Page'),
-            )
+              trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('로그아웃'),
+              onTap: (){},
+              trailing: Icon(Icons.navigate_next),
+            ),
           ],
         ),
       ),
+      body: Column(
+        children: [
+          Text('환영합니다 '),
+          Center( //출퇴근 gps 연동 버튼 넣고 시간 띄우기
+            child: 
+            Text('출퇴근 연동시키기'),
+          ),
+         FutureBuilder( //오늘 개인 일정
+            future: emp.EmpScheDio().readEmpTodo(1, DateTime.parse(dayFormat)),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                List<emp.JsonParser> empSchedule = snapshot.data!;
+                if (empSchedule.isEmpty) {
+                  return Center(child: Text("오늘 개인 일정 없음"));
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16), 
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16),
+                        leading: Icon(Icons.circle),
+                        title: Text('${empSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(height: 10, thickness: 1);
+                  },
+                  itemCount: empSchedule.length,
+                );
+              } else {
+                return Center(child: Text("오늘 개인 일정 없음"));
+              }
+            },
+          ),
+          FutureBuilder( //오늘 부서 일정
+            future: dept.DeptScheDio().readDeptTodo(1, 1, DateTime.parse(dayFormat)),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (snapshot.hasError) {
+                return Center(child: Text('Error: ${snapshot.error}'));
+              } else if (snapshot.hasData) {
+                List<dept.JsonParser> deptSchedule = snapshot.data!;
+                if (deptSchedule.isEmpty) {
+                  return Center(child: Text("오늘 부서 일정 없음"));
+                }
+                return ListView.separated(
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(16),
+                        leading: Icon(Icons.circle),
+                        title: Text('${deptSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
+                      ),
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return Divider(height: 10, thickness: 1);
+                  },
+                  itemCount: deptSchedule.length,
+                );
+              } else {
+                return Center(child: Text("오늘 부서 일정 없음"));
+              }
+            },
+          )
+        ],
+      )
     );
+
   }
 }

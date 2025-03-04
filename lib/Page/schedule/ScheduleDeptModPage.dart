@@ -23,7 +23,7 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('부서서 스케줄 수정'),
+        title: Text('부서 스케줄 수정'),
       ),
       body: Padding(padding: EdgeInsets.all(16.0),
       child: FutureBuilder(future: DeptScheDio().readDeptSche(1, 1, widget.deptSchNo), 

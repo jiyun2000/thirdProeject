@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
+import 'package:intl/intl.dart';
 import 'package:thirdproject/diointercept.dart';
 
 class JsonParser {
@@ -69,6 +70,17 @@ class DeptScheDio {
     print(parser.deptSchNo);
     return parser;
   }
+
+  Future<List<JsonParser>> readDeptTodo(int empNo, int deptNo, DateTime selectDate) async {
+      String formated = DateFormat("yyyy-MM-dd").format(selectDate);
+      Response res = await DioInterceptor.dio.get("http://192.168.0.51:8080/deptTodo/read/$empNo/$deptNo/$formated");
+      print(res.data);
+      Map<String, dynamic> responseData = res.data;
+      List<dynamic> deptScheduleData = responseData['deptSchedule'];
+      List<JsonParser> deptSchedule = deptScheduleData.map((e) => JsonParser.fromJson(e)).toList();
+      return deptSchedule;
+  }
+
 
   Future<http.Response> delDeptSche(int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
