@@ -50,12 +50,13 @@ class EmpScheDio {
 
   Future<List<JsonParser>> readEmpTodo(int empNo, DateTime selectDate) async {
     String formated = (DateFormat("yyyy-MM-dd").format(DateTime.now()));
-    Response res = await DioInterceptor.dio.get("http://192.168.0.51:8080/empTodo/read/$empNo/$formated");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/empTodo/read/$empNo/$formated");
     print(res.data);
     Map<String, dynamic> responseData = res.data;
     List<dynamic> empScheduleData = responseData['empSchedule'];
     List<JsonParser> empSchedule =
-    empScheduleData.map((element) => JsonParser.fromJson(element)).toList();
+        empScheduleData.map((element) => JsonParser.fromJson(element)).toList();
     return empSchedule;
   }
 
@@ -92,5 +93,4 @@ class EmpScheDio {
     print(response.body);
     return response;
   }
-
 }

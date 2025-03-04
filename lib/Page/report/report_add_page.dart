@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:multi_dropdown/multi_dropdown.dart';
-import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
+import 'package:thirdproject/Dio/EmpDio/empDetailDio.dart';
 import 'package:thirdproject/Dio/ReportDio/reportDio.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 
@@ -79,7 +79,7 @@ class _ReportAddState extends State<ReportAddPage> {
             ),
             SizedBox(height: 20),
             FutureBuilder<List<DropdownItem<int>>>(
-              future: Employeesdio().getAllEmpListToDropDown(widget.empNo),
+              future: EmpDetailDio().getAllEmpListToDropDown(widget.empNo),
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
                   return Center(child: CircularProgressIndicator());
