@@ -72,19 +72,23 @@ class _BoardState extends State<BoardPage> {
               },
               // trailing: Icon(Icons.navigate_next),
             ),
-            ListTile(
+             ListTile(
               leading: Icon(Icons.report),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('보고서'),
-              onTap: () {
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                int empNo = prefs.getInt("empNo") ?? 0; 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage()),
+                    builder: (context) => ReceivedReportListPage(
+                      empNo: empNo, 
+                    ),
+                  ),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.calendar_month),

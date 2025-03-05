@@ -64,7 +64,8 @@ class CalendarDio {
     Response res = await DioInterceptor.dio
         .get("http://localhost:8080/empDeptSchedule/readSche/$deptNo/$empNo");
     print(res.data);
-
+    print('empNO => $empNo');
+    print('deptNo => $deptNo');
     print("dio = > ${res.data}");
     return res.data;
   }
