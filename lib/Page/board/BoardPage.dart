@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 import 'package:thirdproject/Page/board/BoardAddPage.dart';
 import 'package:thirdproject/Page/board/BoardReadPage.dart';
@@ -17,6 +18,12 @@ class BoardPage extends StatefulWidget {
 }
 String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
 class _BoardState extends State<BoardPage> {
+
+  Future<int> getEmpNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('empNo') ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -72,7 +79,7 @@ class _BoardState extends State<BoardPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ReceivedReportListPage(
-                            empNo: 1,
+                            empNo: empNo,
                           )),
                 );
               },
