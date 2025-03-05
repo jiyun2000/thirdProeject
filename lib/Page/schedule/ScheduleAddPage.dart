@@ -138,7 +138,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                         CalendarDio().addEmpSchedule(startDate, endDate,
                             _scheduleTextController.text, empNo);
                       } else {
-                        print("틀림림");
+                        print("틀림");
                       }
                     } catch (e) {
                       print("오류 발생: $e");

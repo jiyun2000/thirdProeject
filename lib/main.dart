@@ -1,18 +1,18 @@
 import 'dart:developer';
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-
 import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/CalendarDio/dept_sche_dio.dart' as dept;
 import 'package:thirdproject/Dio/CalendarDio/emp_sche_dio.dart' as emp;
-
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
-
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
 void main() async {
@@ -71,13 +71,8 @@ class _MainAppState extends State<MainApp> {
                             log("!!!");
                             DioInterceptor.postHttp(
                                 "http://192.168.0.51:8080/auth",
-                                ({
-                                  "username": mailContorller.text,
-                                  "password": passwordController.text
-                                }));
+                                ({"username": mailContorller.text, "password": passwordController.text}));
                             if (DioInterceptor.isLogin()) {
-                              print(passwordController.text);
-                              print(mailContorller.text);
                               setState(() {
                                 isLoggedIn = true;
                               });
@@ -117,6 +112,16 @@ class MainPage extends StatelessWidget {
   MainPage({super.key});
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
+  Future<int> getEmpNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("empNo") ?? 0; 
+  }
+  
+  Future<int> getDeptNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("deptNo") ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -126,105 +131,104 @@ class MainPage extends StatelessWidget {
           children: [
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage("assets/image/logo.svg"),
-              ), accountEmail: Text("admin"),
+                //backgroundImage: AssetImage("assets/image/logo.svg"),
+              ),
+              accountEmail: Text("admin"),
               accountName: Text("관리자"),
-              // onDetailsPressed: (){},
               decoration: BoxDecoration(
                 color: Colors.deepPurple,
                 borderRadius: BorderRadius.only(
                   bottomLeft: Radius.circular(10.0),
                   bottomRight: Radius.circular(10.0),
-                )
+                ),
               ),
-            ),ListTile(
+            ),
+            ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('홈'),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.notifications_none_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('공지사항'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.report),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('보고서'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage(
-                            empNo: 1,
-                          )),
+                    builder: (context) => ReceivedReportListPage(
+                      empNo: empNo, 
+                    ),
+                  ),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.calendar_month),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('일정'),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('오늘 연차'),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => TodayDayOffPage(
-                          dayOffDate:
-                              DateFormat("yyyy-MM-dd").parse(dayFormat))),
+                    builder: (context) => TodayDayOffPage(
+                      dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
+                    ),
+                  )
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.person),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('마이페이지'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.logout),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: (){},
-              // trailing: Icon(Icons.navigate_next),
+              onTap: () {},
             ),
           ],
         ),
@@ -233,58 +237,113 @@ class MainPage extends StatelessWidget {
         children: [
           Text('환영합니다 '),
           Center(child: Text('출퇴근 연동시키기')),
-            FutureBuilder( // 오늘 개인 일정
-              future: emp.EmpScheDio().readEmpTodo(1, DateTime.parse(dayFormat)),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return Center(child: CircularProgressIndicator());
-                } else if (snapshot.hasError) {
-                  return Center(child: Text('Error: ${snapshot.error}'));
-                } else if (snapshot.hasData) {
-                  List<emp.JsonParser> empSchedule = snapshot.data ?? [];  
-                  if (empSchedule.isEmpty) {
-                    return Center(child: Text("오늘 개인 일정 없음"));
-                  }
-                  return ListView.separated(
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      return Card(
-                        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: ListTile(
-                          contentPadding: EdgeInsets.all(16),
-                          leading: Icon(Icons.circle),
-                          title: Text('${empSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
-                        ),
-                      );
-                    },
-                    separatorBuilder: (context, index) {
-                      return Divider(height: 10, thickness: 1);
-                    },
-                    itemCount: empSchedule.length,
-                  );
-                } else {
-                  return Center(child: Text("오늘 개인 일정 없음"));
-                }
-              },
-            ),
-          FutureBuilder( //오늘 부서 일정
-            future: dept.DeptScheDio().readDeptTodo(1, 1, DateTime.parse(dayFormat)),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
+          FutureBuilder<int>( 
+            future: getEmpNo(), 
+            builder: (context, empNoSnapshot) {
+              if (empNoSnapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
-              } else if (snapshot.hasError) {
-                return Center(child: Text('Error: ${snapshot.error}'));
-              } else if (snapshot.hasData) {
-                List<dept.JsonParser> deptSchedule = snapshot.data!;
-                if (deptSchedule.isEmpty) {
-                  return Center(child: Text("오늘 부서 일정 없음"));
-                }
-              },
-            )
-          ],
-        ));
+              } else if (empNoSnapshot.hasError) {
+                return Center(child: Text('Error: ${empNoSnapshot.error}'));
+              } else if (empNoSnapshot.hasData) {
+                int empNo = empNoSnapshot.data!;
+                return FutureBuilder(
+                  future: emp.EmpScheDio().readEmpTodo(empNo, DateTime.parse(strToday)),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      List<emp.JsonParser> empSchedule = snapshot.data ?? [];
+                      if (empSchedule.isEmpty) {
+                        return Center(child: Text("오늘 개인 일정 없음"));
+                      }
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(16),
+                              leading: Icon(Icons.circle),
+                              title: Text('${empSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider(height: 10, thickness: 1);
+                        },
+                        itemCount: empSchedule.length,
+                      );
+
+                    } else {
+                      return Center(child: Text("오늘 개인 일정 없음"));
+                    }
+                  },
+                );
+              } else {
+                return Center(child: Text("empNo를 불러오는 데 실패했습니다"));
+              }
+            },
+          ),
+
+          FutureBuilder<int>(
+            future: getDeptNo(),
+            builder: (context, deptNoSnapshot) {
+              if (deptNoSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (deptNoSnapshot.hasError) {
+                return Center(child: Text('Error : ${deptNoSnapshot.error}'));
+              } else if (deptNoSnapshot.hasData) {
+                int deptNo = deptNoSnapshot.data!;
+                return FutureBuilder(
+                  future: dept.DeptScheDio().readDeptTodo(empNo, deptNo, DateTime.parse(strToday)),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      List<dept.JsonParser> deptSchedule = snapshot.data!;
+                      if (deptSchedule.isEmpty) {
+                        return Center(child: Text("오늘 부서 일정 없음"));
+                      }
+                      return ListView.separated(
+                        shrinkWrap: true,
+                        itemBuilder: (context, index) {
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(16),
+                              leading: Icon(Icons.circle),
+                              title: Text('${deptSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
+                            ),
+                          );
+                        },
+                        separatorBuilder: (context, index) {
+                          return Divider(height: 10, thickness: 1);
+                        },
+                        itemCount: deptSchedule.length,
+                      );
+                    } else {
+                      return Center(child: Text("오늘 부서 일정 없음"));
+                    }
+                  },
+                );
+              }
+              return Container();
+            },
+          )
+
+        ],
+      ),
+    );
+
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
@@ -47,15 +48,28 @@ class _CalendarState extends State<CalendarPage> {
   DateTime? _selectedDay;
   List<Event> _allEvents = [];
 
+
+  Future<int> getEmpNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('empNo') ?? 0;
+  }
+
+  Future<int> getDeptNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('deptNo') ?? 0; 
+  }
+
+
   @override
   void initState() {
     super.initState();
     _loadAllEvents();
   }
 
+
   void _loadAllEvents() async {
     try {
-      Map<String, dynamic> events = await CalendarDio().findByMap(1, 1);
+      Map<String, dynamic> events = await CalendarDio().findByMap(getEmpNo().then(int.parse(empNo)), 1);
 
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
@@ -211,8 +225,8 @@ class _CalendarState extends State<CalendarPage> {
         children: [
           TableCalendar(
             focusedDay: _focusedDay,
-            firstDay: DateTime(2025, 1, 1),
-            lastDay: DateTime(2025, 12, 31),
+            firstDay: DateTime(2024, 1, 1),
+            lastDay: DateTime(2030, 12, 31),
             calendarFormat: _calendarFormat,
             selectedDayPredicate: (day) {
               return isSameDay(_selectedDay, day);
@@ -295,8 +309,10 @@ class _TableEventsState extends State<TableEvents> {
 
   Future<List<Event>> _getEventsForDay(String? day) async {
     try {
+
       empDto jsonParser =
           await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
+
 
       List<Event> empEvents = jsonParser.empSchedule.map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
