@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 import 'package:thirdproject/Page/board/BoardModPage.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
@@ -73,11 +74,15 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('보고서'),
-              onTap: () {
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                int empNo = prefs.getInt("empNo") ?? 0;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage()),
+                      builder: (context) => ReceivedReportListPage(
+                            empNo: empNo,
+                          )),
                 );
               },
               // trailing: Icon(Icons.navigate_next),
