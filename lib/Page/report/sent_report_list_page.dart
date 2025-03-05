@@ -138,7 +138,7 @@ class _SentReportListState extends State<SentReportListPage> {
             SizedBox(
               width: double.infinity,
               child: ElevatedButton.icon(
-                icon: const Icon(Icons.send),
+                icon: const Icon(Icons.archive),
                 label: const Text('받은 보고서'),
                 onPressed: () {
                   Navigator.push(

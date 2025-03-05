@@ -270,7 +270,6 @@ class MainPage extends StatelessWidget {
                 }
               },
             ),
-
           FutureBuilder( //오늘 부서 일정
             future: dept.DeptScheDio().readDeptTodo(1, 1, DateTime.parse(dayFormat)),
             builder: (context, snapshot) {
@@ -283,34 +282,9 @@ class MainPage extends StatelessWidget {
                 if (deptSchedule.isEmpty) {
                   return Center(child: Text("오늘 부서 일정 없음"));
                 }
-                return ListView.separated(
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      child: ListTile(
-                        contentPadding: EdgeInsets.all(16),
-                        leading: Icon(Icons.circle),
-                        title: Text('${deptSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
-                      ),
-                    );
-                  },
-                  separatorBuilder: (context, index) {
-                    return Divider(height: 10, thickness: 1);
-                  },
-                  itemCount: deptSchedule.length,
-                );
-              } else {
-                return Center(child: Text("오늘 부서 일정 없음"));
-              }
-            },
-          )
-        ],
-      )
-    );
-
+              },
+            )
+          ],
+        ));
   }
 }
