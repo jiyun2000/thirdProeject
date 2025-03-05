@@ -69,7 +69,10 @@ class _CalendarState extends State<CalendarPage> {
 
   void _loadAllEvents() async {
     try {
-      Map<String, dynamic> events = await CalendarDio().findByMap(1, 1);
+      var prefs = await SharedPreferences.getInstance();
+      int empNo = prefs.getInt("empNo") ?? 0; 
+      int deptNo = prefs.getInt("deptNo") ?? 0; 
+      Map<String, dynamic> events = await CalendarDio().findByMap(empNo, deptNo);
 
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
@@ -152,21 +155,23 @@ class _CalendarState extends State<CalendarPage> {
               },
               // trailing: Icon(Icons.navigate_next),
             ),
-            ListTile(
+           ListTile(
               leading: Icon(Icons.report),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('보고서'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                int empNo = prefs.getInt("empNo") ?? 0; 
+                Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage(
-                            empNo: 1,
-                          )),
+                    builder: (context) => ReceivedReportListPage(
+                      empNo: empNo, 
+                    ),
+                  ),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.calendar_month),
@@ -309,9 +314,11 @@ class _TableEventsState extends State<TableEvents> {
 
   Future<List<Event>> _getEventsForDay(String? day) async {
     try {
-
+      var prefs = await SharedPreferences.getInstance();
+      int empNo = prefs.getInt("empNo") ?? 0; 
+      int deptNo = prefs.getInt("deptNo") ?? 0; 
       empDto jsonParser =
-          await CalendarDio().todaySchedule(1, 1, DateTime.parse(day!));
+          await CalendarDio().todaySchedule(empNo, deptNo, DateTime.parse(day!));
 
 
       List<Event> empEvents = jsonParser.empSchedule.map((text) {
