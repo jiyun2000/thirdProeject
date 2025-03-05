@@ -38,7 +38,9 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('개인 스케줄 수정'),
       ),
       body: Padding(

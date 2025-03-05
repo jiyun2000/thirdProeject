@@ -73,9 +73,11 @@ class _MainAppState extends State<MainApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
           title: Text('DDT'),
           centerTitle: true,
+           backgroundColor: Colors.white,
         ),
         body: isLoggedIn
             ? BasicApp()
@@ -125,7 +127,7 @@ class BasicApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'DDT Web',
-      theme: ThemeData(primaryColor: const Color.fromARGB(255, 255, 255, 255)),
+      theme: ThemeData(primaryColor: Colors.white),
       home: MainPage(),
     );
   }
@@ -161,7 +163,8 @@ class MainPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('DDT'), centerTitle: true, elevation: 0.0),
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: Text(''), centerTitle: true, elevation: 0.0,  backgroundColor: Colors.white),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -191,11 +194,11 @@ class MainPage extends StatelessWidget {
                               return Center(child: Text('Error: ${nameSnapshot.error}'));
                             } else if (nameSnapshot.hasData) {
                               return UserAccountsDrawerHeader(
-                                currentAccountPicture: CircleAvatar(),
+                                currentAccountPicture: CircleAvatar(), //회사 사진을 넣으려 했으나 svg 라 안됨
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple,
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),

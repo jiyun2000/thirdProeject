@@ -52,7 +52,9 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
  @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('부서 스케줄 수정'),
       ),
       body: Padding(padding: EdgeInsets.all(16.0),

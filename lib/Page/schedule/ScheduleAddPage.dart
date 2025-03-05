@@ -95,7 +95,9 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('개인 일정 등록'),
       ),
       body: Container(

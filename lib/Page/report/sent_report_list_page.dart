@@ -48,7 +48,9 @@ class _SentReportListState extends State<SentReportListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title:
             const Text('보낸 보고서', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -86,7 +88,7 @@ class _SentReportListState extends State<SentReportListPage> {
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple,
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),

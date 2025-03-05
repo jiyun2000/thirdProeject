@@ -111,7 +111,9 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('부서 일정 등록'),
       ),
       body: Container(
