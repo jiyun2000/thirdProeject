@@ -107,6 +107,7 @@ class ReportDio {
   }
 
   Future<ResDto> getSentList(int sender) async {
+    print(sender);
     Response res = await DioInterceptor.dio
         .get("http://localhost:8080/api/report/list/sent/$sender");
     ResDto dto = ResDto.fromdata(res.data);

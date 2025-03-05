@@ -65,7 +65,9 @@ class _ReportAddState extends State<ReportAddPage> {
             ),
             SizedBox(height: 20),
             SizedBox(
-              width: 200,
+              width: MediaQuery.of(context).size.width * 0.5 >= 250
+                  ? MediaQuery.of(context).size.width * 0.5
+                  : 250,
               child: TextField(
                 controller: _contentController,
                 keyboardType: TextInputType.number,
