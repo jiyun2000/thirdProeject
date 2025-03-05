@@ -70,8 +70,11 @@ class _MainAppState extends State<MainApp> {
                           onPressed: () {
                             log("!!!");
                             DioInterceptor.postHttp(
-                                "http://192.168.0.51:8080/auth",
-                                ({"username": mailContorller.text, "password": passwordController.text}));
+                                "http://localhost:8080/auth",
+                                ({
+                                  "username": mailContorller.text,
+                                  "password": passwordController.text
+                                }));
                             if (DioInterceptor.isLogin()) {
                               setState(() {
                                 isLoggedIn = true;
@@ -114,9 +117,9 @@ class MainPage extends StatelessWidget {
 
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
-    return prefs.getInt("empNo") ?? 0; 
+    return prefs.getInt("empNo") ?? 0;
   }
-  
+
   Future<int> getDeptNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt("deptNo") ?? 0;
@@ -131,8 +134,8 @@ class MainPage extends StatelessWidget {
           children: [
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
-                //backgroundImage: AssetImage("assets/image/logo.svg"),
-              ),
+                  //backgroundImage: AssetImage("assets/image/logo.svg"),
+                  ),
               accountEmail: Text("admin"),
               accountName: Text("관리자"),
               decoration: BoxDecoration(
@@ -204,13 +207,12 @@ class MainPage extends StatelessWidget {
               title: Text('오늘 연차'),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TodayDayOffPage(
-                      dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
-                    ),
-                  )
-                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TodayDayOffPage(
+                        dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
+                      ),
+                    ));
               },
             ),
             ListTile(
@@ -239,8 +241,8 @@ class MainPage extends StatelessWidget {
         children: [
           Text('환영합니다 '),
           Center(child: Text('출퇴근 연동시키기')),
-          FutureBuilder<int>( 
-            future: getEmpNo(), 
+          FutureBuilder<int>(
+            future: getEmpNo(),
             builder: (context, empNoSnapshot) {
               if (empNoSnapshot.connectionState == ConnectionState.waiting) {
                 return Center(child: CircularProgressIndicator());
@@ -249,7 +251,8 @@ class MainPage extends StatelessWidget {
               } else if (empNoSnapshot.hasData) {
                 int empNo = empNoSnapshot.data!;
                 return FutureBuilder(
-                  future: emp.EmpScheDio().readEmpTodo(empNo, DateTime.parse(strToday)),
+                  future: emp.EmpScheDio()
+                      .readEmpTodo(empNo, DateTime.parse(strToday)),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -264,14 +267,16 @@ class MainPage extends StatelessWidget {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: ListTile(
                               contentPadding: EdgeInsets.all(16),
                               leading: Icon(Icons.circle),
-                              title: Text('${empSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
+                              title: Text('${empSchedule[index].scheduleText}',
+                                  style: TextStyle(fontSize: 16)),
                             ),
                           );
                         },
@@ -280,7 +285,6 @@ class MainPage extends StatelessWidget {
                         },
                         itemCount: empSchedule.length,
                       );
-
                     } else {
                       return Center(child: Text("오늘 개인 일정 없음"));
                     }

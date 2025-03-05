@@ -160,8 +160,7 @@ class _ReportAddState extends State<ReportAddPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ReceivedReportListPage(empNo: widget.empNo),
+                      builder: (context) => ReceivedReportListPage(),
                     ),
                   );
                 } catch (e) {

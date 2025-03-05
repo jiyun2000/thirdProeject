@@ -16,9 +16,10 @@ class BoardPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _BoardState();
 }
-String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
-class _BoardState extends State<BoardPage> {
 
+String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+class _BoardState extends State<BoardPage> {
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('empNo') ?? 0;
@@ -36,23 +37,25 @@ class _BoardState extends State<BoardPage> {
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage("assets/image/logo.svg"),
-              ), accountEmail: Text("admin"),
+              ),
+              accountEmail: Text("admin"),
               accountName: Text("관리자"),
               // onDetailsPressed: (){},
               decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
-                )
-              ),
-            ),ListTile(
+                  color: Colors.deepPurple,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                  )),
+            ),
+            ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('홈'),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainPage()));
               },
               // trailing: Icon(Icons.navigate_next),
             ),
@@ -61,8 +64,8 @@ class _BoardState extends State<BoardPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('공지사항'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
@@ -92,7 +95,7 @@ class _BoardState extends State<BoardPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('일정'),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
@@ -105,7 +108,7 @@ class _BoardState extends State<BoardPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('오늘 연차'),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -121,8 +124,8 @@ class _BoardState extends State<BoardPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('마이페이지'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
@@ -134,7 +137,7 @@ class _BoardState extends State<BoardPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: (){},
+              onTap: () {},
               // trailing: Icon(Icons.navigate_next),
             ),
           ],
@@ -170,13 +173,15 @@ class _BoardState extends State<BoardPage> {
                           leading: Icon(Icons.circle),
                           //title: Text('${parsingList.dtolist[index]['boardNo']}'),
                           title: Text('${parsingList.dtolist[index]['title']}'),
-                          trailing: Text('${parsingList.dtolist[index]['regdate']}'),
+                          trailing:
+                              Text('${parsingList.dtolist[index]['regdate']}'),
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BoardReadpage(
-                                  BoardNo: '${parsingList.dtolist[index]['boardNo']}',
+                                  BoardNo:
+                                      '${parsingList.dtolist[index]['boardNo']}',
                                 ),
                               ),
                             );
