@@ -34,8 +34,7 @@ class _SentReportListState extends State<SentReportListPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) =>
-                          ReceivedReportListPage(empNo: widget.empNo),
+                      builder: (context) => ReceivedReportListPage(),
                     ),
                   );
                 },

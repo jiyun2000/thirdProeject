@@ -147,7 +147,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                         ),
                       ],
                       const SizedBox(height: 16),
-                      report.sender == 1
+                      report.sender == widget.empNo
                           ? SizedBox.shrink()
                           : OverflowBar(
                               alignment: MainAxisAlignment.center,
@@ -163,8 +163,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ReceivedReportListPage(
-                                                  empNo: widget.empNo),
+                                              ReceivedReportListPage(),
                                         ),
                                       );
                                     } catch (e) {
@@ -189,8 +188,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              ReceivedReportListPage(
-                                                  empNo: widget.empNo),
+                                              ReceivedReportListPage(),
                                         ),
                                       );
                                     } catch (e) {
