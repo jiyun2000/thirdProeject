@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 
-
 class JsonParser {
   final int deptNo;
   final String deptName;
@@ -35,7 +34,7 @@ class DeparmentDio {
     print("read dept dio");
 
     Response res =
-        await .dio.get("http://192.168.0.51:8080/api/deptinfo/read/$deptNo");
+        await dio.get("http://localhost:8080/api/deptinfo/read/$deptNo");
 
     print(res.data);
     Map<String, dynamic> mapRes = res.data;

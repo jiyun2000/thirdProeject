@@ -75,20 +75,20 @@ class DioInterceptor {
   }
 
   static bool isLogin() {
-    try{
-    var perf = SharedPreferences.getInstance().then((perf){
-      perf.get("email");
-      perf.get("empNo");
-      perf.get("deptNo");
-      // if (perf.get("accessToken") != null && perf.get("refreshToken") != null) {
-      //   dio.get("http://192.168.0.51:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
-      //     perf.setString("accessToken", item.data['accessToken']);
-      //     perf.setString("refreshToken", item.data['refreshToken']);
-      //   });
-      // }
-    });
+    try {
+      var perf = SharedPreferences.getInstance().then((perf) {
+        perf.get("email");
+        perf.get("empNo");
+        perf.get("deptNo");
+        // if (perf.get("accessToken") != null && perf.get("refreshToken") != null) {
+        //   dio.get("http://localhost:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
+        //     perf.setString("accessToken", item.data['accessToken']);
+        //     perf.setString("refreshToken", item.data['refreshToken']);
+        //   });
+        // }
+      });
       return true;
-    }catch(e){
+    } catch (e) {
       return false;
     }
   }

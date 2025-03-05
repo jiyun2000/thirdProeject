@@ -4,7 +4,6 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
-
 class JsonParser {
   final int empSchNo;
   final DateTime startDate;
@@ -53,7 +52,8 @@ class EmpScheDio {
     print("read Todo dio");
     String formated = (DateFormat("yyyy-MM-dd").format(DateTime.now()));
     print(formated);
-    Response res = await DioInterceptor.dio.get("http://192.168.0.51:8080/empTodo/read/$empNo/$formated");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/empTodo/read/$empNo/$formated");
     print(res.data);
     Map<String, dynamic> responseData = res.data;
     List<dynamic> empScheduleData = responseData['empSchedule'];
@@ -66,7 +66,7 @@ class EmpScheDio {
       String scheduleText, int empNo, int empSchNo) async {
     print("empMod dio");
     var uri =
-        Uri.parse("http://192.168.0.51:8080/empSchedule/mod/$empNo/$empSchNo");
+        Uri.parse("http://localhost:8080/empSchedule/mod/$empNo/$empSchNo");
     print(uri);
     Map<String, String> headers = {"Content-Type": "application/json"};
 
@@ -86,7 +86,7 @@ class EmpScheDio {
 
   Future<http.Response> delEmpSch(int empNo, int empSchNo) async {
     print("empMod dio");
-    var uri = Uri.parse("http://192.168.0.51:8080/empSchedule/$empNo/$empSchNo");
+    var uri = Uri.parse("http://localhost:8080/empSchedule/$empNo/$empSchNo");
     print(uri);
     Map<String, String> headers = {"Content-Type": "application/json"};
 

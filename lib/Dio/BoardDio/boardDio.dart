@@ -3,7 +3,6 @@ import 'package:dio/dio.dart';
 import 'package:http/http.dart' as http;
 import 'package:thirdproject/diointercept%20.dart';
 
-
 class JsonParser {
   final int boardNo;
   final String title;
@@ -91,7 +90,7 @@ class BoardDio {
 
   Future<http.Response> addBoard(String title, String contents, String category,
       int empNo, String mailAddress) async {
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/add");
+    var uri = Uri.parse("http://localhost:8080/api/board/add");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
@@ -110,7 +109,7 @@ class BoardDio {
   Future<http.Response> modBoard(String title, String contents, String category,
       String mailAddress, int boardNo) async {
     print('zz');
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
+    var uri = Uri.parse("http://localhost:8080/api/board/$boardNo");
     print(uri);
 
     Map<String, String> headers = {"Content-Type": "application/json"};

@@ -44,7 +44,7 @@ class DeptScheDio {
   Future<http.Response> modDeptSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
-        "http://192.168.0.51:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
+        "http://localhost:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
@@ -86,7 +86,7 @@ class DeptScheDio {
 
   Future<http.Response> delDeptSche(int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
-        "http://192.168.0.51:8080/deptSchedule/delete/$deptNo/$deptSchNo");
+        "http://localhost:8080/deptSchedule/delete/$deptNo/$deptSchNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     var response = await http.delete(uri, headers: headers);
