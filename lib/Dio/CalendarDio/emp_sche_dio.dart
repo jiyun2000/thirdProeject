@@ -58,7 +58,7 @@ class EmpScheDio {
     Map<String, dynamic> responseData = res.data;
     List<dynamic> empScheduleData = responseData['empSchedule'];
     List<JsonParser> empSchedule =
-    empScheduleData.map((element) => JsonParser.fromJson(element)).toList();
+        empScheduleData.map((element) => JsonParser.fromJson(element)).toList();
     return empSchedule;
   }
 
@@ -95,5 +95,4 @@ class EmpScheDio {
     print(response.body);
     return response;
   }
-
 }

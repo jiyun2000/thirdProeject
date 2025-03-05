@@ -278,6 +278,7 @@ class MainPage extends StatelessWidget {
                         },
                         itemCount: empSchedule.length,
                       );
+
                     } else {
                       return Center(child: Text("오늘 개인 일정 없음"));
                     }
@@ -343,5 +344,6 @@ class MainPage extends StatelessWidget {
         ],
       ),
     );
+
   }
 }
