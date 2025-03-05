@@ -79,7 +79,7 @@ class _BoardState extends State<BoardPage> {
                   context,
                   MaterialPageRoute(
                       builder: (context) => ReceivedReportListPage(
-                            empNo: empNo,
+                            empNo: 1,
                           )),
                 );
               },
