@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 import 'package:thirdproject/Page/board/BoardAddPage.dart';
 import 'package:thirdproject/Page/board/BoardReadPage.dart';
+import 'package:thirdproject/Page/employee/MyPage.dart';
+import 'package:thirdproject/Page/report/received_report_list_page.dart';
+import 'package:thirdproject/Page/schedule/SchedulePage.dart';
+import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
+import 'package:thirdproject/main.dart';
 
 class BoardPage extends StatefulWidget {
   const BoardPage({super.key});
@@ -9,13 +15,121 @@ class BoardPage extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _BoardState();
 }
-
+String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
 class _BoardState extends State<BoardPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('🎙️공지사항'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage("assets/image/logo.svg"),
+              ), accountEmail: Text("admin"),
+              accountName: Text("관리자"),
+              // onDetailsPressed: (){},
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                )
+              ),
+            ),ListTile(
+              leading: Icon(Icons.home),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('홈'),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications_none_sharp),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('공지사항'),
+              onTap: (){
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BoardPage()),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.report),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('보고서'),
+              onTap: (){
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ReceivedReportListPage(
+                            empNo: 1,
+                          )),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_month),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('일정'),
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.travel_explore_sharp),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('오늘 연차'),
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TodayDayOffPage(
+                          dayOffDate:
+                              DateFormat("yyyy-MM-dd").parse(dayFormat))),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('마이페이지'),
+              onTap: (){
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyPage()),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('로그아웃'),
+              onTap: (){},
+              // trailing: Icon(Icons.navigate_next),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [
@@ -47,7 +161,7 @@ class _BoardState extends State<BoardPage> {
                           leading: Icon(Icons.circle),
                           //title: Text('${parsingList.dtolist[index]['boardNo']}'),
                           title: Text('${parsingList.dtolist[index]['title']}'),
-                          trailing: Text('${parsingList.dtolist[index]['mailAddress']}'),
+                          trailing: Text('${parsingList.dtolist[index]['regdate']}'),
                           onTap: () {
                             Navigator.push(
                               context,

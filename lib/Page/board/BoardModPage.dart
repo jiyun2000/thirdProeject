@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
+import 'package:thirdproject/Page/board/BoardPage.dart';
 
 class BoardModPage extends StatefulWidget {
   final String BoardNo;
@@ -105,10 +106,12 @@ class _BoardModState extends State<BoardModPage> {
                           _categoryController.text,
                           _emailController.text,
                           int.parse(_boardNoController.text),
-                        );
+                        ); 
+                         Navigator.push(context, MaterialPageRoute(builder: (context) => BoardPage()));
                       },
-                      child: Text('수정완료'),
+                      child: Text('수정완료'),     
                     ),
+                    
                   ),
                 ],
               );
