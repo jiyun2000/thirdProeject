@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
+import 'package:thirdproject/Page/board/BoardPage.dart';
+import 'package:thirdproject/Page/employee/MyPage.dart';
+import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
 import 'package:thirdproject/Page/schedule/ScheduleDeptModPage.dart';
 import 'package:thirdproject/Page/schedule/ScheduleEmpModPage.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
+import 'package:thirdproject/main.dart';
 
 class Event {
   final String title;
@@ -33,6 +38,8 @@ class CalendarPage extends StatefulWidget {
   @override
   State<CalendarPage> createState() => _CalendarState();
 }
+
+String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
 class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -91,6 +98,114 @@ class _CalendarState extends State<CalendarPage> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('📆일정'),
+      ),
+      drawer: Drawer(
+        child: ListView(
+          children: [
+            UserAccountsDrawerHeader(
+              currentAccountPicture: CircleAvatar(
+                backgroundImage: AssetImage("assets/image/logo.svg"),
+              ), accountEmail: Text("admin"),
+              accountName: Text("관리자"),
+              // onDetailsPressed: (){},
+              decoration: BoxDecoration(
+                color: Colors.deepPurple,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                )
+              ),
+            ),ListTile(
+              leading: Icon(Icons.home),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('홈'),
+              onTap: (){
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.notifications_none_sharp),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('공지사항'),
+              onTap: (){
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const BoardPage()),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.report),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('보고서'),
+              onTap: (){
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => ReceivedReportListPage(
+                            empNo: 1,
+                          )),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.calendar_month),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('일정'),
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const CalendarPage()),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.travel_explore_sharp),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('오늘 연차'),
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => TodayDayOffPage(
+                          dayOffDate:
+                              DateFormat("yyyy-MM-dd").parse(dayFormat))),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.person),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('마이페이지'),
+              onTap: (){
+                 Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyPage()),
+                );
+              },
+              // trailing: Icon(Icons.navigate_next),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout),
+              iconColor: Colors.purple,
+              focusColor: Colors.purple,
+              title: Text('로그아웃'),
+              onTap: (){},
+              // trailing: Icon(Icons.navigate_next),
+            ),
+          ],
+        ),
       ),
       body: Column(
         children: [

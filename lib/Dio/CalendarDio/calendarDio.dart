@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-import 'package:thirdproject/diointercept.dart';
+import 'package:thirdproject/diointercept%20.dart';
+
+
 
 class JsonParser {
   final int empSchNo;
@@ -92,7 +94,7 @@ class CalendarDio {
   Future<http.Response> addDeptSche(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo) async {
     var uri =
-        Uri.parse("http://localhost:8080/deptSchedule/register/$deptNo/$empNo");
+        Uri.parse("http://192.168.0.51:8080/deptSchedule/register/$deptNo/$empNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
