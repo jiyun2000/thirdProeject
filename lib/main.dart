@@ -177,7 +177,7 @@ class MainPage extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => ReceivedReportListPage(
-                      empNo: empNo, 
+                      empNo: 1, 
                     ),
                   ),
                 );
@@ -300,7 +300,7 @@ class MainPage extends StatelessWidget {
               } else if (deptNoSnapshot.hasData) {
                 int deptNo = deptNoSnapshot.data!;
                 return FutureBuilder(
-                  future: dept.DeptScheDio().readDeptTodo(empNo, deptNo, DateTime.parse(strToday)),
+                  future: dept.DeptScheDio().readDeptTodo(1, deptNo, DateTime.parse(strToday)),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());

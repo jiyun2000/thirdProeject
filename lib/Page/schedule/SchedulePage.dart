@@ -69,7 +69,7 @@ class _CalendarState extends State<CalendarPage> {
 
   void _loadAllEvents() async {
     try {
-      Map<String, dynamic> events = await CalendarDio().findByMap(getEmpNo().then(int.parse(empNo)), 1);
+      Map<String, dynamic> events = await CalendarDio().findByMap(1, 1);
 
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
