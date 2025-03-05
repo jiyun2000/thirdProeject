@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:thirdproject/diointercept.dart';
+
 
 class JsonParser {
   final int deptNo;
@@ -34,7 +34,7 @@ class DeparmentDio {
   Future<JsonParser> findByDept(int deptNo) async {
     print("read dept dio");
     Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/deptinfo/read/$deptNo");
+        await .dio.get("http://192.168.0.51:8080/api/deptinfo/read/$deptNo");
     print(res.data);
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
