@@ -133,7 +133,7 @@ class _ReportAddState extends State<ReportAddPage> {
                                   .label)
                               .toList();
                           return Text(
-                            '보고 순서: \n${selectedLabels.join("\n->")}',
+                            '보고 순서: \n${selectedLabels.join("\n->  ")}',
                             softWrap: true,
                           );
                         },
