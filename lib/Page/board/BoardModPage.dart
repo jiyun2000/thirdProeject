@@ -25,8 +25,10 @@ class _BoardModState extends State<BoardModPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("공지사항 수정"),
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

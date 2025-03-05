@@ -52,7 +52,9 @@ class _BoardAddState extends State<BoardAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
+        backgroundColor: Colors.white,
         title: Text('🎙️공지사항 추가'),
       ),
       body: Container(

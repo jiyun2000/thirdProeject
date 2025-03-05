@@ -125,7 +125,9 @@ class _CalendarState extends State<CalendarPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: const Text('📆일정'),
       ),
       drawer: Drawer(
@@ -161,7 +163,7 @@ class _CalendarState extends State<CalendarPage> {
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple,
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),
@@ -415,7 +417,9 @@ class _TableEventsState extends State<TableEvents> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: const Text('일정'),
       ),
       body: Column(

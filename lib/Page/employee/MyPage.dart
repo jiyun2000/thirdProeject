@@ -42,8 +42,10 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("🙋‍♀️My Page"),
+        backgroundColor: Colors.white,
       ),
       drawer: Drawer(
         child: ListView(
@@ -78,7 +80,7 @@ class _MyPageState extends State<MyPage> {
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: Colors.deepPurple,
+                                  color: const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),

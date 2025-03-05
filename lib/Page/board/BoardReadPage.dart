@@ -25,8 +25,10 @@ class _BoardState extends State<BoardReadpage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text("공지사항"),
+        backgroundColor: Colors.white,
       ),
       drawer: Drawer(
         child: ListView(
@@ -39,7 +41,7 @@ class _BoardState extends State<BoardReadpage> {
               accountName: Text("관리자"),
               // onDetailsPressed: (){},
               decoration: BoxDecoration(
-                  color: Colors.deepPurple,
+                  color: const Color.fromARGB(255, 255, 255, 255),
                   borderRadius: BorderRadius.only(
                     bottomLeft: Radius.circular(10.0),
                     bottomRight: Radius.circular(10.0),

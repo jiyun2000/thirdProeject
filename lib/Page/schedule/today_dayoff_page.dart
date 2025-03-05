@@ -16,7 +16,9 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('오늘 연차인원'),
       ),
       body: Column(
