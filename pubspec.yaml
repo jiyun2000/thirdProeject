@@ -20,6 +20,8 @@ dependencies:
   multi_dropdown: ^3.0.1
   multiselect_dropdown_flutter: ^0.0.7
   shared_preferences: ^2.5.2
+  geolocator: ^13.0.2
+  permission_handler: ^11.4.0
 
 dev_dependencies:
   flutter_test:
