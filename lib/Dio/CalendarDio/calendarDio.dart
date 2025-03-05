@@ -71,11 +71,9 @@ class CalendarDio {
   }
 
   //개인 일정 등록
-  Future<http.Response> addEmpSchedule(DateTime startDate, DateTime endDate,
+  Future<dynamic> addEmpSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo) async {
     var uri = Uri.parse("http://localhost:8080/empSchedule/register/$empNo");
-    Map<String, String> headers = {"Content-Type": "application/json"};
-
     Map data = {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
@@ -84,17 +82,17 @@ class CalendarDio {
     };
 
     var body = json.encode(data);
-    var response = await http.post(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
+    print("url => ${uri.path}");
+    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    print(response.data);
+    return response.data;
   }
 
   //부서 일정 등록
-  Future<http.Response> addDeptSche(DateTime startDate, DateTime endDate,
+  Future<dynamic> addDeptSche(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo) async {
     var uri =
         Uri.parse("http://localhost:8080/deptSchedule/register/$deptNo/$empNo");
-    Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
       'startDate': startDate.toIso8601String(),
@@ -104,9 +102,9 @@ class CalendarDio {
       'deptNo': '$deptNo'
     };
     var body = json.encode(data);
-    var response = await http.post(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
+    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    print(response.data);
+    return response.data;
   }
 
   //해당 날짜 일정만 가져오기

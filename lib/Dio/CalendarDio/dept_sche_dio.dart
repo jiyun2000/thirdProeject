@@ -41,12 +41,11 @@ class JsonParser {
 class DeptScheDio {
   final dio = Dio();
 
-  Future<http.Response> modDeptSchedule(DateTime startDate, DateTime endDate,
+  Future<dynamic> modDeptSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
         "http://localhost:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
-    Map<String, String> headers = {"Content-Type": "application/json"};
-
+   
     Map data = {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
@@ -56,9 +55,9 @@ class DeptScheDio {
       'deptSchNo': '$deptSchNo'
     };
     var body = json.encode(data);
-    var response = await http.put(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
+    var response = await DioInterceptor.dio.put(uri.toString(), data:data);
+    print(response.data);
+    return response.data;
   }
 
   Future<JsonParser> readDeptSche(int deptNo, int empNo, int deptSchNo) async {
@@ -86,13 +85,12 @@ class DeptScheDio {
     return deptSchedule;
   }
 
-  Future<http.Response> delDeptSche(int deptNo, int deptSchNo) async {
+  Future<dynamic> delDeptSche(int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
         "http://localhost:8080/deptSchedule/delete/$deptNo/$deptSchNo");
-    Map<String, String> headers = {"Content-Type": "application/json"};
-
-    var response = await http.delete(uri, headers: headers);
-    print(response.body);
-    return response;
+   
+    var response = await DioInterceptor.dio.delete(uri.toString());
+    print(response.data);
+    return response.data;
   }
 }

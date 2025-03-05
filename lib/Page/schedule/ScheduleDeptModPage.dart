@@ -112,14 +112,36 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
               SizedBox(
                 width: 200, 
                 child: ElevatedButton(onPressed: (){
-                  DeptScheDio().modDeptSchedule(
-                    DateTime.parse(_startDateController.text), 
-                    DateTime.parse(_endDateController.text), 
-                    _scheduleTextController.text, 
-                    int.parse(_empNoController.text), 
-                    int.parse(_deptNoController.text),
-                    int.parse(_deptSchNoController.text));
-                },child: Text('수정'))),
+                  DateTime startDate = DateTime.parse(_startDateController.text);
+                  DateTime endDate = DateTime.parse(_endDateController.text);
+                  if (startDate.isAfter(endDate)) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('오류'),
+                            content: Text('시작 날짜가 마감 날짜보다 늦을 수 없습니다.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }else{
+                        DeptScheDio().modDeptSchedule(
+                        DateTime.parse(_startDateController.text), 
+                        DateTime.parse(_endDateController.text), 
+                        _scheduleTextController.text, 
+                        int.parse(_empNoController.text), 
+                        int.parse(_deptNoController.text),
+                        int.parse(_deptSchNoController.text));
+                    }
+                  },child: Text('수정'))),
               SizedBox(
                 height: 30,
               ),

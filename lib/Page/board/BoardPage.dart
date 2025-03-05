@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
+import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Page/board/BoardAddPage.dart';
 import 'package:thirdproject/Page/board/BoardReadPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
+import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
 class BoardPage extends StatefulWidget {
@@ -25,6 +27,23 @@ class _BoardState extends State<BoardPage> {
     return prefs.getInt('empNo') ?? 0;
   }
 
+  String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+  Future<int> getDeptNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("deptNo") ?? 0;
+  }
+
+  Future<String> getEmail() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '이메일 없음';
+  }
+
+  Future<String> getName(int empNo) async {
+    var jsonParser = await Employeesdio().findByEmpNo(empNo);
+    return '${jsonParser.firstName} ${jsonParser.lastName}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,19 +53,57 @@ class _BoardState extends State<BoardPage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage("assets/image/logo.svg"),
-              ),
-              accountEmail: Text("admin"),
-              accountName: Text("관리자"),
-              // onDetailsPressed: (){},
-              decoration: BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                  )),
+            FutureBuilder<String>(
+              future: getEmail(),
+              builder: (context, emailSnapshot) {
+                if (emailSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (emailSnapshot.hasError) {
+                  return Center(child: Text('Error: ${emailSnapshot.error}'));
+                } else if (emailSnapshot.hasData) {
+                  return FutureBuilder<int>(
+                    future: getEmpNo(),
+                    builder: (context, empNoSnapshot) {
+                      if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (empNoSnapshot.hasError) {
+                        return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                      } else if (empNoSnapshot.hasData) {
+                        int empNo = empNoSnapshot.data!;
+                        return FutureBuilder<String>(
+                          future: getName(empNo),
+                          builder: (context, nameSnapshot) {
+                            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (nameSnapshot.hasError) {
+                              return Center(child: Text('Error: ${nameSnapshot.error}'));
+                            } else if (nameSnapshot.hasData) {
+                              return UserAccountsDrawerHeader(
+                                currentAccountPicture: CircleAvatar(),
+                                accountEmail: Text(emailSnapshot.data!),
+                                accountName: Text(nameSnapshot.data!),
+                                decoration: BoxDecoration(
+                                  color: Colors.deepPurple,
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Center(child: Text('이름 실패'));
+                            }
+                          },
+                        );
+                      } else {
+                        return Center(child: Text('empNo 실패'));
+                      }
+                    },
+                  );
+                } else {
+                  return Center(child: Text('이메일 실패'));
+                }
+              },
             ),
             ListTile(
               leading: Icon(Icons.home),
@@ -54,10 +111,11 @@ class _BoardState extends State<BoardPage> {
               focusColor: Colors.purple,
               title: Text('홈'),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.notifications_none_sharp),
@@ -70,21 +128,20 @@ class _BoardState extends State<BoardPage> {
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
-             ListTile(
+            ListTile(
               leading: Icon(Icons.report),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('보고서'),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
-                int empNo = prefs.getInt("empNo") ?? 0; 
+                int empNo = prefs.getInt("empNo") ?? 0;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ReceivedReportListPage(
-                      empNo: empNo, 
+                      empNo: empNo,
                     ),
                   ),
                 );
@@ -101,7 +158,6 @@ class _BoardState extends State<BoardPage> {
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.travel_explore_sharp),
@@ -110,14 +166,13 @@ class _BoardState extends State<BoardPage> {
               title: Text('오늘 연차'),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
+                    context,
+                    MaterialPageRoute(
                       builder: (context) => TodayDayOffPage(
-                          dayOffDate:
-                              DateFormat("yyyy-MM-dd").parse(dayFormat))),
-                );
+                        dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
+                      ),
+                    ));
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.person),
@@ -130,15 +185,16 @@ class _BoardState extends State<BoardPage> {
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.logout),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: () {},
-              // trailing: Icon(Icons.navigate_next),
+              onTap: () {
+                !DioInterceptor.isLogin();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+              },
             ),
           ],
         ),
