@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/BoardDio/boardDio.dart';
 import 'package:thirdproject/Page/board/BoardModPage.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
@@ -27,29 +28,31 @@ class _BoardState extends State<BoardReadpage> {
       appBar: AppBar(
         title: Text("공지사항"),
       ),
-       drawer: Drawer(
+      drawer: Drawer(
         child: ListView(
           children: [
             UserAccountsDrawerHeader(
               currentAccountPicture: CircleAvatar(
                 backgroundImage: AssetImage("assets/image/logo.svg"),
-              ), accountEmail: Text("admin"),
+              ),
+              accountEmail: Text("admin"),
               accountName: Text("관리자"),
               // onDetailsPressed: (){},
               decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
-                )
-              ),
-            ),ListTile(
+                  color: Colors.deepPurple,
+                  borderRadius: BorderRadius.only(
+                    bottomLeft: Radius.circular(10.0),
+                    bottomRight: Radius.circular(10.0),
+                  )),
+            ),
+            ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('홈'),
-              onTap: (){
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainPage()));
+              onTap: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainPage()));
               },
               // trailing: Icon(Icons.navigate_next),
             ),
@@ -58,8 +61,8 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('공지사항'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
@@ -71,12 +74,14 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('보고서'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () async {
+                var prefs = await SharedPreferences.getInstance();
+                int empNo = prefs.getInt("empNo") ?? 0;
+                Navigator.push(
                   context,
                   MaterialPageRoute(
                       builder: (context) => ReceivedReportListPage(
-                            empNo: 1,
+                            empNo: empNo,
                           )),
                 );
               },
@@ -87,7 +92,7 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('일정'),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
@@ -100,7 +105,7 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('오늘 연차'),
-              onTap: (){
+              onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
@@ -116,8 +121,8 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('마이페이지'),
-              onTap: (){
-                 Navigator.push(
+              onTap: () {
+                Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
@@ -129,7 +134,7 @@ class _BoardState extends State<BoardReadpage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: (){},
+              onTap: () {},
               // trailing: Icon(Icons.navigate_next),
             ),
           ],
@@ -154,7 +159,8 @@ class _BoardState extends State<BoardReadpage> {
                   ),
                   Text(
                     '${DateFormat('yyyy-MM-dd HH:mm').format(jsonParser.modDate)}',
-                    style: TextStyle(fontSize: 14), textAlign: TextAlign.left,
+                    style: TextStyle(fontSize: 14),
+                    textAlign: TextAlign.left,
                   ),
                   // Text(
                   //   '${jsonParser.category}',
@@ -162,29 +168,42 @@ class _BoardState extends State<BoardReadpage> {
                   // ),
                   Text(
                     '${jsonParser.mailAddress}',
-                    style: TextStyle(fontSize: 14), textAlign: TextAlign.right,
+                    style: TextStyle(fontSize: 14),
+                    textAlign: TextAlign.right,
                   ),
                   SizedBox(height: 20),
-                  Text(
-                    ' ${jsonParser.content}',
-                    style: TextStyle(fontSize: 16),textAlign: TextAlign.center
-                  ),
+                  Text(' ${jsonParser.content}',
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center),
                   SizedBox(
                     height: 50,
                   ),
                   SizedBox(
                     height: 50,
-                    child: ElevatedButton(onPressed: (){
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => BoardModPage(BoardNo : '${jsonParser.boardNo}')));
-                    }, child: Text('수정')),), 
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BoardModPage(
+                                      BoardNo: '${jsonParser.boardNo}')));
+                        },
+                        child: Text('수정')),
+                  ),
                   SizedBox(
                     height: 30,
                   ),
                   SizedBox(
                     height: 50,
-                    child: ElevatedButton(onPressed: (){
-                      Navigator.pop(context, MaterialPageRoute(builder: (context) => BoardPage()));
-                    }, child: Text('돌아가기')),)
+                    child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.pop(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => BoardPage()));
+                        },
+                        child: Text('돌아가기')),
+                  )
                 ],
               );
             } else {
