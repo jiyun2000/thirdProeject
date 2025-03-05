@@ -75,6 +75,8 @@ class _MainAppState extends State<MainApp> {
                             if (DioInterceptor.isLogin()) {
                               setState(() {
                                 isLoggedIn = true;
+                                print(mailContorller.text);
+                                print(passwordController.text);
                               });
                             } else {
                               print("false");
@@ -133,8 +135,8 @@ class MainPage extends StatelessWidget {
               currentAccountPicture: CircleAvatar(
                 //backgroundImage: AssetImage("assets/image/logo.svg"),
               ),
-              accountEmail: Text("admin"),
-              accountName: Text("관리자"),
+              accountEmail: Text("mail"),
+              accountName: Text("name"),
               decoration: BoxDecoration(
                 color: Colors.deepPurple,
                 borderRadius: BorderRadius.only(
