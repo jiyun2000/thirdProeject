@@ -77,6 +77,8 @@ class DeptScheDio {
     Response res = await DioInterceptor.dio
         .get("http://localhost:8080/deptTodo/read/$empNo/$deptNo/$formated");
     print(res.data);
+    print('empNo : $empNo');
+    print('deptNo: $deptNo');
     Map<String, dynamic> responseData = res.data;
     List<dynamic> deptScheduleData = responseData['deptSchedule'];
     List<JsonParser> deptSchedule =

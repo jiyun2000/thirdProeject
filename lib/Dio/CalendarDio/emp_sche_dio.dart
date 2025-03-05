@@ -55,6 +55,7 @@ class EmpScheDio {
     Response res = await DioInterceptor.dio
         .get("http://localhost:8080/empTodo/read/$empNo/$formated");
     print(res.data);
+    print('$empNo');
     Map<String, dynamic> responseData = res.data;
     List<dynamic> empScheduleData = responseData['empSchedule'];
     List<JsonParser> empSchedule =
