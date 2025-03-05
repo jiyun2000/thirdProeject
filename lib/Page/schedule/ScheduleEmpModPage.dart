@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/emp_sche_dio.dart';
 class ScheduleEmpModPage extends StatefulWidget{
   final int empSchNo;
@@ -16,6 +17,23 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage>{
     final TextEditingController _scheduleTextController = TextEditingController();
     final TextEditingController _empNoContorller = TextEditingController();
     final TextEditingController _empSchNoController = TextEditingController();
+
+    int? _empNo;
+
+    void initState(){
+      super.initState();
+      _loadEmpNo;
+    }
+
+    Future<void> _loadEmpNo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _empNo = prefs.getInt("empNo"); 
+      if (_empNo != null) {
+        _empNoContorller.text = _empNo.toString(); 
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,11 +79,13 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage>{
                TextField(
                 controller: _empNoContorller,
                 decoration: InputDecoration(labelText: '사원번호'),
+                enabled: false, 
               ),
               SizedBox(height: 16),
                TextField(
                 controller: _empSchNoController,
                 decoration: InputDecoration(labelText: '스케줄번호'),
+                enabled: false, 
               ),
               SizedBox(height: 16),
               SizedBox(

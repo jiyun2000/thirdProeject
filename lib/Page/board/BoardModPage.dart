@@ -87,6 +87,7 @@ class _BoardModState extends State<BoardModPage> {
                   TextField(
                     controller: _emailController,
                     decoration: InputDecoration(labelText: '작성자'),
+                    enabled: false,
                   ),
                   SizedBox(height: 16),
                   SizedBox(height: 50),

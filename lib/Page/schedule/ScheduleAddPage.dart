@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
 import 'package:thirdproject/Page/schedule/DeptScheduleAdd.dart';
 
@@ -10,6 +11,7 @@ class ScheduleAddPage extends StatefulWidget {
   State<StatefulWidget> createState() => _ScheduleAddState();
 }
 
+
 class _ScheduleAddState extends State<ScheduleAddPage> {
   final TextEditingController _startDateController = TextEditingController();
   final TextEditingController _endDateController = TextEditingController();
@@ -17,7 +19,22 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
   final TextEditingController _empNoContorller = TextEditingController();
 
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
+  int? _empNo;  
+  
+  void initState(){
+    super.initState();
+    _loadEmpNo();
+  }
 
+  Future<void> _loadEmpNo() async {
+  final SharedPreferences prefs = await SharedPreferences.getInstance();
+  setState(() {
+    _empNo = prefs.getInt("empNo"); 
+    if (_empNo != null) {
+      _empNoContorller.text = _empNo.toString(); 
+    }
+  });
+}
 
   Future<void> _selectDateTime(
       BuildContext context, TextEditingController controller, bool isStart) async {
@@ -116,9 +133,9 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                 child: TextField(
                   controller: _empNoContorller,
                   decoration: InputDecoration(
-                    hintText: '사원번호를 입력하세요',
                     labelText: '사원번호',
                     border: OutlineInputBorder(),
+                    enabled: false
                   ),
                 ),
               ),

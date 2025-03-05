@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
 import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
 
@@ -19,6 +20,37 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
 
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
 
+  int? _empNo;
+  int? _dpetNo;
+
+  void initState(){
+    super.initState();
+    _loadEmpNo;
+    _loadDeptNo;
+  }
+
+  Future<void> _loadEmpNo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _empNo = prefs.getInt("empNo"); 
+      if (_empNo != null) {
+        _empNoController.text = _empNo.toString(); 
+      }
+    });
+  }
+
+
+  Future<void> _loadDeptNo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _dpetNo = prefs.getInt("deptNo"); 
+      if (_dpetNo != null) {
+        _deptNoController.text = _dpetNo.toString(); 
+      }
+    });
+  }
+
+  
   // 날짜 및 시간 선택 함수
   Future<void> _selectDateTime(
       BuildContext context, TextEditingController controller, bool isStart) async {
@@ -121,6 +153,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   hintText: '사원번호를 입력하세요',
                   labelText: '사원번호',
                   border: OutlineInputBorder(),
+                  enabled: false, 
                 ),
               ),
             ),
@@ -135,6 +168,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   hintText: '부서번호를 입력하세요',
                   labelText: '부서번호',
                   border: OutlineInputBorder(),
+                  enabled: false, 
                 ),
               ),
             ),
