@@ -73,6 +73,9 @@ class _ReportReadPageState extends State<ReportReadPage> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
+                                  Text('보고서 번호: ${report.reportNo}',
+                                      style: const TextStyle(fontSize: 16)),
+                                  const SizedBox(height: 8),
                                   Text(report.isDayOff ? '연차 사용' : '보고서',
                                       style: const TextStyle(
                                           fontSize: 24,
