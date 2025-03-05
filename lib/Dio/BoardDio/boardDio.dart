@@ -83,7 +83,8 @@ class BoardDio {
   final dio = Dio();
 
   Future<resDto> getAllList() async {
-    Response res = await DioInterceptor.dio.get("http://192.168.0.51:8080/api/board/list");
+    Response res =
+        await DioInterceptor.dio.get("http://localhost:8080/api/board/list");
     resDto dto = resDto.fromdata(res.data);
     return dto;
   }
@@ -130,8 +131,8 @@ class BoardDio {
 
   Future<JsonParser> readBoard(int boardNo) async {
     print("readpage");
-    Response res =
-        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/board/read/$boardNo");
+    Response res = await DioInterceptor.dio
+        .get("http://localhost:8080/api/board/read/$boardNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);

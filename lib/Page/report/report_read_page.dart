@@ -266,7 +266,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Center(
-                        child: Container(
+                        child: SizedBox(
                           width: MediaQuery.of(context).size.width * 0.8,
                           child: Card(
                             elevation: 3,
@@ -349,7 +349,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                         ),
                       ],
                       const SizedBox(height: 16),
-                      ButtonBar(
+                      OverflowBar(
                         alignment: MainAxisAlignment.center,
                         children: [
                           ElevatedButton.icon(
@@ -373,6 +373,9 @@ class _ReportReadPageState extends State<ReportReadPage> {
                                 );
                               }
                             },
+                          ),
+                          SizedBox(
+                            width: 80,
                           ),
                           ElevatedButton.icon(
                             icon: const Icon(Icons.cancel),
