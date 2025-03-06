@@ -51,8 +51,9 @@ class _MyPageState extends State<MyPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        title: Text("🙋‍♀️ 마이 페이지"),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+        centerTitle: true,
+        title: Text("👩‍💻 마이 페이지", style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255)
       ),
       drawer: Drawer(
         child: ListView(

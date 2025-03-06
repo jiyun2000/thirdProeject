@@ -130,7 +130,8 @@ class _CalendarState extends State<CalendarPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('📆일정'),
+        title: const Text('📆일정', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       drawer: Drawer(
         child: ListView(

@@ -34,7 +34,7 @@ class _MainAppState extends State<MainApp> {
   void login() async {
     log("!!!");
     var response = await DioInterceptor.postHttp(
-      "http://192.168.0.42:8080/auth",
+      "http://192.168.0.51:8080/auth",
       {
         "username": mailContorller.text,
         "password": passwordController.text,
@@ -329,7 +329,14 @@ class MainPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text('환영합니다 '),
+          Text('DDT', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
+          SizedBox(
+            height: 10,
+          ),
+          Text('환영합니다 ', style: TextStyle(fontWeight: FontWeight.bold,fontSize: 25)),
+          SizedBox(
+            height: 20,
+          ),
           Center(child: Comwidget(),),
           FutureBuilder<int>(
             future: getEmpNo(),

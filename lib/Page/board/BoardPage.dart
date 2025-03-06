@@ -50,8 +50,9 @@ class _BoardState extends State<BoardPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text('🎙️공지사항'),
+        title: Text('🎙️공지사항', style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       drawer: Drawer(
         child: ListView(

@@ -54,8 +54,9 @@ class _BoardAddState extends State<BoardAddPage> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text('🎙️공지사항 추가'),
+        title: Text('🎙️공지사항 추가', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Container(
         child: Center(

@@ -112,8 +112,9 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
+        centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text('부서 일정 등록'),
+        title: Text('📆부서 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Card(
         color: Colors.white,
