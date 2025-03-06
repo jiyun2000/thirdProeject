@@ -165,7 +165,7 @@ class _BoardState extends State<BoardPage> {
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
-              title: Text('오늘 연차'),
+              title: Text('연차'),
               onTap: () {
                 Navigator.push(
                     context,
