@@ -50,6 +50,14 @@ class Comwidget extends StatelessWidget {
     );
   }
 
+  void checkIn() async {
+    var empNo;
+    final sp = await SharedPreferences.getInstance();
+    empNo = sp.get("empNo");
+    sp.setString("inTime", DateTime.now().toString());
+    DioInterceptor.dio.post("http://192.168.0.51:8080/api/commute/set/$empNo");
+  }
+
   void checkOut() async {
     var empNo;
     final sp = await SharedPreferences.getInstance();
