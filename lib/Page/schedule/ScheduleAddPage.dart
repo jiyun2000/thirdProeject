@@ -100,16 +100,17 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
          backgroundColor: Colors.white,
         title: Text('개인 일정 등록'),
       ),
-      body: Container(
+      body: Card(
+        color: Colors.white,
         child: Center(
           child: Column(
+            // mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
               SizedBox(
                 width: 200,
                 child: TextField(
                   controller: _startDateController,
                   decoration: InputDecoration(
-                    hintText: '시작 시간을 입력하세요',
                     labelText: '시작 시간',
                     border: OutlineInputBorder(),
                   ),
@@ -125,7 +126,6 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                 child: TextField(
                   controller: _endDateController,
                   decoration: InputDecoration(
-                    hintText: '끝난 시간을 입력하세요',
                     labelText: '끝난 시간',
                     border: OutlineInputBorder(),
                   ),
@@ -141,7 +141,6 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                 child: TextField(
                   controller: _scheduleTextController,
                   decoration: InputDecoration(
-                    hintText: '내용을 입력하세요',
                     labelText: '내용',
                     border: OutlineInputBorder(),
                   ),
@@ -202,7 +201,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
             MaterialPageRoute(builder: (context) => DeptScheduleAdd()),
           );
         },
-        child: Text('부서 일정 등록'),
+        child: Text('부서 일정 등록',),
       ),
     );
   }

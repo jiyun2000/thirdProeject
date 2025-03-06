@@ -33,15 +33,28 @@ class todayDayOffDio {
   final dio = Dio();
 
   Future<List<JsonParser>> getAllList(DateTime dayOffDate) async {
-    String formated = (DateFormat("yyyy-MM-dd").format(DateTime.now()));
-    print("ff$formated"); //잘나옴
+    String formated = DateFormat("yyyy-MM-dd").format(dayOffDate);  
+    print("formated : $formated");
     Response res = await DioInterceptor.dio
         .get("http://localhost:8080/api/dayoff/todayList/$formated");
-    print(res.data); //잘나옴
-    print("~~~~~~~~~~~~~~~~`");
+
+    print("res data");
+    print(res.data); 
+
     List<dynamic> resBody = res.data;
-    List<JsonParser> perserList =
-        resBody.map((element) => JsonParser.fromJson(element)).toList();
+    List<JsonParser> perserList = resBody.map((element) => JsonParser.fromJson(element)).toList();
+
     return perserList;
+  }
+
+  Future<List<JsonParser>> getAllDayOffList() async {
+    Response res = await DioInterceptor.dio.get("http://localhost:8080/api/dayoff/allDayOff");
+    print("res data all");
+    print(res.data); 
+    print("res data all");
+
+    List<dynamic> resBody = res.data;
+    List<JsonParser> parserList = resBody.map((e) => JsonParser.fromJson(e)).toList();
+    return parserList;
   }
 }

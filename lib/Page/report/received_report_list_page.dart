@@ -171,7 +171,10 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
             ListTile(
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
-              title: Text('오늘 연차'),
+
+              focusColor: Colors.purple,
+              title: Text('연차'),
+
               onTap: () {
                 Navigator.push(
                     context,
