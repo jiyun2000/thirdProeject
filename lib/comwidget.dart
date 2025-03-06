@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
@@ -40,7 +42,7 @@ class Comwidget extends StatelessWidget {
     SharedPreferences.getInstance().then((item) {
       var time = DateTime.now();
       item.setString("inTime", time.toString());
-      empNo = item.getString("empNo");
+      empNo = item.get("empNo");
     });
     DioInterceptor.dio
         .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
