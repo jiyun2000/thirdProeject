@@ -27,14 +27,28 @@ class Comwidget extends StatelessWidget {
             children: [
               ElevatedButton(
                   onPressed: (() {
+                    checkIn();
+                  }),
+                  child: Text("출근")),
+                   ElevatedButton(
+                  onPressed: (() {
                     checkOut();
                   }),
-                  child: Text("1"))
+                  child: Text("퇴근"))
             ],
           ),
         ],
       ),
     );
+  }
+
+  void checkIn() async {
+    var empNo;
+    final sp = await SharedPreferences.getInstance();
+    empNo = sp.get("empNo");
+    sp.setString("inTime", DateTime.now().toString());
+    DioInterceptor.dio
+        .post("http://192.168.0.51:8080/api/commute/set/$empNo");
   }
 
   void checkOut() async {
@@ -45,6 +59,7 @@ class Comwidget extends StatelessWidget {
     DioInterceptor.dio
         .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
   }
+
 
   void plushTime() {
     SharedPreferences.getInstance().then((item) {
