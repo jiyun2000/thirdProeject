@@ -116,145 +116,148 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
         backgroundColor: Colors.white,
         title: Text('📆부서 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
-      body: Card(
-        color: Colors.white,
-        child: Center(
-          child: Column(
-            children: <Widget>[
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _startDateController,
-                  decoration: InputDecoration(
-                    hintText: '시작 시간을 입력하세요',
-                    labelText: '시작 시간',
-                    border: OutlineInputBorder(),
-                  ),
-                  onTap: () => _selectDateTime(context, _startDateController, true),
-                  readOnly: true, 
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _endDateController,
-                  decoration: InputDecoration(
-                    hintText: '끝난 시간을 입력하세요',
-                    labelText: '끝난 시간',
-                    border: OutlineInputBorder(),
-                  ),
-                  onTap: () => _selectDateTime(context, _endDateController, false),
-                  readOnly: true,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _scheduleTextController,
-                  decoration: InputDecoration(
-                    hintText: '내용을 입력하세요',
-                    labelText: '내용',
-                    border: OutlineInputBorder(),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Card(
+          color: Colors.white,
+          child: Center(
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _startDateController,
+                    decoration: InputDecoration(
+                      hintText: '시작 시간을 입력하세요',
+                      labelText: '시작 시간',
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () => _selectDateTime(context, _startDateController, true),
+                    readOnly: true, 
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _empNoController,
-                  decoration: InputDecoration(
-                    hintText: '사원번호를 입력하세요',
-                    labelText: '사원번호',
-                    border: OutlineInputBorder(),
-                    enabled: false, 
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _endDateController,
+                    decoration: InputDecoration(
+                      hintText: '끝난 시간을 입력하세요',
+                      labelText: '끝난 시간',
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () => _selectDateTime(context, _endDateController, false),
+                    readOnly: true,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _deptNoController,
-                  decoration: InputDecoration(
-                    hintText: '부서번호를 입력하세요',
-                    labelText: '부서번호',
-                    border: OutlineInputBorder(),
-                    enabled: false, 
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _scheduleTextController,
+                    decoration: InputDecoration(
+                      hintText: '내용을 입력하세요',
+                      labelText: '내용',
+                      border: OutlineInputBorder(),
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: ElevatedButton(
-                  onPressed: () {
-                  try {
-                    if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
-                      _showErrorDialog(context, '날짜를 모두 입력해주세요.');
-                      return; 
-                    }
-                    DateTime startDate;
-                    DateTime endDate;
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _empNoController,
+                    decoration: InputDecoration(
+                      hintText: '사원번호를 입력하세요',
+                      labelText: '사원번호',
+                      border: OutlineInputBorder(),
+                      enabled: false, 
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _deptNoController,
+                    decoration: InputDecoration(
+                      hintText: '부서번호를 입력하세요',
+                      labelText: '부서번호',
+                      border: OutlineInputBorder(),
+                      enabled: false, 
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
                     try {
-                      startDate = format.parse(_startDateController.text);
+                      if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
+                        _showErrorDialog(context, '날짜를 모두 입력해주세요.');
+                        return; 
+                      }
+                      DateTime startDate;
+                      DateTime endDate;
+                      try {
+                        startDate = format.parse(_startDateController.text);
+                      } catch (e) {
+                        _showErrorDialog(context, '시작 시간을 올바르게 입력해주세요.');
+                        return; 
+                      }
+            
+                      try {
+                        endDate = format.parse(_endDateController.text);
+                      } catch (e) {
+                        _showErrorDialog(context, '끝 시간을 올바르게 입력해주세요.');
+                        return; 
+                      }
+            
+                      int empNo = int.tryParse(_empNoController.text) ?? 0;
+                      int deptNo = int.tryParse(_deptNoController.text) ?? 0;
+            
+                      if (startDate.isBefore(endDate) && empNo > 0) {
+                        CalendarDio().addDeptSche(startDate, endDate,
+                            _scheduleTextController.text, empNo, deptNo);
+                        print("등록완료!");
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarPage()));
+                      } else if (startDate.isAfter(endDate)) {
+                        _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
+                      } else {
+                        _showErrorDialog(context, '사원번호와 부서번호를 확인해주세요.');
+                      }
                     } catch (e) {
-                      _showErrorDialog(context, '시작 시간을 올바르게 입력해주세요.');
-                      return; 
+                      print("오류 발생: $e");
                     }
-          
-                    try {
-                      endDate = format.parse(_endDateController.text);
-                    } catch (e) {
-                      _showErrorDialog(context, '끝 시간을 올바르게 입력해주세요.');
-                      return; 
-                    }
-          
-                    int empNo = int.tryParse(_empNoController.text) ?? 0;
-                    int deptNo = int.tryParse(_deptNoController.text) ?? 0;
-          
-                    if (startDate.isBefore(endDate) && empNo > 0) {
-                      CalendarDio().addDeptSche(startDate, endDate,
-                          _scheduleTextController.text, empNo, deptNo);
-                      print("등록완료!");
-                      Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarPage()));
-                    } else if (startDate.isAfter(endDate)) {
-                      _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
-                    } else {
-                      _showErrorDialog(context, '사원번호와 부서번호를 확인해주세요.');
-                    }
-                  } catch (e) {
-                    print("오류 발생: $e");
-                  }
-                },
-                  child: Text('등록'),
+                  },
+                    child: Text('등록'),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ScheduleAddPage()),
-          );
-        },
-        child: Text('개인 일정 등록'),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => ScheduleAddPage()),
+      //     );
+      //   },
+      //   child: Text('개인 일정 등록'),
+      // ),
     );
   }
 }

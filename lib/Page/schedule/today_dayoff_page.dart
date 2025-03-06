@@ -7,17 +7,17 @@ import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
+import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
-// 이벤트 클래스 정의
 class Event {
-  final int empNo;  // 직원 번호
-  final DateTime startDate;  // 시작 날짜
-  final DateTime endDate;    // 종료 날짜
-  final String title;        // 제목
-  final String type;         // 유형 (연차 등)
+  final int empNo;  
+  final DateTime startDate;  
+  final DateTime endDate;   
+  final String title;        
+  final String type;     
 
   Event({
     this.empNo = 0,
@@ -27,10 +27,8 @@ class Event {
     required this.type
   });
 }
-
-// 오늘 연차 페이지 클래스
 class TodayDayOffPage extends StatefulWidget {
-  final DateTime dayOffDate;  // 연차 날짜
+  final DateTime dayOffDate;  
   const TodayDayOffPage({super.key, required this.dayOffDate});
 
   @override
@@ -43,7 +41,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
   late CalendarFormat _calendarFormat;
   List<Event> _deptAllEvents = [];
 
-  // 직원 번호 가져오기
+
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('empNo') ?? 0;
@@ -51,19 +49,19 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
 
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
-  // 부서 번호 가져오기
+
   Future<int> getDeptNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt("deptNo") ?? 0;
   }
 
-  // 이메일 가져오기
+
   Future<String> getEmail() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('email') ?? '이메일 없음';
   }
 
-  // 이름 가져오기
+
   Future<String> getName(int empNo) async {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
     return '${jsonParser.firstName} ${jsonParser.lastName}';
@@ -75,10 +73,10 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
     _focusedDay = widget.dayOffDate;
     _selectedDay = widget.dayOffDate;
     _calendarFormat = CalendarFormat.month;
-    _loadAllDayOffEvents();  // 연차 이벤트 로드
+    _loadAllDayOffEvents(); 
   }
 
-  // 연차 이벤트를 모두 로드하는 함수
+
   Future<void> _loadAllDayOffEvents() async {
     var result = await todayDayOffDio().getAllDayOffList(); 
 
@@ -107,7 +105,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            // 이메일과 이름을 불러오는 FutureBuilder
+
             FutureBuilder<String>(
               future: getEmail(),
               builder: (context, emailSnapshot) {
@@ -160,7 +158,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                 }
               },
             ),
-            // 다른 메뉴 아이템들
+
             ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
@@ -257,7 +255,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       ),
       body: Column(
         children: [
-          // 테이블 캘린더 표시
+
           TableCalendar(
             focusedDay: _focusedDay,
             firstDay: DateTime(2024, 1, 1),
@@ -323,7 +321,6 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
   }
 }
 
-// 연차 사용 인원 목록 페이지
 class TableEvents extends StatefulWidget {
   final String selectedDay;
   final String type; 
@@ -348,7 +345,6 @@ class _TableEventsState extends State<TableEvents> {
     _getEventsForDay(widget.selectedDay);
   }
 
-  // 연차 이벤트를 불러오는 함수
   Future<void> _getEventsForDay(String? day) async {
     if (day == null) return;
 
@@ -372,11 +368,12 @@ class _TableEventsState extends State<TableEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('연차 사용 인원 목록'),backgroundColor: Colors.white,),
+      appBar: AppBar(title: Text('✈️연차 신청 인원'),backgroundColor: Colors.white,centerTitle: true,),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(padding: EdgeInsets.all(16.0),
-          child: Text(widget.selectedDay != null ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
+          child: Text(widget.selectedDay != null ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!) )
                   : '선택된 날짜 없음',
                   style: TextStyle(fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -396,7 +393,8 @@ class _TableEventsState extends State<TableEvents> {
                         return Center(child: Text('Error : ${snapshot.error}'));
                       }else if(snapshot.hasData){
                           return ListTile(
-                        title: Text('이름: ${snapshot.data}'),
+                        title: Text(' ${snapshot.data}'),
+                        
                       );
                       }
                       return Container();
@@ -408,6 +406,17 @@ class _TableEventsState extends State<TableEvents> {
           ),)
          
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async{
+          var prefs = await SharedPreferences.getInstance();
+                int empNo = prefs.getInt("empNo") ?? 0;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ReportAddPage(empNo:empNo))
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
