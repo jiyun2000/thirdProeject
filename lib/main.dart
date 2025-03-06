@@ -33,13 +33,13 @@ class _MainAppState extends State<MainApp> {
   void login() async {
     log("!!!");
     var response = await DioInterceptor.postHttp(
-      "http://localhost:8080/auth",
+      "http://192.168.0.42:8080/auth",
       {
         "username": mailContorller.text,
         "password": passwordController.text,
       },
     );
-
+    log("await end");
     if (DioInterceptor.isLogin()) {
       setState(() {
         isLoggedIn = true;
@@ -72,11 +72,11 @@ class _MainAppState extends State<MainApp> {
       debugShowCheckedModeBanner: false,
       home: Scaffold(
         backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text('DDT'),
-          centerTitle: true,
-           backgroundColor: Colors.white,
-        ),
+        // appBar: AppBar(
+        //   title: Text('DDT'),
+        //   centerTitle: true,
+        //   backgroundColor: Colors.black,
+        // ),
         body: isLoggedIn
             ? BasicApp()
             : SingleChildScrollView(
@@ -162,7 +162,11 @@ class MainPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text(''), centerTitle: true, elevation: 0.0,  backgroundColor: Colors.white),
+      appBar: AppBar(
+          title: Text(''),
+          centerTitle: true,
+          elevation: 0.0,
+          backgroundColor: Colors.white),
       drawer: Drawer(
         child: ListView(
           children: [
@@ -177,26 +181,35 @@ class MainPage extends StatelessWidget {
                   return FutureBuilder<int>(
                     future: getEmpNo(),
                     builder: (context, empNoSnapshot) {
-                      if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                      if (empNoSnapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (empNoSnapshot.hasError) {
-                        return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                        return Center(
+                            child: Text('Error: ${empNoSnapshot.error}'));
                       } else if (empNoSnapshot.hasData) {
                         int empNo = empNoSnapshot.data!;
                         return FutureBuilder<String>(
                           future: getName(empNo),
                           builder: (context, nameSnapshot) {
-                            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                            if (nameSnapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
                             } else if (nameSnapshot.hasError) {
-                              return Center(child: Text('Error: ${nameSnapshot.error}'));
+                              return Center(
+                                  child: Text('Error: ${nameSnapshot.error}'));
                             } else if (nameSnapshot.hasData) {
                               return UserAccountsDrawerHeader(
-                                currentAccountPicture: CircleAvatar(), //회사 사진을 넣으려 했으나 svg 라 안됨
+                                currentAccountPicture: Container(
+                                  child: SvgPicture.asset(
+                                    "assets/image/logo.svg",
+                                  ),
+                                ),
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),
@@ -306,7 +319,8 @@ class MainPage extends StatelessWidget {
               title: Text('로그아웃'),
               onTap: () {
                 !DioInterceptor.isLogin();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainApp()));
               },
             ),
           ],
@@ -326,7 +340,8 @@ class MainPage extends StatelessWidget {
               } else if (empNoSnapshot.hasData) {
                 int empNo = empNoSnapshot.data!;
                 return FutureBuilder(
-                  future: emp.EmpScheDio().readEmpTodo(empNo, DateTime.parse(strToday)),
+                  future: emp.EmpScheDio()
+                      .readEmpTodo(empNo, DateTime.parse(strToday)),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -341,7 +356,8 @@ class MainPage extends StatelessWidget {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),

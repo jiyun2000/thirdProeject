@@ -21,6 +21,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
   int? _empNo;
 
+  @override
   void initState() {
     super.initState();
     _loadEmpNo();
@@ -36,8 +37,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
     });
   }
 
-  Future<void> _selectDateTime(
-      BuildContext context, TextEditingController controller, bool isStart) async {
+  Future<void> _selectDateTime(BuildContext context,
+      TextEditingController controller, bool isStart) async {
     DateTime now = DateTime.now();
     DateTime initialDate = now;
 
@@ -95,9 +96,9 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         title: Text('개인 일정 등록'),
       ),
       body: Container(
@@ -113,7 +114,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                     labelText: '시작 시간',
                     border: OutlineInputBorder(),
                   ),
-                  onTap: () => _selectDateTime(context, _startDateController, true),
+                  onTap: () =>
+                      _selectDateTime(context, _startDateController, true),
                   readOnly: true,
                 ),
               ),
@@ -129,7 +131,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                     labelText: '끝난 시간',
                     border: OutlineInputBorder(),
                   ),
-                  onTap: () => _selectDateTime(context, _endDateController, false),
+                  onTap: () =>
+                      _selectDateTime(context, _endDateController, false),
                   readOnly: true,
                 ),
               ),
@@ -175,10 +178,13 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                       int empNo = int.tryParse(_empNoContorller.text) ?? 0;
 
                       if (startDate.isBefore(endDate) && empNo > 0) {
-                        CalendarDio().addEmpSchedule(
-                            startDate, endDate, _scheduleTextController.text, empNo);
+                        CalendarDio().addEmpSchedule(startDate, endDate,
+                            _scheduleTextController.text, empNo);
                         print("등록완료!");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarPage()));
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => CalendarPage()));
                       } else if (startDate.isAfter(endDate)) {
                         _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
                       } else {

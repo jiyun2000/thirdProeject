@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
@@ -40,7 +39,7 @@ class EmpScheDio {
   final dio = Dio();
   Future<JsonParser> readEmpSche(int empNo, int empSchNo) async {
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/empSchedule/read/$empNo/$empSchNo");
+        .get("http://192.168.0.42:8080/empSchedule/read/$empNo/$empSchNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
@@ -53,7 +52,7 @@ class EmpScheDio {
     String formated = (DateFormat("yyyy-MM-dd").format(DateTime.now()));
     print(formated);
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/empTodo/read/$empNo/$formated");
+        .get("http://192.168.0.42:8080/empTodo/read/$empNo/$formated");
     print(res.data);
     print('$empNo');
     Map<String, dynamic> responseData = res.data;
@@ -67,9 +66,9 @@ class EmpScheDio {
       String scheduleText, int empNo, int empSchNo) async {
     print("empMod dio");
     var uri =
-        Uri.parse("http://localhost:8080/empSchedule/mod/$empNo/$empSchNo");
+        Uri.parse("http://192.168.0.42:8080/empSchedule/mod/$empNo/$empSchNo");
     print(uri);
-   
+
     Map data = {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
@@ -78,14 +77,15 @@ class EmpScheDio {
       'empSchNo': '$empSchNo'
     };
     var body = json.encode(data);
-    var response = await DioInterceptor.dio.put(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.put(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
 
   Future<dynamic> delEmpSch(int empNo, int empSchNo) async {
     print("empMod dio");
-    var uri = Uri.parse("http://localhost:8080/empSchedule/$empNo/$empSchNo");
+    var uri =
+        Uri.parse("http://192.168.0.42:8080/empSchedule/$empNo/$empSchNo");
     print(uri);
 
     var response = await DioInterceptor.dio.delete(uri.toString());
