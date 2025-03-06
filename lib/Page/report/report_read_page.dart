@@ -267,7 +267,8 @@ class _ReportReadPageState extends State<ReportReadPage> {
                         ),
                       ],
                       const SizedBox(height: 16),
-                      report.sender == widget.empNo
+                      report.sender == widget.empNo ||
+                              report.reportStatus != '진행중'
                           ? SizedBox.shrink()
                           : OverflowBar(
                               alignment: MainAxisAlignment.center,

@@ -135,6 +135,43 @@ class ReportDio {
     return response;
   }
 
+  Future<Response> addNormalReport(String title, String contents,
+      DateTime deadLine, List<int> receivers, int empNo, String? file) async {
+    var uri = "http://localhost:8080/api/report/register/$empNo";
+
+    // Create the form data with the necessary fields
+    String formattedDate = DateFormat('yyyy-MM-dd').format(deadLine);
+    List<String> rList = receivers.map((item) => item.toString()).toList();
+    Map<String, dynamic> data = {
+      'isDayOff': 'false',
+      'contents': contents,
+      'reportStatus': '진행중',
+      'receivers': rList,
+      'deadLine': formattedDate,
+      'title': title,
+    };
+
+    // If a file is provided, append it to the data
+    FormData formData = FormData.fromMap(data);
+
+    // if (file != null) {
+    //   formData.files.add(MapEntry(
+    //     'file',
+    //     await MultipartFile.fromFile(file.path,
+    //         filename: file.uri.pathSegments.last),
+    //   ));
+    // }
+
+    try {
+      // Send the POST request with FormData
+      Response response = await dio.post(uri, data: formData);
+      return response;
+    } catch (e) {
+      print('Error: $e');
+      rethrow;
+    }
+  }
+
   Future<ReportJsonParser> readReport(int reportNo) async {
     Response res = await DioInterceptor.dio
         .get("http://localhost:8080/api/report/read/$reportNo");

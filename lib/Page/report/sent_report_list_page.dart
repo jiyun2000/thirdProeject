@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
+import 'package:thirdproject/Page/report/normal_report_add_page.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/report/report_read_page.dart';
@@ -22,7 +24,14 @@ class SentReportListPage extends StatefulWidget {
 }
 
 class _SentReportListState extends State<SentReportListPage> {
+  final ValueNotifier<bool> isDialOpen =
+      ValueNotifier(false); // ✅ SpeedDial 상태 변수 추가
 
+  // ✅ 메뉴 클릭 시 닫힌 후 이동하는 함수
+  void _navigateAndClose(Function() navigation) {
+    isDialOpen.value = false; // ✅ 메뉴 닫기
+    Future.delayed(const Duration(milliseconds: 300), navigation);
+    
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   Future<int> getEmpNo() async {
@@ -300,17 +309,43 @@ class _SentReportListState extends State<SentReportListPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ReportAddPage(empNo: widget.empNo),
-            ),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('연차 등록'),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.purple[100],
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        spacing: 10,
+        spaceBetweenChildren: 10,
+        closeManually: true,
+        openCloseDial: isDialOpen, // ✅ 상태 연동
+
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.assignment),
+            label: '보고서 등록',
+            backgroundColor: Colors.purple[100],
+            onTap: () => _navigateAndClose(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          NormalReportAddPage(empNo: widget.empNo)));
+            }),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.beach_access),
+            label: '연차 등록',
+            backgroundColor: Colors.purple[100],
+            onTap: () => _navigateAndClose(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ReportAddPage(empNo: widget.empNo)));
+            }),
+          ),
+        ],
       ),
     );
   }
