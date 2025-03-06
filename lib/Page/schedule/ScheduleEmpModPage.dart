@@ -42,7 +42,8 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('개인 스케줄 수정'),
+        title: Text('📆개인 스케줄 수정', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),

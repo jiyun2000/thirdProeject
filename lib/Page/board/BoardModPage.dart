@@ -27,8 +27,9 @@ class _BoardModState extends State<BoardModPage> {
     return Scaffold(
        backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("공지사항 수정"),
+        title: Text("🎙️공지사항 수정", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

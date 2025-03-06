@@ -99,7 +99,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('개인 일정 등록'),
+        title: Text('📆개인 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       body: Card(
         color: Colors.white,

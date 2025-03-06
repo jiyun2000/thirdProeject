@@ -35,7 +35,7 @@ class _MainAppState extends State<MainApp> {
   void login() async {
     log("!!!");
     var response = await DioInterceptor.postHttp(
-      "http://192.168.0.42:8080/auth",
+      "http://192.168.0.51:8080/auth",
       {
         "username": mailContorller.text,
         "password": passwordController.text,
@@ -344,6 +344,7 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
+
       body: FutureBuilder<List<int>>(
         future: Future.wait([getEmpNo(), getDeptNo()]),
         builder: (context, snapshot) {
@@ -381,6 +382,7 @@ class MainPage extends StatelessWidget {
             return Center(child: Text("데이터를 불러오는 데 실패했습니다"));
           }
         },
+
       ),
     );
   }

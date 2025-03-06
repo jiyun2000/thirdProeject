@@ -101,7 +101,8 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('연차 사용 인원'),
+        title: Text('✈️연차', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       drawer: Drawer(
         child: ListView(
