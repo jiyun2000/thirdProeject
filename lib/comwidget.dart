@@ -35,13 +35,11 @@ class Comwidget extends StatelessWidget {
     );
   }
 
-  void checkOut() {
+  void checkOut() async {
     var empNo;
-    SharedPreferences.getInstance().then((item) {
-      var time = DateTime.now();
-      item.setString("inTime", time.toString());
-      empNo = item.getString("empNo");
-    });
+    final sp = await SharedPreferences.getInstance();
+    empNo = sp.get("empNo");
+    sp.setString("inTime", DateTime.now().toString());
     DioInterceptor.dio
         .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
   }
