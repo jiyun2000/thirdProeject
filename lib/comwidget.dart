@@ -5,7 +5,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
 
-class Comwidget extends StatelessWidget {
+class Comwidget extends StatefulWidget {
+  @override
+  State<Comwidget> createState() => _ComwidgetState();
+}
+
+class _ComwidgetState extends State<Comwidget> {
+  @override
+  void initState() {
+    super.initState();
+    GeoCheck.getPermission();
+  }
+
   @override
   Widget build(BuildContext context) {
     var inTime;
@@ -13,36 +24,82 @@ class Comwidget extends StatelessWidget {
     SharedPreferences.getInstance().then((item) {
       inTime = item.getString("inTime");
     });
-    //plushTime();
     return Card(
-      child: Center(
+      elevation: 4,
+      margin: EdgeInsets.all(16),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-              ],
+            Text(
+              "출근 정보",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
+            SizedBox(height: 8),
+            Text(
+              "출근 시간: $inTime",
+              style: TextStyle(fontSize: 16, color: Colors.blue),
+            ),
+            SizedBox(height: 16),
             Row(
-              spacing: 25,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                    onPressed: (() {
-                      if (GeoCheck().getCurrentPosition()) {
-                        return;
-                      }
-                      set();
-                    }),
-                    child: Text("출근")),
-                ElevatedButton(
-                    onPressed: (() {
-                      if (GeoCheck().getCurrentPosition()) {
-                        return;
-                      }
-                      checkOut();
-                    }),
-                    child: Text("퇴근"))
+                ElevatedButton.icon(
+                  onPressed: (() {
+                    if (GeoCheck().getCurrentPosition()) {
+                      return;
+                    }
+                    set();
+                  }),
+                  icon: Icon(Icons.login),
+                  label: Text("출근"),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                ),
+                ElevatedButton.icon(
+                  onPressed: (() {
+                    if (GeoCheck().getCurrentPosition()) {
+                      return;
+                    }
+                    checkOut();
+                  }),
+                  icon: Icon(Icons.logout),
+                  label: Text("퇴근"),
+                  style: ElevatedButton.styleFrom(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                  ),
+                ),
+//       child: Center(
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Row(
+//               children: [
+//               ],
+//             ),
+//             Row(
+//               spacing: 25,
+//               children: [
+//                 ElevatedButton(
+//                     onPressed: (() {
+//                       if (GeoCheck().getCurrentPosition()) {
+//                         return;
+//                       }
+//                       set();
+//                     }),
+//                     child: Text("출근")),
+//                 ElevatedButton(
+//                     onPressed: (() {
+//                       if (GeoCheck().getCurrentPosition()) {
+//                         return;
+//                       }
+//                       checkOut();
+//                     }),
+//                     child: Text("퇴근"))
               ],
             ),
           ],
