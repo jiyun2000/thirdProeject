@@ -316,7 +316,7 @@ class MainPage extends StatelessWidget {
       body: Column(
         children: [
           Text('환영합니다 '),
-          //Center(child: Comwidget(),),
+          Center(child: Comwidget(),),
           FutureBuilder<int>(
             future: getEmpNo(),
             builder: (context, empNoSnapshot) {
