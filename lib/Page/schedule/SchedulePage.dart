@@ -79,7 +79,7 @@ class _CalendarState extends State<CalendarPage> {
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        String dateOnly = text['scheduleText'] ;
         int empSchNo = text['empSchNo'];
         return Event(
           title: dateOnly,
@@ -93,7 +93,7 @@ class _CalendarState extends State<CalendarPage> {
       List<Event> deptEvents = (events['deptSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        String dateOnly = text['scheduleText'] ;
         int deptSchNo = text['deptSchNo'];
         return Event(
           title: dateOnly,
@@ -224,7 +224,7 @@ class _CalendarState extends State<CalendarPage> {
               leading: Icon(Icons.report),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
-              title: Text('보고서'),
+              title: Text('보고서서'),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
                 int empNo = prefs.getInt("empNo") ?? 0;
@@ -254,7 +254,7 @@ class _CalendarState extends State<CalendarPage> {
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
-              title: Text('오늘 연차'),
+              title: Text('연차'),
               onTap: () {
                 Navigator.push(
                     context,
@@ -382,13 +382,13 @@ class _TableEventsState extends State<TableEvents> {
       var prefs = await SharedPreferences.getInstance();
       int empNo = prefs.getInt("empNo") ?? 0;
       int deptNo = prefs.getInt("deptNo") ?? 0;
-      empDto jsonParser = await CalendarDio()
-          .todaySchedule(empNo, deptNo, DateTime.parse(day!));
+      empDto jsonParser =
+          await CalendarDio().todaySchedule(empNo, deptNo, DateTime.parse(day!));
 
       List<Event> empEvents = jsonParser.empSchedule.map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        String dateOnly = text['scheduleText'];
         int empSchNo = text['empSchNo'];
         return Event(
           title: '[개인]  $dateOnly',
@@ -402,7 +402,7 @@ class _TableEventsState extends State<TableEvents> {
       List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] + "  " + text['startDate'];
+        String dateOnly = text['scheduleText'] ;
         int deptSchNo = text['deptSchNo'];
         return Event(
           title: '[부서]  $dateOnly',
@@ -432,12 +432,25 @@ class _TableEventsState extends State<TableEvents> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('일정'),
+        title: Text('일정'),
       ),
       body: Column(
         children: [
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Text(
+              widget.selectedDay != null
+                  ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
+                  : '선택된 날짜 없음',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+          ),
           Expanded(
-            child: ValueListenableBuilder<Future<List<Event>>>(
+            child: ValueListenableBuilder<Future<List<Event>>>( 
               valueListenable: _selectedEvents,
               builder: (context, futureEvents, _) {
                 return FutureBuilder<List<Event>>(
@@ -484,13 +497,24 @@ class _TableEventsState extends State<TableEvents> {
                                   );
                                 }
                               },
-                              title: Text(
-                                event.title,
-                                style: TextStyle(
-                                  color: event.type == 'emp'
-                                      ? const Color.fromARGB(251, 0, 0, 0)
-                                      : Colors.purple,
-                                ),
+                              title: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    event.title,
+                                    style: TextStyle(
+                                      color: event.type == 'emp'
+                                          ? const Color.fromARGB(251, 0, 0, 0)
+                                          : Colors.purple,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(
+                                    '${DateFormat('HH:mm').format(event.startDate)} - ${DateFormat('HH:mm').format(event.endDate)}',
+                                    style: TextStyle(color: Colors.grey[600]),
+                                  ),
+                                ],
                               ),
                             ),
                           );

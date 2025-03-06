@@ -12,6 +12,7 @@ import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thirdproject/comwidget.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
 void main() async {
@@ -289,7 +290,7 @@ class MainPage extends StatelessWidget {
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
-              title: Text('오늘 연차'),
+              title: Text('연차'),
               onTap: () {
                 Navigator.push(
                     context,
@@ -329,7 +330,7 @@ class MainPage extends StatelessWidget {
       body: Column(
         children: [
           Text('환영합니다 '),
-          Center(child: Text('출퇴근 연동시키기')),
+          Center(child: Comwidget(),),
           FutureBuilder<int>(
             future: getEmpNo(),
             builder: (context, empNoSnapshot) {

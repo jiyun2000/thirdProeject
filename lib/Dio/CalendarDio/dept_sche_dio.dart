@@ -35,6 +35,7 @@ class JsonParser {
         "empNo": empNo,
         "deptNo": deptNo
       };
+
 }
 
 class DeptScheDio {

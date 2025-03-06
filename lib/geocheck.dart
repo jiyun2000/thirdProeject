@@ -25,7 +25,7 @@ class GeoCheck {
     _positionStreamSubscription?.pause();
   }
 
-  void getPermission() async {
+  static void getPermission() async {
     LocationPermission permission;
 
     permission = await Geolocator.checkPermission();

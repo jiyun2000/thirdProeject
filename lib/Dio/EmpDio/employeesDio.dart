@@ -80,6 +80,7 @@ class Employeesdio {
     return parser;
   }
 
+
   Future<List<DropdownItem<int>>> getAllEmpListToDropDown(int empNo) async {
     Response res = await DioInterceptor.dio
         .get("http://192.168.0.42:8080/api/employees/list/all");
@@ -99,4 +100,7 @@ class Employeesdio {
 
     return dropdownItems;
   }
+
+  
+
 }

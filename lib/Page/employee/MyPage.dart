@@ -39,14 +39,15 @@ class _MyPageState extends State<MyPage> {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
     return '${jsonParser.firstName} ${jsonParser.lastName}';
   }
+  
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        title: Text("🙋‍♀️My Page"),
-        backgroundColor: Colors.white,
+        title: Text("🙋‍♀️ 마이 페이지"),
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       ),
       drawer: Drawer(
         child: ListView(
@@ -118,11 +119,10 @@ class _MyPageState extends State<MyPage> {
               focusColor: Colors.purple,
               title: Text('홈'),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MainPage()),
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainPage()));
               },
+              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.notifications_none_sharp),
@@ -135,6 +135,7 @@ class _MyPageState extends State<MyPage> {
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
               },
+              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.report),
@@ -147,12 +148,12 @@ class _MyPageState extends State<MyPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ReceivedReportListPage(
-                      empNo: empNo,
-                    ),
-                  ),
+                      builder: (context) => ReceivedReportListPage(
+                            empNo: empNo,
+                          )),
                 );
               },
+              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.calendar_month),
@@ -165,21 +166,24 @@ class _MyPageState extends State<MyPage> {
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
                 );
               },
+              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
-              title: Text('오늘 연차'),
+              title: Text('연차'),
               onTap: () {
                 Navigator.push(
-                    context,
-                    MaterialPageRoute(
+                  context,
+                  MaterialPageRoute(
                       builder: (context) => TodayDayOffPage(
-                        dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
-                      ),
-                    ));
+                          dayOffDate: DateFormat("yyyy-MM-dd").parse(
+                              DateFormat("yyyy-MM-dd")
+                                  .format(DateTime.now())))),
+                );
               },
+              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.person),
@@ -192,6 +196,7 @@ class _MyPageState extends State<MyPage> {
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
               },
+              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.logout),
@@ -307,6 +312,38 @@ class _MyPageState extends State<MyPage> {
             },
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildDrawerListTile(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: onTap,
+    );
+  }
+
+  Widget _buildProfileCard(String label, String value) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 8.0),
+      child: Padding(
+        padding: EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            Text(
+              '$label: ',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+            Expanded(
+              child: Text(
+                value,
+                style: TextStyle(fontSize: 16),
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

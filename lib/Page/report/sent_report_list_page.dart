@@ -33,7 +33,6 @@ class _SentReportListState extends State<SentReportListPage> {
     isDialOpen.value = false; // ✅ 메뉴 닫기
     Future.delayed(const Duration(milliseconds: 300), navigation);
   }
-
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   Future<int> getEmpNo() async {
@@ -187,7 +186,7 @@ class _SentReportListState extends State<SentReportListPage> {
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
-              title: Text('오늘 연차'),
+              title: Text('연차'),
               onTap: () {
                 Navigator.push(
                     context,
