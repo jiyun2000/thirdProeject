@@ -12,6 +12,7 @@ import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thirdproject/comwidget.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
 void main() async {
@@ -315,7 +316,7 @@ class MainPage extends StatelessWidget {
       body: Column(
         children: [
           Text('환영합니다 '),
-          Center(child: Text('출퇴근 연동시키기')),
+          //Center(child: Comwidget(),),
           FutureBuilder<int>(
             future: getEmpNo(),
             builder: (context, empNoSnapshot) {
