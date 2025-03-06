@@ -1,6 +1,4 @@
 import 'dart:developer';
-import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -20,7 +18,7 @@ void main() async {
 }
 
 class MainApp extends StatefulWidget {
-  MainApp({super.key});
+  const MainApp({super.key});
 
   @override
   _MainAppState createState() => _MainAppState();
@@ -177,12 +175,12 @@ class MainPage extends StatelessWidget {
               title: Text('보고서'),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
-                int empNo = prefs.getInt("empNo") ?? 0; 
+                int empNo = prefs.getInt("empNo") ?? 0;
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => ReceivedReportListPage(
-                      empNo: empNo, 
+                      empNo: empNo,
                     ),
                   ),
                 );
@@ -275,7 +273,7 @@ class MainPage extends StatelessWidget {
                             child: ListTile(
                               contentPadding: EdgeInsets.all(16),
                               leading: Icon(Icons.circle),
-                              title: Text('${empSchedule[index].scheduleText}',
+                              title: Text(empSchedule[index].scheduleText,
                                   style: TextStyle(fontSize: 16)),
                             ),
                           );
@@ -295,7 +293,7 @@ class MainPage extends StatelessWidget {
               }
             },
           ),
-           FutureBuilder<int>(
+          FutureBuilder<int>(
             future: getDeptNo(),
             builder: (context, deptNoSnapshot) {
               if (deptNoSnapshot.connectionState == ConnectionState.waiting) {
@@ -304,23 +302,28 @@ class MainPage extends StatelessWidget {
                 return Center(child: Text('Error : ${deptNoSnapshot.error}'));
               } else if (deptNoSnapshot.hasData) {
                 int deptNo = deptNoSnapshot.data!;
-                
+
                 return FutureBuilder<int>(
-                  future: getEmpNo(),  
+                  future: getEmpNo(),
                   builder: (context, empNoSnapshot) {
-                    if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                    if (empNoSnapshot.connectionState ==
+                        ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
                     } else if (empNoSnapshot.hasError) {
-                      return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                      return Center(
+                          child: Text('Error: ${empNoSnapshot.error}'));
                     } else if (empNoSnapshot.hasData) {
                       int empNo = empNoSnapshot.data!;
                       return FutureBuilder(
-                        future: dept.DeptScheDio().readDeptTodo(empNo, deptNo, DateTime.parse(strToday)),
+                        future: dept.DeptScheDio().readDeptTodo(
+                            empNo, deptNo, DateTime.parse(strToday)),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState == ConnectionState.waiting) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
                             return Center(child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return Center(child: Text('Error: ${snapshot.error}'));
+                            return Center(
+                                child: Text('Error: ${snapshot.error}'));
                           } else if (snapshot.hasData) {
                             List<dept.JsonParser> deptSchedule = snapshot.data!;
                             if (deptSchedule.isEmpty) {
@@ -330,14 +333,17 @@ class MainPage extends StatelessWidget {
                               shrinkWrap: true,
                               itemBuilder: (context, index) {
                                 return Card(
-                                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                                  margin: EdgeInsets.symmetric(
+                                      vertical: 8, horizontal: 16),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(10),
                                   ),
                                   child: ListTile(
                                     contentPadding: EdgeInsets.all(16),
                                     leading: Icon(Icons.circle),
-                                    title: Text('${deptSchedule[index].scheduleText}', style: TextStyle(fontSize: 16)),
+                                    title: Text(
+                                        deptSchedule[index].scheduleText,
+                                        style: TextStyle(fontSize: 16)),
                                   ),
                                 );
                               },
@@ -350,18 +356,16 @@ class MainPage extends StatelessWidget {
                             return Center(child: Text("오늘 부서 일정 없음"));
                           }
                         },
-            );
-          } else {
-            return Center(child: Text("empNo를 불러오는 데 실패했습니다"));
-          }
-        },
-      );
-    }
-    return Container();
-  },
-)
-
-
+                      );
+                    } else {
+                      return Center(child: Text("empNo를 불러오는 데 실패했습니다"));
+                    }
+                  },
+                );
+              }
+              return Container();
+            },
+          )
         ],
       ),
     );
