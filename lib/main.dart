@@ -1,10 +1,11 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:thirdproject/Dio/CalendarDio/dept_sche_dio.dart' as dept;
 import 'package:thirdproject/Dio/CalendarDio/emp_sche_dio.dart' as emp;
+import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
@@ -29,14 +30,52 @@ class _MainAppState extends State<MainApp> {
   final TextEditingController mailContorller = TextEditingController();
   bool isLoggedIn = false;
 
+  void login() async {
+    log("!!!");
+    var response = await DioInterceptor.postHttp(
+      "http://localhost:8080/auth",
+      {
+        "username": mailContorller.text,
+        "password": passwordController.text,
+      },
+    );
+
+    if (DioInterceptor.isLogin()) {
+      setState(() {
+        isLoggedIn = true;
+      });
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString('email', mailContorller.text);
+    } else {
+      print("로그인 실패");
+    }
+  }
+
+  Future<String> getEmail() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '이메일 없음';
+  }
+
+  Future<String> getName(int empNo) async {
+    var jsonParser = await Employeesdio().findByEmpNo(empNo);
+    return '${jsonParser.firstName} ${jsonParser.lastName}';
+  }
+
+  Future<int> getEmpNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("empNo") ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
+        backgroundColor: Colors.white,
         appBar: AppBar(
-          title: Text(''),
+          title: Text('DDT'),
           centerTitle: true,
+           backgroundColor: Colors.white,
         ),
         body: isLoggedIn
             ? BasicApp()
@@ -65,22 +104,7 @@ class _MainAppState extends State<MainApp> {
                         width: double.infinity,
                         margin: const EdgeInsets.only(top: 16),
                         child: ElevatedButton(
-                          onPressed: () {
-                            log("!!!");
-                            DioInterceptor.postHttp(
-                                "http://localhost:8080/auth",
-                                ({
-                                  "username": mailContorller.text,
-                                  "password": passwordController.text
-                                }));
-                            if (DioInterceptor.isLogin()) {
-                              setState(() {
-                                isLoggedIn = true;
-                              });
-                            } else {
-                              print("false");
-                            }
-                          },
+                          onPressed: login,
                           child: Text('로그인'),
                         ),
                       )
@@ -101,7 +125,7 @@ class BasicApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'DDT Web',
-      theme: ThemeData(primaryColor: const Color.fromARGB(255, 255, 255, 255)),
+      theme: ThemeData(primaryColor: Colors.white),
       home: MainPage(),
     );
   }
@@ -111,6 +135,7 @@ String dayFormat = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
 class MainPage extends StatelessWidget {
   MainPage({super.key});
+
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   Future<int> getEmpNo() async {
@@ -123,26 +148,75 @@ class MainPage extends StatelessWidget {
     return prefs.getInt("deptNo") ?? 0;
   }
 
+  Future<String> getEmail() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '이메일 없음';
+  }
+
+  Future<String> getName(int empNo) async {
+    var jsonParser = await Employeesdio().findByEmpNo(empNo);
+    return '${jsonParser.firstName} ${jsonParser.lastName}';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('DDT'), centerTitle: true, elevation: 0.0),
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: Text(''), centerTitle: true, elevation: 0.0,  backgroundColor: Colors.white),
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                  //backgroundImage: AssetImage("assets/image/logo.svg"),
-                  ),
-              accountEmail: Text("admin"),
-              accountName: Text("관리자"),
-              decoration: BoxDecoration(
-                color: Colors.deepPurple,
-                borderRadius: BorderRadius.only(
-                  bottomLeft: Radius.circular(10.0),
-                  bottomRight: Radius.circular(10.0),
-                ),
-              ),
+            FutureBuilder<String>(
+              future: getEmail(),
+              builder: (context, emailSnapshot) {
+                if (emailSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (emailSnapshot.hasError) {
+                  return Center(child: Text('Error: ${emailSnapshot.error}'));
+                } else if (emailSnapshot.hasData) {
+                  return FutureBuilder<int>(
+                    future: getEmpNo(),
+                    builder: (context, empNoSnapshot) {
+                      if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (empNoSnapshot.hasError) {
+                        return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                      } else if (empNoSnapshot.hasData) {
+                        int empNo = empNoSnapshot.data!;
+                        return FutureBuilder<String>(
+                          future: getName(empNo),
+                          builder: (context, nameSnapshot) {
+                            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (nameSnapshot.hasError) {
+                              return Center(child: Text('Error: ${nameSnapshot.error}'));
+                            } else if (nameSnapshot.hasData) {
+                              return UserAccountsDrawerHeader(
+                                currentAccountPicture: CircleAvatar(), //회사 사진을 넣으려 했으나 svg 라 안됨
+                                accountEmail: Text(emailSnapshot.data!),
+                                accountName: Text(nameSnapshot.data!),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Center(child: Text('이름 실패'));
+                            }
+                          },
+                        );
+                      } else {
+                        return Center(child: Text('empNo 실패'));
+                      }
+                    },
+                  );
+                } else {
+                  return Center(child: Text('이메일 실패'));
+                }
+              },
             ),
             ListTile(
               leading: Icon(Icons.home),
@@ -230,7 +304,10 @@ class MainPage extends StatelessWidget {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: () {},
+              onTap: () {
+                !DioInterceptor.isLogin();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+              },
             ),
           ],
         ),
@@ -249,8 +326,7 @@ class MainPage extends StatelessWidget {
               } else if (empNoSnapshot.hasData) {
                 int empNo = empNoSnapshot.data!;
                 return FutureBuilder(
-                  future: emp.EmpScheDio()
-                      .readEmpTodo(empNo, DateTime.parse(strToday)),
+                  future: emp.EmpScheDio().readEmpTodo(empNo, DateTime.parse(strToday)),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return Center(child: CircularProgressIndicator());
@@ -265,8 +341,7 @@ class MainPage extends StatelessWidget {
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           return Card(
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
+                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
                             ),
@@ -289,7 +364,7 @@ class MainPage extends StatelessWidget {
                   },
                 );
               } else {
-                return Center(child: Text("empNo를 불러오는 데 실패했습니다"));
+                return Center(child: Text("empN 실패"));
               }
             },
           ),
@@ -302,7 +377,6 @@ class MainPage extends StatelessWidget {
                 return Center(child: Text('Error : ${deptNoSnapshot.error}'));
               } else if (deptNoSnapshot.hasData) {
                 int deptNo = deptNoSnapshot.data!;
-
                 return FutureBuilder<int>(
                   future: getEmpNo(),
                   builder: (context, empNoSnapshot) {

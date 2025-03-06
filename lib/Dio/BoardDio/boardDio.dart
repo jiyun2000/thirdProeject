@@ -88,10 +88,9 @@ class BoardDio {
     return dto;
   }
 
-  Future<http.Response> addBoard(String title, String contents, String category,
+  Future<dynamic> addBoard(String title, String contents, String category,
       int empNo, String mailAddress) async {
-    var uri = Uri.parse("http://localhost:8080/api/board/add");
-    Map<String, String> headers = {"Content-Type": "application/json"};
+    var uri = Uri.parse("http://192.168.0.51:8080/api/board/add");
 
     Map data = {
       'title': title,
@@ -101,18 +100,16 @@ class BoardDio {
       'mailAddress': mailAddress
     };
     var body = json.encode(data);
-    var response = await http.post(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
+    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    print(response.data);
+    return response.data;
   }
 
-  Future<http.Response> modBoard(String title, String contents, String category,
+  Future<dynamic> modBoard(String title, String contents, String category,
       String mailAddress, int boardNo) async {
     print('zz');
-    var uri = Uri.parse("http://localhost:8080/api/board/$boardNo");
+    var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
     print(uri);
-
-    Map<String, String> headers = {"Content-Type": "application/json"};
 
     Map data = {
       'title': title,
@@ -123,15 +120,15 @@ class BoardDio {
     };
     var body = json.encode(data);
     print(body);
-    var response = await http.put(uri, headers: headers, body: body);
-    print(response.body);
-    return response;
+    var response = await DioInterceptor.dio.put(uri.toString(), data:data);
+    print(response.data);
+    return response.data;
   }
 
   Future<JsonParser> readBoard(int boardNo) async {
     print("readpage");
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/api/board/read/$boardNo");
+        .get("http://192.168.0.51:8080/api/board/read/$boardNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/dept_sche_dio.dart';
 
 class ScheduleDeptModPage extends StatefulWidget {
@@ -19,10 +20,41 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
     final TextEditingController _deptSchNoController = TextEditingController();
     final TextEditingController _deptNoController = TextEditingController();
 
+    int? _empNo;
+    int? _deptNo;
+
+    void initState(){
+      super.initState();
+      _loadEmpNo;
+      _loadDeptNo;
+    }
+    
+    Future<void> _loadEmpNo() async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _empNo = prefs.getInt("empNo"); 
+        if (_empNo != null) {
+          _empNoController.text = _empNo.toString(); 
+        }
+      });
+    }
+
+    Future<void> _loadDeptNo() async {
+      final SharedPreferences prefs = await SharedPreferences.getInstance();
+      setState(() {
+        _deptNo = prefs.getInt("deptNo;"); 
+        if (_deptNo != null) {
+          _deptNoController.text = _deptNo.toString(); 
+        }
+      });
+    }
+
  @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('부서 스케줄 수정'),
       ),
       body: Padding(padding: EdgeInsets.all(16.0),
@@ -64,29 +96,54 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
                TextField(
                 controller: _empNoController,
                 decoration: InputDecoration(labelText: '사원번호'),
+                enabled: false, 
               ),
               SizedBox(height: 16),
                TextField(
                 controller: _deptSchNoController,
                 decoration: InputDecoration(labelText: '스케줄번호'),
+                enabled: false, 
               ),
               SizedBox(height: 16),
               TextField(
                 controller: _deptNoController,
                 decoration: InputDecoration(labelText: '부서번호'),
+                enabled: false, 
               ),
               SizedBox(height: 16),
               SizedBox(
                 width: 200, 
                 child: ElevatedButton(onPressed: (){
-                  DeptScheDio().modDeptSchedule(
-                    DateTime.parse(_startDateController.text), 
-                    DateTime.parse(_endDateController.text), 
-                    _scheduleTextController.text, 
-                    int.parse(_empNoController.text), 
-                    int.parse(_deptNoController.text),
-                    int.parse(_deptSchNoController.text));
-                },child: Text('수정'))),
+                  DateTime startDate = DateTime.parse(_startDateController.text);
+                  DateTime endDate = DateTime.parse(_endDateController.text);
+                  if (startDate.isAfter(endDate)) {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text('오류'),
+                            content: Text('시작 날짜가 마감 날짜보다 늦을 수 없습니다.'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: Text('확인'),
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    }else{
+                        DeptScheDio().modDeptSchedule(
+                        DateTime.parse(_startDateController.text), 
+                        DateTime.parse(_endDateController.text), 
+                        _scheduleTextController.text, 
+                        int.parse(_empNoController.text), 
+                        int.parse(_deptNoController.text),
+                        int.parse(_deptSchNoController.text));
+                    }
+                  },child: Text('수정'))),
               SizedBox(
                 height: 30,
               ),

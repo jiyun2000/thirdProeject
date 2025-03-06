@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
 import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
+import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 
 class DeptScheduleAdd extends StatefulWidget {
   const DeptScheduleAdd({super.key});
@@ -19,7 +21,37 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
 
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
 
-  // 날짜 및 시간 선택 함수
+  int? _empNo;
+  int? _dpetNo;
+
+   void initState() {
+    super.initState();
+    _loadEmpNo();
+    _loadDeptNo();
+  }
+
+  Future<void> _loadEmpNo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _empNo = prefs.getInt("empNo"); 
+      if (_empNo != null) {
+        _empNoController.text = _empNo.toString(); 
+      }
+    });
+  }
+
+
+  Future<void> _loadDeptNo() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _dpetNo = prefs.getInt("deptNo"); 
+      if (_dpetNo != null) {
+        _deptNoController.text = _dpetNo.toString(); 
+      }
+    });
+  }
+
+
   Future<void> _selectDateTime(
       BuildContext context, TextEditingController controller, bool isStart) async {
     DateTime now = DateTime.now();
@@ -29,7 +61,6 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
       initialDate = format.parse(controller.text);
     }
 
-    // 날짜 선택
     DateTime? selectedDate = await showDatePicker(
       context: context,
       initialDate: initialDate,
@@ -38,7 +69,6 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
     );
 
     if (selectedDate != null) {
-      // 시간 선택
       TimeOfDay? selectedTime = await showTimePicker(
         context: context,
         initialTime: TimeOfDay.fromDateTime(initialDate),
@@ -58,10 +88,32 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
     }
   }
 
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('입력 오류'),
+          content: Text(message),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: Text('확인'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title: Text('부서 일정 등록'),
       ),
       body: Container(
@@ -77,7 +129,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   border: OutlineInputBorder(),
                 ),
                 onTap: () => _selectDateTime(context, _startDateController, true),
-                readOnly: true,  // 텍스트 필드를 읽기 전용으로 설정하여 날짜 선택만 가능하도록 함
+                readOnly: true, 
               ),
             ),
             SizedBox(
@@ -93,7 +145,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   border: OutlineInputBorder(),
                 ),
                 onTap: () => _selectDateTime(context, _endDateController, false),
-                readOnly: true,  // 텍스트 필드를 읽기 전용으로 설정하여 날짜 선택만 가능하도록 함
+                readOnly: true,
               ),
             ),
             SizedBox(
@@ -121,6 +173,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   hintText: '사원번호를 입력하세요',
                   labelText: '사원번호',
                   border: OutlineInputBorder(),
+                  enabled: false, 
                 ),
               ),
             ),
@@ -135,6 +188,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   hintText: '부서번호를 입력하세요',
                   labelText: '부서번호',
                   border: OutlineInputBorder(),
+                  enabled: false, 
                 ),
               ),
             ),
@@ -145,22 +199,45 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
               width: 200,
               child: ElevatedButton(
                 onPressed: () {
-                  try {
-                    DateTime startDate =
-                        format.parse(_startDateController.text);
-                    DateTime endDate = format.parse(_endDateController.text);
-                    int empNo = int.tryParse(_empNoController.text) ?? 0;
-                    int deptNo = int.tryParse(_deptNoController.text) ?? 0;
-                    if (startDate.isBefore(endDate) && empNo > 0) {
-                      CalendarDio().addDeptSche(startDate, endDate,
-                          _scheduleTextController.text, empNo, deptNo);
-                    } else {
-                      print("시간 입력이 잘못되었습니다.");
-                    }
-                  } catch (e) {
-                    print("오류 발생: $e");
+                try {
+                  if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
+                    _showErrorDialog(context, '날짜를 모두 입력해주세요.');
+                    return; 
                   }
-                },
+                  DateTime startDate;
+                  DateTime endDate;
+
+                  try {
+                    startDate = format.parse(_startDateController.text);
+                  } catch (e) {
+                    _showErrorDialog(context, '시작 시간을 올바르게 입력해주세요.');
+                    return; 
+                  }
+
+                  try {
+                    endDate = format.parse(_endDateController.text);
+                  } catch (e) {
+                    _showErrorDialog(context, '끝 시간을 올바르게 입력해주세요.');
+                    return; 
+                  }
+
+                  int empNo = int.tryParse(_empNoController.text) ?? 0;
+                  int deptNo = int.tryParse(_deptNoController.text) ?? 0;
+
+                  if (startDate.isBefore(endDate) && empNo > 0) {
+                    CalendarDio().addDeptSche(startDate, endDate,
+                        _scheduleTextController.text, empNo, deptNo);
+                    print("등록완료!");
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarPage()));
+                  } else if (startDate.isAfter(endDate)) {
+                    _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
+                  } else {
+                    _showErrorDialog(context, '사원번호와 부서번호를 확인해주세요.');
+                  }
+                } catch (e) {
+                  print("오류 발생: $e");
+                }
+              },
                 child: Text('등록'),
               ),
             ),

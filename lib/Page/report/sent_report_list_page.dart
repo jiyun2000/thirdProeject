@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
@@ -11,6 +12,7 @@ import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/report/report_read_page.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
+import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
 class SentReportListPage extends StatefulWidget {
@@ -29,12 +31,35 @@ class _SentReportListState extends State<SentReportListPage> {
   void _navigateAndClose(Function() navigation) {
     isDialOpen.value = false; // ✅ 메뉴 닫기
     Future.delayed(const Duration(milliseconds: 300), navigation);
+    
+  String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
+
+  Future<int> getEmpNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("empNo") ?? 0;
+  }
+
+  Future<int> getDeptNo() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getInt("deptNo") ?? 0;
+  }
+
+  Future<String> getEmail() async {
+    var prefs = await SharedPreferences.getInstance();
+    return prefs.getString('email') ?? '이메일 없음';
+  }
+
+  Future<String> getName(int empNo) async {
+    var jsonParser = await Employeesdio().findByEmpNo(empNo);
+    return '${jsonParser.firstName} ${jsonParser.lastName}';
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+       backgroundColor: Colors.white,
       appBar: AppBar(
+         backgroundColor: Colors.white,
         title:
             const Text('보낸 보고서', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
@@ -42,19 +67,57 @@ class _SentReportListState extends State<SentReportListPage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage("assets/image/logo.svg"),
-              ),
-              accountEmail: Text("admin"),
-              accountName: Text("관리자"),
-              // onDetailsPressed: (){},
-              decoration: BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                  )),
+            FutureBuilder<String>(
+              future: getEmail(),
+              builder: (context, emailSnapshot) {
+                if (emailSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (emailSnapshot.hasError) {
+                  return Center(child: Text('Error: ${emailSnapshot.error}'));
+                } else if (emailSnapshot.hasData) {
+                  return FutureBuilder<int>(
+                    future: getEmpNo(),
+                    builder: (context, empNoSnapshot) {
+                      if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (empNoSnapshot.hasError) {
+                        return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                      } else if (empNoSnapshot.hasData) {
+                        int empNo = empNoSnapshot.data!;
+                        return FutureBuilder<String>(
+                          future: getName(empNo),
+                          builder: (context, nameSnapshot) {
+                            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (nameSnapshot.hasError) {
+                              return Center(child: Text('Error: ${nameSnapshot.error}'));
+                            } else if (nameSnapshot.hasData) {
+                              return UserAccountsDrawerHeader(
+                                currentAccountPicture: CircleAvatar(),
+                                accountEmail: Text(emailSnapshot.data!),
+                                accountName: Text(nameSnapshot.data!),
+                                decoration: BoxDecoration(
+                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Center(child: Text('이름 실패'));
+                            }
+                          },
+                        );
+                      } else {
+                        return Center(child: Text('empNo 실패'));
+                      }
+                    },
+                  );
+                } else {
+                  return Center(child: Text('이메일 실패'));
+                }
+              },
             ),
             ListTile(
               leading: Icon(Icons.home),
@@ -62,10 +125,11 @@ class _SentReportListState extends State<SentReportListPage> {
               focusColor: Colors.purple,
               title: Text('홈'),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.notifications_none_sharp),
@@ -78,7 +142,6 @@ class _SentReportListState extends State<SentReportListPage> {
                   MaterialPageRoute(builder: (context) => const BoardPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.report),
@@ -91,12 +154,12 @@ class _SentReportListState extends State<SentReportListPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage(
-                            empNo: empNo,
-                          )),
+                    builder: (context) => ReceivedReportListPage(
+                      empNo: empNo,
+                    ),
+                  ),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.calendar_month),
@@ -109,7 +172,6 @@ class _SentReportListState extends State<SentReportListPage> {
                   MaterialPageRoute(builder: (context) => const CalendarPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.travel_explore_sharp),
@@ -118,15 +180,13 @@ class _SentReportListState extends State<SentReportListPage> {
               title: Text('오늘 연차'),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
+                    context,
+                    MaterialPageRoute(
                       builder: (context) => TodayDayOffPage(
-                          dayOffDate: DateFormat("yyyy-MM-dd").parse(
-                              DateFormat("yyyy-MM-dd")
-                                  .format(DateTime.now())))),
-                );
+                        dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
+                      ),
+                    ));
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.person),
@@ -139,15 +199,16 @@ class _SentReportListState extends State<SentReportListPage> {
                   MaterialPageRoute(builder: (context) => MyPage()),
                 );
               },
-              // trailing: Icon(Icons.navigate_next),
             ),
             ListTile(
               leading: Icon(Icons.logout),
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: () {},
-              // trailing: Icon(Icons.navigate_next),
+              onTap: () {
+                !DioInterceptor.isLogin();
+                Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+              },
             ),
           ],
         ),
