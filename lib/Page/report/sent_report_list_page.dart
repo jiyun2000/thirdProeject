@@ -31,7 +31,7 @@ class _SentReportListState extends State<SentReportListPage> {
   void _navigateAndClose(Function() navigation) {
     isDialOpen.value = false; // ✅ 메뉴 닫기
     Future.delayed(const Duration(milliseconds: 300), navigation);
-    
+  }
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
   Future<int> getEmpNo() async {
