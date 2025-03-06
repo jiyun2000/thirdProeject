@@ -13,6 +13,7 @@ import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/comwidget.dart';
+import 'package:thirdproject/comwidget2.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
 void main() async {
@@ -70,51 +71,67 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: Scaffold(
-        backgroundColor: Colors.white,
-        // appBar: AppBar(
-        //   title: Text('DDT'),
-        //   centerTitle: true,
-        //   backgroundColor: Colors.black,
-        // ),
-        body: isLoggedIn
-            ? BasicApp()
-            : SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(100),
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.all(30),
-                        child: SvgPicture.asset(
-                          "assets/image/logo.svg",
-                          width: 150,
+        debugShowCheckedModeBanner: false,
+        home: Scaffold(
+          backgroundColor: Colors.white,
+          // appBar: AppBar(
+          //   title: Text('DDT'),
+          //   centerTitle: true,
+          //   backgroundColor: Colors.black,
+          // ),
+          body: isLoggedIn
+              ? BasicApp()
+              : SingleChildScrollView(
+                  child: Padding(
+                      padding: const EdgeInsets.all(100),
+                      child: Center(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 40, vertical: 100),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              SvgPicture.asset("assets/image/logo.svg",
+                                  width: 120),
+                              SizedBox(height: 30),
+                              TextField(
+                                controller: mailContorller,
+                                decoration: InputDecoration(
+                                  labelText: '이메일',
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              TextField(
+                                controller: passwordController,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: '비밀번호',
+                                  border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(10)),
+                                ),
+                              ),
+                              SizedBox(height: 20),
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: login,
+                                  style: ElevatedButton.styleFrom(
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(10)),
+                                    padding: EdgeInsets.symmetric(vertical: 14),
+                                  ),
+                                  child: Text('로그인',
+                                      style: TextStyle(fontSize: 16)),
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(labelText: '이메일'),
-                        controller: mailContorller,
-                      ),
-                      TextFormField(
-                        obscureText: true,
-                        decoration: InputDecoration(labelText: '비밀번호'),
-                        controller: passwordController,
-                      ),
-                      Container(
-                        width: double.infinity,
-                        margin: const EdgeInsets.only(top: 16),
-                        child: ElevatedButton(
-                          onPressed: login,
-                          child: Text('로그인'),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ),
-      ),
-    );
+                      ))),
+        ));
   }
 }
 
@@ -327,138 +344,114 @@ class MainPage extends StatelessWidget {
           ],
         ),
       ),
-      body: Column(
-        children: [
-          Text('환영합니다 '),
-          Center(child: Comwidget(),),
-          FutureBuilder<int>(
-            future: getEmpNo(),
-            builder: (context, empNoSnapshot) {
-              if (empNoSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (empNoSnapshot.hasError) {
-                return Center(child: Text('Error: ${empNoSnapshot.error}'));
-              } else if (empNoSnapshot.hasData) {
-                int empNo = empNoSnapshot.data!;
-                return FutureBuilder(
-                  future: emp.EmpScheDio()
-                      .readEmpTodo(empNo, DateTime.parse(strToday)),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Error: ${snapshot.error}'));
-                    } else if (snapshot.hasData) {
-                      List<emp.JsonParser> empSchedule = snapshot.data ?? [];
-                      if (empSchedule.isEmpty) {
-                        return Center(child: Text("오늘 개인 일정 없음"));
-                      }
-                      return ListView.separated(
-                        shrinkWrap: true,
-                        itemBuilder: (context, index) {
-                          return Card(
-                            margin: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 16),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: ListTile(
-                              contentPadding: EdgeInsets.all(16),
-                              leading: Icon(Icons.circle),
-                              title: Text(empSchedule[index].scheduleText,
-                                  style: TextStyle(fontSize: 16)),
-                            ),
-                          );
-                        },
-                        separatorBuilder: (context, index) {
-                          return Divider(height: 10, thickness: 1);
-                        },
-                        itemCount: empSchedule.length,
-                      );
-                    } else {
-                      return Center(child: Text("오늘 개인 일정 없음"));
-                    }
-                  },
-                );
-              } else {
-                return Center(child: Text("empN 실패"));
-              }
-            },
-          ),
-          FutureBuilder<int>(
-            future: getDeptNo(),
-            builder: (context, deptNoSnapshot) {
-              if (deptNoSnapshot.connectionState == ConnectionState.waiting) {
-                return Center(child: CircularProgressIndicator());
-              } else if (deptNoSnapshot.hasError) {
-                return Center(child: Text('Error : ${deptNoSnapshot.error}'));
-              } else if (deptNoSnapshot.hasData) {
-                int deptNo = deptNoSnapshot.data!;
-                return FutureBuilder<int>(
-                  future: getEmpNo(),
-                  builder: (context, empNoSnapshot) {
-                    if (empNoSnapshot.connectionState ==
-                        ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (empNoSnapshot.hasError) {
-                      return Center(
-                          child: Text('Error: ${empNoSnapshot.error}'));
-                    } else if (empNoSnapshot.hasData) {
-                      int empNo = empNoSnapshot.data!;
-                      return FutureBuilder(
-                        future: dept.DeptScheDio().readDeptTodo(
-                            empNo, deptNo, DateTime.parse(strToday)),
-                        builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            return Center(
-                                child: Text('Error: ${snapshot.error}'));
-                          } else if (snapshot.hasData) {
-                            List<dept.JsonParser> deptSchedule = snapshot.data!;
-                            if (deptSchedule.isEmpty) {
-                              return Center(child: Text("오늘 부서 일정 없음"));
-                            }
-                            return ListView.separated(
-                              shrinkWrap: true,
-                              itemBuilder: (context, index) {
-                                return Card(
-                                  margin: EdgeInsets.symmetric(
-                                      vertical: 8, horizontal: 16),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                  child: ListTile(
-                                    contentPadding: EdgeInsets.all(16),
-                                    leading: Icon(Icons.circle),
-                                    title: Text(
-                                        deptSchedule[index].scheduleText,
-                                        style: TextStyle(fontSize: 16)),
-                                  ),
-                                );
-                              },
-                              separatorBuilder: (context, index) {
-                                return Divider(height: 10, thickness: 1);
-                              },
-                              itemCount: deptSchedule.length,
-                            );
-                          } else {
-                            return Center(child: Text("오늘 부서 일정 없음"));
-                          }
-                        },
-                      );
-                    } else {
-                      return Center(child: Text("empNo를 불러오는 데 실패했습니다"));
-                    }
-                  },
-                );
-              }
-              return Container();
-            },
-          )
-        ],
+      body: FutureBuilder<List<int>>(
+        future: Future.wait([getEmpNo(), getDeptNo()]),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            int empNo = snapshot.data![0];
+            int deptNo = snapshot.data![1];
+
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text('환영합니다',
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                  Center(child: Comwidget()),
+                  _buildScheduleSection(
+                    title: "오늘 개인 일정",
+                    future: emp.EmpScheDio()
+                        .readEmpTodo(empNo, DateTime.parse(strToday)),
+                    emptyMessage: "오늘 개인 일정 없음",
+                  ),
+                  _buildScheduleSection(
+                    title: "오늘 부서 일정",
+                    future: dept.DeptScheDio()
+                        .readDeptTodo(empNo, deptNo, DateTime.parse(strToday)),
+                    emptyMessage: "오늘 부서 일정 없음",
+                  ),
+                ],
+              ),
+            );
+          } else {
+            return Center(child: Text("데이터를 불러오는 데 실패했습니다"));
+          }
+        },
       ),
     );
   }
+}
+
+Widget _buildScheduleSection({
+  required String title,
+  required Future<List<dynamic>> future,
+  required String emptyMessage,
+}) {
+  return FutureBuilder(
+    future: future,
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else if (snapshot.hasData) {
+        List<dynamic> schedule = snapshot.data!;
+        if (schedule.isEmpty) {
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.event_busy, size: 50, color: Colors.grey),
+                SizedBox(height: 10),
+                Text(
+                  emptyMessage,
+                  style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+          );
+        }
+        return ListView.separated(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(),
+          itemBuilder: (context, index) {
+            return Column(
+              children: [
+                Text(
+                  title,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 8),
+                Card(
+                  margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ListTile(
+                    contentPadding: EdgeInsets.all(16),
+                    leading:
+                        Icon(Icons.trending_flat, color: Colors.purple[200]),
+                    title: Text(schedule[index].scheduleText,
+                        style: TextStyle(fontSize: 16)),
+                  ),
+                ),
+              ],
+            );
+          },
+          separatorBuilder: (context, index) =>
+              Divider(height: 10, thickness: 1),
+          itemCount: schedule.length,
+        );
+      } else {
+        return Container();
+      }
+    },
+  );
 }
