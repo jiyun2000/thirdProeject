@@ -243,28 +243,31 @@ class _MyPageState extends State<MyPage> {
                         } else if (deptNoSnapshot.hasData) {
                           String deptName = deptNoSnapshot.data!;
 
-                          return ListView(
-                            children: [
-                              _buildProfileCard(
-                                  '사원번호', jsonParser.empNo.toString()),
-                              _buildProfileCard(
-                                  '이름', '${jsonParser.firstName} ${jsonParser.lastName}'),
-                              _buildProfileCard('메일주소', jsonParser.mailAddress),
-                              _buildProfileCard('주소', jsonParser.address),
-                              _buildProfileCard(
-                                  '전화번호',
-                                  '${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}'),
-                              _buildProfileCard(
-                                  '성별', jsonParser.gender == 'm' ? '남성' : '여성'),
-                              _buildProfileCard(
-                                  '생일', DateFormat("yyyy-MM-dd").format(jsonParser.birthday)),
-                              _buildProfileCard('주민등록번호',
-                                  '${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}'),
-                              _buildProfileCard('입사일',
-                                  DateFormat("yyyy-MM-dd").format(jsonParser.hireDate)),
-                              _buildProfileCard('부서명', deptName),
-                              _buildProfileCard('연봉', jsonParser.salary.toString()),
-                            ],
+                          return Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: ListView(
+                              children: [
+                                _buildProfileCard(
+                                    '사원번호', jsonParser.empNo.toString()),
+                                _buildProfileCard(
+                                    '이름', '${jsonParser.firstName} ${jsonParser.lastName}'),
+                                _buildProfileCard('메일주소', jsonParser.mailAddress),
+                                _buildProfileCard('주소', jsonParser.address),
+                                _buildProfileCard(
+                                    '전화번호',
+                                    '${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}'),
+                                _buildProfileCard(
+                                    '성별', jsonParser.gender == 'm' ? '남성' : '여성'),
+                                _buildProfileCard(
+                                    '생일', DateFormat("yyyy-MM-dd").format(jsonParser.birthday)),
+                                _buildProfileCard('주민등록번호',
+                                    '${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}'),
+                                _buildProfileCard('입사일',
+                                    DateFormat("yyyy-MM-dd").format(jsonParser.hireDate)),
+                                _buildProfileCard('부서명', deptName),
+                                _buildProfileCard('연봉', jsonParser.salary.toString()),
+                              ],
+                            ),
                           );
                         } else {
                           return Center(child: Text('데이터를 불러오는 데 실패했습니다.'));

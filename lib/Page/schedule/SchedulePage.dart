@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -7,6 +8,7 @@ import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
+import 'package:thirdproject/Page/schedule/DeptScheduleAdd.dart';
 import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
 import 'package:thirdproject/Page/schedule/ScheduleDeptModPage.dart';
 import 'package:thirdproject/Page/schedule/ScheduleEmpModPage.dart';
@@ -49,7 +51,8 @@ class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  List<Event> _allEvents = [];
+   List<Event> _allEvents = [];
+
 
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
@@ -60,6 +63,8 @@ class _CalendarState extends State<CalendarPage> {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('deptNo') ?? 0;
   }
+
+
 
   @override
   void initState() {
@@ -372,6 +377,15 @@ class TableEvents extends StatefulWidget {
 class _TableEventsState extends State<TableEvents> {
   late final ValueNotifier<Future<List<Event>>> _selectedEvents;
 
+    List<Event> _allEvents = [];
+    final ValueNotifier<bool> isDialOpen =
+      ValueNotifier(false); 
+
+     void _navigateAndClose(Function() navigation) {
+    isDialOpen.value = false; // ✅ 메뉴 닫기
+    Future.delayed(const Duration(milliseconds: 300), navigation);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -531,14 +545,43 @@ class _TableEventsState extends State<TableEvents> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => ScheduleAddPage()),
-          );
-        },
-        child: Icon(Icons.add),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => ScheduleAddPage()),
+      //     );
+      //   },
+      //   child: Icon(Icons.add),
+      // ),
+
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.purple[100],
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        spacing: 10,
+        spaceBetweenChildren: 10,
+        closeManually: true,
+        openCloseDial: isDialOpen,
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.person),
+            label: '개인 일정 등록',
+            backgroundColor: Colors.purple[100],
+            onTap: () => _navigateAndClose((){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleAddPage()));
+            })
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.group),
+            label: '부서 일정 등록',
+            backgroundColor: Colors.purple[100],
+            onTap: () => _navigateAndClose((){
+              Navigator.push(context, MaterialPageRoute(builder: (context) => DeptScheduleAdd()));
+            }))
+        ],
       ),
     );
   }

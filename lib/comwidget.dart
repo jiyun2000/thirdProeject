@@ -22,7 +22,9 @@ class _ComwidgetState extends State<Comwidget> {
     var inTime;
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
-      inTime = item.getString("inTime");
+      print("inTime");
+      print(inTime);
+      inTime = item.get("inTime");
     });
     return Card(
       elevation: 4,
@@ -141,4 +143,6 @@ class _ComwidgetState extends State<Comwidget> {
       }
     });
   }
+
+  
 }

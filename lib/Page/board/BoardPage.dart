@@ -226,39 +226,43 @@ class _BoardState extends State<BoardPage> {
                 print("데이터 존재함");
                 resDto parsingList = snapshot.data!;
 
-                return Expanded(
-                  child: ListView.separated(
-                    shrinkWrap: true,
-                    itemCount: parsingList.dtolist.length,
-                    separatorBuilder: (context, index) {
-                      return Divider(
-                        color: const Color.fromARGB(255, 255, 255, 255),
-                        height: 10,
-                        thickness: 1,
-                      );
-                    },
-                    itemBuilder: (context, index) {
-                      return Card(
-                        child: ListTile(
-                          leading: Icon(Icons.circle),
-                          //title: Text('${parsingList.dtolist[index]['boardNo']}'),
-                          title: Text('${parsingList.dtolist[index]['title']}'),
-                          trailing:
-                              Text('${parsingList.dtolist[index]['regdate']}'),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => BoardReadpage(
-                                  BoardNo:
-                                      '${parsingList.dtolist[index]['boardNo']}',
+                return Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Expanded(
+                    child: ListView.separated(
+                      shrinkWrap: true,
+                      itemCount: parsingList.dtolist.length,
+                      separatorBuilder: (context, index) {
+                        return Divider(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          height: 10,
+                          thickness: 1,
+                        );
+                      },
+                      itemBuilder: (context, index) {
+                        return 
+                        Card(
+                          child: ListTile(
+                            leading: Icon(Icons.circle),
+                            //title: Text('${parsingList.dtolist[index]['boardNo']}'),
+                            title: Text('${parsingList.dtolist[index]['title']}'),
+                            trailing:
+                                Text('${parsingList.dtolist[index]['regdate']}'),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BoardReadpage(
+                                    BoardNo:
+                                        '${parsingList.dtolist[index]['boardNo']}',
+                                  ),
                                 ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 );
               } else {
@@ -268,14 +272,33 @@ class _BoardState extends State<BoardPage> {
           ),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => BoardAddPage()),
-          );
+      //deptNo 1일 경우에만 보여야 함.
+      floatingActionButton: FutureBuilder<int>(
+        future: getDeptNo(), 
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return SizedBox(); 
+          } else if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          } else if (snapshot.hasData) {
+            int deptNo = snapshot.data!; 
+            if (deptNo == 1) {  
+              return FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BoardAddPage()),
+                  );
+                },
+                child: Icon(Icons.add),
+              );
+            } else {
+              return SizedBox();
+            }
+          } else {
+            return SizedBox(); 
+          }
         },
-        child: Icon(Icons.add),
       ),
     );
   }
