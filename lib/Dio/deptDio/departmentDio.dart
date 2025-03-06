@@ -31,7 +31,9 @@ class DeparmentDio {
     print("read dept dio");
 
     Response res =
+
         await DioInterceptor.dio.get("http://localhost:8080/api/deptinfo/read/$deptNo");
+
 
     print(res.data);
     Map<String, dynamic> mapRes = res.data;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
@@ -57,11 +58,10 @@ class _SentReportListState extends State<SentReportListPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
-        title:
-            const Text('보낸 보고서', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.white,
+        title: Text('📨 보낸 보고서', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       drawer: Drawer(
@@ -78,26 +78,35 @@ class _SentReportListState extends State<SentReportListPage> {
                   return FutureBuilder<int>(
                     future: getEmpNo(),
                     builder: (context, empNoSnapshot) {
-                      if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                      if (empNoSnapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (empNoSnapshot.hasError) {
-                        return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                        return Center(
+                            child: Text('Error: ${empNoSnapshot.error}'));
                       } else if (empNoSnapshot.hasData) {
                         int empNo = empNoSnapshot.data!;
                         return FutureBuilder<String>(
                           future: getName(empNo),
                           builder: (context, nameSnapshot) {
-                            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                            if (nameSnapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
                             } else if (nameSnapshot.hasError) {
-                              return Center(child: Text('Error: ${nameSnapshot.error}'));
+                              return Center(
+                                  child: Text('Error: ${nameSnapshot.error}'));
                             } else if (nameSnapshot.hasData) {
                               return UserAccountsDrawerHeader(
-                                currentAccountPicture: CircleAvatar(),
+                                currentAccountPicture: Container(
+                                  child: SvgPicture.asset(
+                                    "assets/image/logo.svg",
+                                  ),
+                                ),
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),
@@ -207,7 +216,8 @@ class _SentReportListState extends State<SentReportListPage> {
               title: Text('로그아웃'),
               onTap: () {
                 !DioInterceptor.isLogin();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainApp()));
               },
             ),
           ],

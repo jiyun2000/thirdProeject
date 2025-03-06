@@ -2,7 +2,6 @@ import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
-
 class JsonParser {
   final int dayOffNo;
   final int offHours;

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
@@ -56,18 +57,68 @@ class _MyPageState extends State<MyPage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage("assets/image/logo.svg"),
-              ),
-              accountEmail: Text("admin"),
-              accountName: Text("관리자"),
-              decoration: BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                  )),
+
+            FutureBuilder<String>(
+              future: getEmail(),
+              builder: (context, emailSnapshot) {
+                if (emailSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (emailSnapshot.hasError) {
+                  return Center(child: Text('Error: ${emailSnapshot.error}'));
+                } else if (emailSnapshot.hasData) {
+                  return FutureBuilder<int>(
+                    future: getEmpNo(),
+                    builder: (context, empNoSnapshot) {
+                      if (empNoSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (empNoSnapshot.hasError) {
+                        return Center(
+                            child: Text('Error: ${empNoSnapshot.error}'));
+                      } else if (empNoSnapshot.hasData) {
+                        int empNo = empNoSnapshot.data!;
+                        return FutureBuilder<String>(
+                          future: getName(empNo),
+                          builder: (context, nameSnapshot) {
+                            if (nameSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (nameSnapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${nameSnapshot.error}'));
+                            } else if (nameSnapshot.hasData) {
+                              return UserAccountsDrawerHeader(
+                                currentAccountPicture: Container(
+                                  child: SvgPicture.asset(
+                                    "assets/image/logo.svg",
+                                  ),
+                                ),
+                                accountEmail: Text(emailSnapshot.data!),
+                                accountName: Text(nameSnapshot.data!),
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Center(child: Text('이름 실패'));
+                            }
+                          },
+                        );
+                      } else {
+                        return Center(child: Text('empNo 실패'));
+                      }
+                    },
+                  );
+                } else {
+                  return Center(child: Text('이메일 실패'));
+                }
+              },
+
             ),
             ListTile(
               leading: Icon(Icons.home),
@@ -153,6 +204,7 @@ class _MyPageState extends State<MyPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
+
               onTap: () {},
             ),
           ],
@@ -228,6 +280,7 @@ class _MyPageState extends State<MyPage> {
             }
           },
         ),
+
       ),
     );
   }

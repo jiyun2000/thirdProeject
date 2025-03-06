@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:file_picker/file_picker.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:dio/dio.dart';
@@ -101,7 +102,7 @@ class ReportDio {
 
   Future<ResDto> getReceivedList(int receiver) async {
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/api/report/list/received/$receiver");
+        .get("http://192.168.0.42:8080/api/report/list/received/$receiver");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -109,7 +110,7 @@ class ReportDio {
   Future<ResDto> getSentList(int sender) async {
     print(sender);
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/api/report/list/sent/$sender");
+        .get("http://192.168.0.42:8080/api/report/list/sent/$sender");
     ResDto dto = ResDto.fromdata(res.data);
     return dto;
   }
@@ -117,7 +118,7 @@ class ReportDio {
   Future<http.Response> addReport(
       DateTime title, int contents, List<int> receivers, int empNo) async {
     var uri =
-        Uri.parse("http://localhost:8080/api/report/register/mobile/$empNo");
+        Uri.parse("http://192.168.0.42:8080/api/report/register/mobile/$empNo");
     Map<String, String> headers = {"Content-Type": "application/json"};
 
     String formattedDate = DateFormat('yyyy-MM-dd').format(title);
@@ -135,37 +136,42 @@ class ReportDio {
     return response;
   }
 
-  Future<Response> addNormalReport(String title, String contents,
-      DateTime deadLine, List<int> receivers, int empNo, String? file) async {
-    var uri = "http://localhost:8080/api/report/register/$empNo";
+  Future<void> addNormalReport(String title, String contents, DateTime deadLine,
+      List<int> receivers, int empNo, List<PlatformFile> file) async {
+    var uri = "http://192.168.0.42:8080/api/report/register/$empNo";
 
-    // Create the form data with the necessary fields
     String formattedDate = DateFormat('yyyy-MM-dd').format(deadLine);
     List<String> rList = receivers.map((item) => item.toString()).toList();
-    Map<String, dynamic> data = {
+
+    // Create FormData for non-file fields
+    FormData formData = FormData.fromMap({
       'isDayOff': 'false',
       'contents': contents,
       'reportStatus': '진행중',
       'receivers': rList,
       'deadLine': formattedDate,
       'title': title,
-    };
+    });
 
-    // If a file is provided, append it to the data
-    FormData formData = FormData.fromMap(data);
-
-    // if (file != null) {
-    //   formData.files.add(MapEntry(
-    //     'file',
-    //     await MultipartFile.fromFile(file.path,
-    //         filename: file.uri.pathSegments.last),
-    //   ));
-    // }
+    // Add files if provided
+    if (file.isNotEmpty) {
+      for (var e in file) {
+        if (e.path != null) {
+          formData.files.add(MapEntry(
+            'files',
+            await MultipartFile.fromFile(e.path!),
+          ));
+        } else {
+          print("Error: File path is null for ${e.name}");
+        }
+      }
+    }
 
     try {
-      // Send the POST request with FormData
-      Response response = await dio.post(uri, data: formData);
-      return response;
+      dio.options.contentType = 'multipart/form-data';
+      dio.options.maxRedirects.isFinite;
+
+      await dio.post(uri, data: formData);
     } catch (e) {
       print('Error: $e');
       rethrow;
@@ -174,7 +180,7 @@ class ReportDio {
 
   Future<ReportJsonParser> readReport(int reportNo) async {
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/api/report/read/$reportNo");
+        .get("http://192.168.0.42:8080/api/report/read/$reportNo");
     Map<String, dynamic> mapRes = res.data;
     ReportJsonParser jsonParser = ReportJsonParser.fromJson(mapRes);
     return jsonParser;
@@ -193,7 +199,7 @@ class ReportDio {
 
       // 4️⃣ 서버에 PUT 요청으로 수정된 데이터 전송
       Response res = await DioInterceptor.dio.put(
-        "http://localhost:8080/api/report/modify/$reportNo",
+        "http://192.168.0.42:8080/api/report/modify/$reportNo",
         data: reportMap, // 수정된 데이터 전송
       );
 

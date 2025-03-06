@@ -32,9 +32,9 @@ class _ReportAddState extends State<ReportAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         title: Text('연차 추가💰'),
       ),
       body: Center(

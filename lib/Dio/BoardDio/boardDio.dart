@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 import 'package:thirdproject/diointercept%20.dart';
 
 class JsonParser {
@@ -83,14 +82,14 @@ class BoardDio {
 
   Future<resDto> getAllList() async {
     Response res =
-        await DioInterceptor.dio.get("http://localhost:8080/api/board/list");
+        await DioInterceptor.dio.get("http://192.168.0.42:8080/api/board/list");
     resDto dto = resDto.fromdata(res.data);
     return dto;
   }
 
   Future<dynamic> addBoard(String title, String contents, String category,
       int empNo, String mailAddress) async {
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/add");
+    var uri = Uri.parse("http://192.168.0.42:8080/api/board/add");
 
     Map data = {
       'title': title,
@@ -100,7 +99,7 @@ class BoardDio {
       'mailAddress': mailAddress
     };
     var body = json.encode(data);
-    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.post(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
@@ -108,7 +107,7 @@ class BoardDio {
   Future<dynamic> modBoard(String title, String contents, String category,
       String mailAddress, int boardNo) async {
     print('zz');
-    var uri = Uri.parse("http://192.168.0.51:8080/api/board/$boardNo");
+    var uri = Uri.parse("http://192.168.0.42:8080/api/board/$boardNo");
     print(uri);
 
     Map data = {
@@ -120,7 +119,7 @@ class BoardDio {
     };
     var body = json.encode(data);
     print(body);
-    var response = await DioInterceptor.dio.put(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.put(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
@@ -128,7 +127,7 @@ class BoardDio {
   Future<JsonParser> readBoard(int boardNo) async {
     print("readpage");
     Response res = await DioInterceptor.dio
-        .get("http://192.168.0.51:8080/api/board/read/$boardNo");
+        .get("http://192.168.0.42:8080/api/board/read/$boardNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
