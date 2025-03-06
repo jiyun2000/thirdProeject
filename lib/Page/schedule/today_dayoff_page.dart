@@ -11,12 +11,13 @@ import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
+// 이벤트 클래스 정의
 class Event {
-  final int empNo;
-  final DateTime startDate; 
-  final DateTime endDate;  
-  final String title;
-  final String type;
+  final int empNo;  // 직원 번호
+  final DateTime startDate;  // 시작 날짜
+  final DateTime endDate;    // 종료 날짜
+  final String title;        // 제목
+  final String type;         // 유형 (연차 등)
 
   Event({
     this.empNo = 0,
@@ -27,8 +28,9 @@ class Event {
   });
 }
 
+// 오늘 연차 페이지 클래스
 class TodayDayOffPage extends StatefulWidget {
-  final DateTime dayOffDate;
+  final DateTime dayOffDate;  // 연차 날짜
   const TodayDayOffPage({super.key, required this.dayOffDate});
 
   @override
@@ -41,6 +43,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
   late CalendarFormat _calendarFormat;
   List<Event> _deptAllEvents = [];
 
+  // 직원 번호 가져오기
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('empNo') ?? 0;
@@ -48,16 +51,19 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
 
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
+  // 부서 번호 가져오기
   Future<int> getDeptNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt("deptNo") ?? 0;
   }
 
+  // 이메일 가져오기
   Future<String> getEmail() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('email') ?? '이메일 없음';
   }
 
+  // 이름 가져오기
   Future<String> getName(int empNo) async {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
     return '${jsonParser.firstName} ${jsonParser.lastName}';
@@ -69,26 +75,25 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
     _focusedDay = widget.dayOffDate;
     _selectedDay = widget.dayOffDate;
     _calendarFormat = CalendarFormat.month;
-    _loadAllDayOffEvents(); 
+    _loadAllDayOffEvents();  // 연차 이벤트 로드
   }
 
+  // 연차 이벤트를 모두 로드하는 함수
   Future<void> _loadAllDayOffEvents() async {
-  var result = await todayDayOffDio().getAllDayOffList(); 
+    var result = await todayDayOffDio().getAllDayOffList(); 
 
-  List<Event> events = result.map((e) => Event(
-    empNo: e.empNo,
-    startDate: e.dayOffDate, 
-    endDate: e.dayOffDate,    
-    title: '연차',
-    type: 'dayoff'
-  )).toList();
+    List<Event> events = result.map((e) => Event(
+      empNo: e.empNo,
+      startDate: e.dayOffDate, 
+      endDate: e.dayOffDate,    
+      title: '연차',
+      type: 'dayoff'
+    )).toList();
 
-
-  setState(() {
-    _deptAllEvents = events;
-  });
-}
-
+    setState(() {
+      _deptAllEvents = events;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +106,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       drawer: Drawer(
         child: ListView(
           children: [
+            // 이메일과 이름을 불러오는 FutureBuilder
             FutureBuilder<String>(
               future: getEmail(),
               builder: (context, emailSnapshot) {
@@ -153,6 +159,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                 }
               },
             ),
+            // 다른 메뉴 아이템들
             ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
@@ -247,73 +254,75 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
           ],
         ),
       ),
-       body: Column(
-      children: [
-        TableCalendar(
-          focusedDay: _focusedDay,
-          firstDay: DateTime(2024, 1, 1),
-          lastDay: DateTime(2030, 12, 31),
-          calendarFormat: _calendarFormat,
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          calendarBuilders: CalendarBuilders(
-            markerBuilder: (context, day, List<dynamic> events) {
-              List<Event> dayEvents = _deptAllEvents.where((event) {
-                return isSameDay(day, event.startDate); 
-              }).toList();
+      body: Column(
+        children: [
+          // 테이블 캘린더 표시
+          TableCalendar(
+            focusedDay: _focusedDay,
+            firstDay: DateTime(2024, 1, 1),
+            lastDay: DateTime(2030, 12, 31),
+            calendarFormat: _calendarFormat,
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (context, day, List<dynamic> events) {
+                List<Event> dayEvents = _deptAllEvents.where((event) {
+                  return isSameDay(day, event.startDate); 
+                }).toList();
 
-              if (dayEvents.isNotEmpty) {
-                return Container(
-                  width: 35,
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.5),
-                    shape: BoxShape.circle,
+                if (dayEvents.isNotEmpty) {
+                  return Container(
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              },
+            ),
+            onDaySelected: (selectedDay, focusedDay) async {
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+
+                String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TableEvents(
+                      selectedDay: formattedDate,
+                      type: 'dayoff',  
+                    ),
                   ),
                 );
-              } else {
-                return SizedBox();
               }
             },
+
+            onFormatChanged: (format) {
+              if (_calendarFormat != format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              }
+            },
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
           ),
-          onDaySelected: (selectedDay, focusedDay) async {
-            if (!isSameDay(_selectedDay, selectedDay)) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-
-              String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TableEvents(
-                    selectedDay: formattedDate,
-                    type: 'dayoff',  
-                  ),
-                ),
-              );
-            }
-          },
-
-          onFormatChanged: (format) {
-            if (_calendarFormat != format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            }
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }
 
+// 연차 사용 인원 목록 페이지
 class TableEvents extends StatefulWidget {
   final String selectedDay;
   final String type; 
@@ -326,6 +335,10 @@ class TableEvents extends StatefulWidget {
 
 class _TableEventsState extends State<TableEvents> {
   late final ValueNotifier<List<Event>> _selectedEvents;
+  Future<String> getName(int empNo) async {
+    var jsonParser = await Employeesdio().findByEmpNo(empNo);
+    return '${jsonParser.firstName} ${jsonParser.lastName}';
+  }
 
   @override
   void initState() {
@@ -334,6 +347,7 @@ class _TableEventsState extends State<TableEvents> {
     _getEventsForDay(widget.selectedDay);
   }
 
+  // 연차 이벤트를 불러오는 함수
   Future<void> _getEventsForDay(String? day) async {
     if (day == null) return;
 
@@ -373,9 +387,20 @@ class _TableEventsState extends State<TableEvents> {
                 itemCount: events.length,
                 itemBuilder: (context, index) {
                   Event event = events[index];
-                  return ListTile(
-                    title: Text('사원 번호: ${event.empNo}'),
-                  );
+                    return FutureBuilder(future:getName(event.empNo), 
+                    builder: (context, snapshot) {
+                      if(snapshot.connectionState == ConnectionState.waiting){
+                        return Center(child: CircularProgressIndicator());
+                      }else if(snapshot.hasError){
+                        return Center(child: Text('Error : ${snapshot.error}'));
+                      }else if(snapshot.hasData){
+                          return ListTile(
+                        title: Text('이름: ${snapshot.data}'),
+                      );
+                      }
+                      return Container();
+                    },);
+                    
                 },
               );
             },
@@ -386,4 +411,3 @@ class _TableEventsState extends State<TableEvents> {
     );
   }
 }
-

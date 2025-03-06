@@ -72,6 +72,34 @@ class _ComwidgetState extends State<Comwidget> {
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
                   ),
                 ),
+//       child: Center(
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: [
+//             Row(
+//               children: [
+//               ],
+//             ),
+//             Row(
+//               spacing: 25,
+//               children: [
+//                 ElevatedButton(
+//                     onPressed: (() {
+//                       if (GeoCheck().getCurrentPosition()) {
+//                         return;
+//                       }
+//                       set();
+//                     }),
+//                     child: Text("출근")),
+//                 ElevatedButton(
+//                     onPressed: (() {
+//                       if (GeoCheck().getCurrentPosition()) {
+//                         return;
+//                       }
+//                       checkOut();
+//                     }),
+//                     child: Text("퇴근"))
               ],
             ),
           ],
