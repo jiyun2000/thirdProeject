@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Dio/reportDio/reportDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
+import 'package:thirdproject/Page/report/normal_report_add_page.dart';
 import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/report/report_read_page.dart';
 import 'package:thirdproject/Page/report/sent_report_list_page.dart';
@@ -22,7 +24,14 @@ class ReceivedReportListPage extends StatefulWidget {
 }
 
 class _ReceivedReportListState extends State<ReceivedReportListPage> {
+  final ValueNotifier<bool> isDialOpen =
+      ValueNotifier(false); // ✅ SpeedDial 상태 변수 추가
 
+  // ✅ 메뉴 클릭 시 닫힌 후 이동하는 함수
+  void _navigateAndClose(Function() navigation) {
+    isDialOpen.value = false; // ✅ 메뉴 닫기
+    Future.delayed(const Duration(milliseconds: 300), navigation);
+  }
   
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
@@ -114,7 +123,6 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
             ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('홈'),
               onTap: () {
                 Navigator.push(
@@ -126,19 +134,15 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
             ListTile(
               leading: Icon(Icons.notifications_none_sharp),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('공지사항'),
               onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BoardPage()),
-                );
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => const BoardPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.report),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('보고서'),
               onTap: () async {
                 var prefs = await SharedPreferences.getInstance();
@@ -156,19 +160,17 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
             ListTile(
               leading: Icon(Icons.calendar_month),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('일정'),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CalendarPage()),
-                );
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CalendarPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.travel_explore_sharp),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('오늘 연차'),
               onTap: () {
                 Navigator.push(
@@ -183,19 +185,15 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
             ListTile(
               leading: Icon(Icons.person),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('마이페이지'),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyPage()),
-                );
+                    context, MaterialPageRoute(builder: (context) => MyPage()));
               },
             ),
             ListTile(
               leading: Icon(Icons.logout),
               iconColor: Colors.purple,
-              focusColor: Colors.purple,
               title: Text('로그아웃'),
               onTap: () {
                 !DioInterceptor.isLogin();
@@ -298,17 +296,43 @@ class _ReceivedReportListState extends State<ReceivedReportListPage> {
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => ReportAddPage(empNo: widget.empNo),
-            ),
-          );
-        },
-        icon: const Icon(Icons.add),
-        label: const Text('연차 등록'),
+      floatingActionButton: SpeedDial(
+        icon: Icons.add,
+        activeIcon: Icons.close,
+        backgroundColor: Colors.purple[100],
+        overlayColor: Colors.black,
+        overlayOpacity: 0.5,
+        spacing: 10,
+        spaceBetweenChildren: 10,
+        closeManually: true,
+        openCloseDial: isDialOpen, // ✅ 상태 연동
+
+        children: [
+          SpeedDialChild(
+            child: Icon(Icons.assignment),
+            label: '보고서 등록',
+            backgroundColor: Colors.purple[100],
+            onTap: () => _navigateAndClose(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          NormalReportAddPage(empNo: widget.empNo)));
+            }),
+          ),
+          SpeedDialChild(
+            child: Icon(Icons.beach_access),
+            label: '연차 등록',
+            backgroundColor: Colors.purple[100],
+            onTap: () => _navigateAndClose(() {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          ReportAddPage(empNo: widget.empNo)));
+            }),
+          ),
+        ],
       ),
     );
   }

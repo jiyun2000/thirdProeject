@@ -156,11 +156,11 @@ class _BoardState extends State<BoardReadpage> {
               return ListView(
                 children: [
                   Text(
-                    '${jsonParser.title}',
+                    jsonParser.title,
                     style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                   ),
                   Text(
-                    '${DateFormat('yyyy-MM-dd HH:mm').format(jsonParser.modDate)}',
+                    DateFormat('yyyy-MM-dd HH:mm').format(jsonParser.modDate),
                     style: TextStyle(fontSize: 14),
                     textAlign: TextAlign.left,
                   ),
@@ -169,7 +169,7 @@ class _BoardState extends State<BoardReadpage> {
                   //   style: TextStyle(fontSize: 14), textAlign: TextAlign.center,
                   // ),
                   Text(
-                    '${jsonParser.mailAddress}',
+                    jsonParser.mailAddress,
                     style: TextStyle(fontSize: 14),
                     textAlign: TextAlign.right,
                   ),
