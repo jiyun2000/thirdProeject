@@ -79,7 +79,7 @@ class EmpDetailDio {
 
   Future<List<DropdownItem<int>>> getAllEmpListToDropDown(int empNo) async {
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/api/employees/list/detail");
+        .get("http://192.168.0.42:8080/api/employees/list/detail");
     List<dynamic> data = List.from(res.data);
     // 서버에서 반환된 리스트 데이터를 JsonParser로 변환
     List<JsonParser> jsonList =

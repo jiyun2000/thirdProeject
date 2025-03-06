@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
@@ -51,19 +52,66 @@ class _MyPageState extends State<MyPage> {
       drawer: Drawer(
         child: ListView(
           children: [
-            UserAccountsDrawerHeader(
-              currentAccountPicture: CircleAvatar(
-                backgroundImage: AssetImage("assets/image/logo.svg"),
-              ),
-              accountEmail: Text("admin"),
-              accountName: Text("관리자"),
-              // onDetailsPressed: (){},
-              decoration: BoxDecoration(
-                  color: Colors.deepPurple,
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                  )),
+            FutureBuilder<String>(
+              future: getEmail(),
+              builder: (context, emailSnapshot) {
+                if (emailSnapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                } else if (emailSnapshot.hasError) {
+                  return Center(child: Text('Error: ${emailSnapshot.error}'));
+                } else if (emailSnapshot.hasData) {
+                  return FutureBuilder<int>(
+                    future: getEmpNo(),
+                    builder: (context, empNoSnapshot) {
+                      if (empNoSnapshot.connectionState ==
+                          ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (empNoSnapshot.hasError) {
+                        return Center(
+                            child: Text('Error: ${empNoSnapshot.error}'));
+                      } else if (empNoSnapshot.hasData) {
+                        int empNo = empNoSnapshot.data!;
+                        return FutureBuilder<String>(
+                          future: getName(empNo),
+                          builder: (context, nameSnapshot) {
+                            if (nameSnapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return Center(child: CircularProgressIndicator());
+                            } else if (nameSnapshot.hasError) {
+                              return Center(
+                                  child: Text('Error: ${nameSnapshot.error}'));
+                            } else if (nameSnapshot.hasData) {
+                              return UserAccountsDrawerHeader(
+                                currentAccountPicture: Container(
+                                  child: SvgPicture.asset(
+                                    "assets/image/logo.svg",
+                                  ),
+                                ),
+                                accountEmail: Text(emailSnapshot.data!),
+                                accountName: Text(nameSnapshot.data!),
+                                decoration: BoxDecoration(
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
+                                  borderRadius: BorderRadius.only(
+                                    bottomLeft: Radius.circular(10.0),
+                                    bottomRight: Radius.circular(10.0),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Center(child: Text('이름 실패'));
+                            }
+                          },
+                        );
+                      } else {
+                        return Center(child: Text('empNo 실패'));
+                      }
+                    },
+                  );
+                } else {
+                  return Center(child: Text('이메일 실패'));
+                }
+              },
             ),
             ListTile(
               leading: Icon(Icons.home),
@@ -155,60 +203,115 @@ class _MyPageState extends State<MyPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: () {},
-              // trailing: Icon(Icons.navigate_next),
+              onTap: () {
+                !DioInterceptor.isLogin();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainApp()));
+              },
             ),
           ],
         ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: FutureBuilder<int>(
-          future: getEmpNo(),
-          builder: (context, empNoSnapshot) {
-            if (empNoSnapshot.connectionState == ConnectionState.waiting) {
-              return Center(child: CircularProgressIndicator());
-            } else if (empNoSnapshot.hasError) {
-              return Center(child: Text('Error:${empNoSnapshot.error}'));
-            } else if (empNoSnapshot.hasData) {
-              int empNo = empNoSnapshot.data!;
-              return FutureBuilder(
-                future: Employeesdio().findByEmpNo(empNo),
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator());
-                  } else if (snapshot.hasError) {
-                    return Center(child: Text('에러 : ${snapshot.error}'));
-                  } else if (snapshot.hasData) {
-                    JsonParser jsonParser = snapshot.data!;
-                    return ListView(
-                      children: [
-                        _buildProfileCard('사원번호', jsonParser.empNo.toString()),
-                        _buildProfileCard('이름', '${jsonParser.firstName} ${jsonParser.lastName}'),
-                        _buildProfileCard('메일주소', jsonParser.mailAddress),
-                        _buildProfileCard('주소', jsonParser.address),
-                        _buildProfileCard('전화번호', '${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}'),
-                        _buildProfileCard('성별', jsonParser.gender == 'm' ? '남성' : '여성'),
-                        _buildProfileCard('생일', DateFormat("yyyy-MM-dd").format(jsonParser.birthday)),
-                        _buildProfileCard('주민등록번호', '${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}'),
-                        _buildProfileCard('입사일', DateFormat("yyyy-MM-dd").format(jsonParser.hireDate)),
-                        _buildProfileCard('부서번호', jsonParser.deptNo.toString()),
-                        _buildProfileCard('연봉', jsonParser.salary.toString()),
-                        //_buildProfileCard('직책번호', jsonParser.jobNo.toString()),
-                        
-                        
-                      ],
-                    );
-                  } else {
-                    return Center(child: Text('데이터를 불러오는 데 실패했습니다.'));
-                  }
-                },
-              );
-            } else {
-              return Center(child: Text('사원 정보를 불러오는 데 실패했습니다.'));
-            }
-          },
-        ),
+      body: Column(
+        children: [
+          FutureBuilder<int>(
+            future: getEmpNo(),
+            builder: (context, empNoSnapshot) {
+              if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                return Center(child: CircularProgressIndicator());
+              } else if (empNoSnapshot.hasError) {
+                return Center(child: Text('Error:${empNoSnapshot.error}'));
+              } else if (empNoSnapshot.hasData) {
+                int empNo = empNoSnapshot.data!;
+                return FutureBuilder(
+                  future: Employeesdio().findByEmpNo(empNo),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('에러 : ${snapshot.error}'));
+                    } else if (snapshot.hasData) {
+                      JsonParser jsonParser = snapshot.data!;
+                      return Expanded(
+                        child: ListView(
+                          padding: EdgeInsets.symmetric(
+                              vertical: 20, horizontal: 16),
+                          children: [
+                            Text(
+                              '사원번호 : ${jsonParser.empNo}',
+                              style: TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '이름 : ${jsonParser.firstName} ${jsonParser.lastName}',
+                              style: TextStyle(
+                                  fontSize: 22, fontWeight: FontWeight.bold),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '메일주소 : ${jsonParser.mailAddress}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '주소 : ${jsonParser.address}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '전화번호 : ${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '성별 : ${jsonParser.gender == 'm' ? '남성' : '여성'}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '주민등록번호 : ${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '입사일 : ${DateFormat("yyyy-MM-dd").format(jsonParser.hireDate)}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '연봉 : ${jsonParser.salary}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '직책번호 : ${jsonParser.jobNo}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '생일 : ${DateFormat("yyyy-MM-dd").format(jsonParser.birthday)}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                            SizedBox(height: 10),
+                            Text(
+                              '부서번호 : ${jsonParser.deptNo}',
+                              style: TextStyle(fontSize: 20),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return Center(child: Text('데이터 x'));
+                    }
+                  },
+                );
+              } else {
+                return Center(child: Text('데이터를 불러오는데 실패하였습니다.'));
+              }
+            },
+          ),
+        ],
       ),
     );
   }

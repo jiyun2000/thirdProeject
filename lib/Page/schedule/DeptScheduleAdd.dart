@@ -24,7 +24,8 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
   int? _empNo;
   int? _dpetNo;
 
-   void initState() {
+  @override
+  void initState() {
     super.initState();
     _loadEmpNo();
     _loadDeptNo();
@@ -33,27 +34,25 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
   Future<void> _loadEmpNo() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _empNo = prefs.getInt("empNo"); 
+      _empNo = prefs.getInt("empNo");
       if (_empNo != null) {
-        _empNoController.text = _empNo.toString(); 
+        _empNoController.text = _empNo.toString();
       }
     });
   }
-
 
   Future<void> _loadDeptNo() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      _dpetNo = prefs.getInt("deptNo"); 
+      _dpetNo = prefs.getInt("deptNo");
       if (_dpetNo != null) {
-        _deptNoController.text = _dpetNo.toString(); 
+        _deptNoController.text = _dpetNo.toString();
       }
     });
   }
 
-
-  Future<void> _selectDateTime(
-      BuildContext context, TextEditingController controller, bool isStart) async {
+  Future<void> _selectDateTime(BuildContext context,
+      TextEditingController controller, bool isStart) async {
     DateTime now = DateTime.now();
     DateTime initialDate = now;
 
@@ -111,9 +110,9 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
+        backgroundColor: Colors.white,
         title: Text('부서 일정 등록'),
       ),
       body: Card(
@@ -208,7 +207,6 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                     }
                     DateTime startDate;
                     DateTime endDate;
-          
                     try {
                       startDate = format.parse(_startDateController.text);
                     } catch (e) {

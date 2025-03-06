@@ -17,12 +17,11 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
   final MultiSelectController<int> _receiversController =
       MultiSelectController();
   final TextEditingController _contentController = TextEditingController();
-  final TextEditingController _titleController =
-      TextEditingController(); // ✅ 제목 입력 추가
+  final TextEditingController _titleController = TextEditingController();
   DateTime date = DateTime.now();
   List<int> selectedItems = [];
   List<int> sendingItems = [];
-  String? selectedFilePath; // ✅ 선택한 파일 경로 저장
+  List<PlatformFile> selectedFiles = []; // 여러 개의 파일 저장
 
   final ValueNotifier<List<int>> _sendingItemsNotifier = ValueNotifier([]);
 
@@ -32,24 +31,32 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
     super.dispose();
   }
 
-  // ✅ 파일 선택 함수
-  Future<void> _pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles();
+  // ✅ 여러 개의 파일 선택 함수
+  Future<void> _pickFiles() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        allowMultiple: true, // ✅ 여러 개 선택 가능
+      );
 
-    if (result != null && result.files.isNotEmpty) {
-      setState(() {
-        selectedFilePath = result.files.single.name; // 파일 이름만 저장
-      });
-    } else {
-      setState(() {
-        selectedFilePath = null;
-      });
+      if (result != null && result.files.isNotEmpty) {
+        setState(() {
+          selectedFiles = result.files; // 전체 파일 리스트 저장
+        });
+      } else {
+        // 사용자가 파일 선택을 취소한 경우
+        setState(() {
+          selectedFiles = [];
+        });
+      }
+    } catch (e) {
+      print('파일 선택 중 오류 발생: $e');
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('보고서 추가 ✍️'),
       ),
@@ -57,22 +64,6 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
-              // ✅ 제목 입력 필드 추가
-              SizedBox(
-                width: MediaQuery.of(context).size.width * 0.5 >= 250
-                    ? MediaQuery.of(context).size.width * 0.5
-                    : 250,
-                child: TextField(
-                  controller: _titleController,
-                  decoration: InputDecoration(
-                    hintText: "제목을 입력하세요",
-                    labelText: '제목',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -98,6 +89,22 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
                     ),
                   ),
                 ],
+              ),
+              SizedBox(height: 20),
+
+              // ✅ 제목 입력 필드 추가
+              SizedBox(
+                width: MediaQuery.of(context).size.width * 0.5 >= 250
+                    ? MediaQuery.of(context).size.width * 0.5
+                    : 250,
+                child: TextField(
+                  controller: _titleController,
+                  decoration: InputDecoration(
+                    hintText: "제목을 입력하세요",
+                    labelText: '제목',
+                    border: OutlineInputBorder(),
+                  ),
+                ),
               ),
               SizedBox(height: 20),
 
@@ -190,12 +197,17 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
 
               // ✅ 파일 선택 버튼 추가
               ElevatedButton(
-                onPressed: _pickFile,
+                onPressed: _pickFiles,
                 child: Text('파일 선택 📂'),
               ),
-              if (selectedFilePath != null) ...[
+              if (selectedFiles.isNotEmpty) ...[
                 SizedBox(height: 10),
-                Text("선택된 파일: $selectedFilePath"),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: selectedFiles
+                      .map((file) => Text("📄 ${file.name}"))
+                      .toList(),
+                ),
               ],
               SizedBox(height: 20),
 
@@ -208,7 +220,7 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
                       date,
                       sendingItems,
                       widget.empNo,
-                      selectedFilePath,
+                      selectedFiles,
                     );
                     Navigator.push(
                       context,
