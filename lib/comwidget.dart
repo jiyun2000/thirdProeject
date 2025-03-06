@@ -15,37 +15,38 @@ class Comwidget extends StatelessWidget {
     });
     //plushTime();
     return Card(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Row(
-            children: [
-              Text("출근"),
-              Text("$inTime"),
-            ],
-          ),
-          Row(
-            spacing: 25,
-            children: [
-              ElevatedButton(
-                  onPressed: (() {
-                    if (GeoCheck().getCurrentPosition()) {
-                      return;
-                    }
-                    set();
-                  }),
-                  child: Text("출근")),
-              ElevatedButton(
-                  onPressed: (() {
-                    if (GeoCheck().getCurrentPosition()) {
-                      return;
-                    }
-                    checkOut();
-                  }),
-                  child: Text("퇴근"))
-            ],
-          ),
-        ],
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              children: [
+              ],
+            ),
+            Row(
+              spacing: 25,
+              children: [
+                ElevatedButton(
+                    onPressed: (() {
+                      if (GeoCheck().getCurrentPosition()) {
+                        return;
+                      }
+                      set();
+                    }),
+                    child: Text("출근")),
+                ElevatedButton(
+                    onPressed: (() {
+                      if (GeoCheck().getCurrentPosition()) {
+                        return;
+                      }
+                      checkOut();
+                    }),
+                    child: Text("퇴근"))
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
