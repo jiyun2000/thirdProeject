@@ -3,11 +3,13 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
+import 'package:thirdproject/geocheck.dart';
 
 class Comwidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var inTime;
+    GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
       inTime = item.getString("inTime");
     });
@@ -27,9 +29,20 @@ class Comwidget extends StatelessWidget {
             children: [
               ElevatedButton(
                   onPressed: (() {
+                    if (GeoCheck().getCurrentPosition()) {
+                      return;
+                    }
+                    set();
+                  }),
+                  child: Text("출근")),
+              ElevatedButton(
+                  onPressed: (() {
+                    if (GeoCheck().getCurrentPosition()) {
+                      return;
+                    }
                     checkOut();
                   }),
-                  child: Text("1"))
+                  child: Text("퇴근"))
             ],
           ),
         ],
@@ -43,7 +56,15 @@ class Comwidget extends StatelessWidget {
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
     DioInterceptor.dio
-        .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
+        .post("http://192.168.0.51:8080/api/commute/checkout/$empNo");
+  }
+
+  void set() async {
+    var empNo;
+    final sp = await SharedPreferences.getInstance();
+    empNo = sp.get("empNo");
+    sp.setString("inTime", DateTime.now().toString());
+    DioInterceptor.dio.put("http://192.168.0.51:8080/api/commute/set/$empNo");
   }
 
   void plushTime() {
