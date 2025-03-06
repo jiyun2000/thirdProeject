@@ -22,7 +22,13 @@ class Comwidget extends StatelessWidget {
           ),
           Row(
             spacing: 25,
-            children: [ElevatedButton(onPressed: (() {checkOut();}), child: Text("1"))],
+            children: [
+              ElevatedButton(
+                  onPressed: (() {
+                    checkOut();
+                  }),
+                  child: Text("1"))
+            ],
           ),
         ],
       ),
@@ -30,12 +36,13 @@ class Comwidget extends StatelessWidget {
   }
 
   void checkOut() {
+    var empNo;
     SharedPreferences.getInstance().then((item) {
       var time = DateTime.now();
-      item.setString("inTime", time.toString());
-      DioInterceptor.dio.put(
-          "http://192.168.0.51:8080/api/commute/checkout/${item.getString('empNo').toString()}");
+      empNo = item.setString("inTime", time.toString());
     });
+    DioInterceptor.dio
+        .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
   }
 
   void plushTime() {
