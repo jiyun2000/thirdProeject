@@ -38,6 +38,7 @@ class _MyPageState extends State<MyPage> {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
     return '${jsonParser.firstName} ${jsonParser.lastName}';
   }
+  
 
   @override
   Widget build(BuildContext context) {
