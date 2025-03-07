@@ -46,6 +46,7 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     bool t = true;
                     SharedPreferences.getInstance().then((item) {
+                      if(item.getString("inTime") == null) return;
                       t = DateTime.now().isAfter(
                           DateTime.parse(item.getString("inTime").toString()));
                     });
@@ -66,6 +67,7 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     bool t = true;
                     SharedPreferences.getInstance().then((item) {
+                      if(item.getString("outTime") == null) return;
                       t = DateTime.now().isAfter(
                           DateTime.parse(item.getString("inTime").toString()));
                     });
@@ -90,7 +92,7 @@ class _ComwidgetState extends State<Comwidget> {
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://192.168.0.51:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.post("http://211.248.242.138:8080/api/commute/set/$empNo");
   }
 
   void checkOut() async {
@@ -99,7 +101,7 @@ class _ComwidgetState extends State<Comwidget> {
     empNo = sp.get("empNo");
     sp.setString("outTime", DateTime.now().toString());
     DioInterceptor.dio
-        .post("http://192.168.0.51:8080/api/commute/checkout/$empNo");
+        .post("http://211.248.242.138:8080/api/commute/checkout/$empNo");
   }
 
   void set() async {
@@ -107,7 +109,7 @@ class _ComwidgetState extends State<Comwidget> {
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.put("http://192.168.0.51:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.put("http://211.248.242.138:8080/api/commute/set/$empNo");
   }
 
   void plushTime() {
