@@ -44,20 +44,23 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    // bool t = true;
-                    // SharedPreferences.getInstance().then((item) {
-                    //   if (item.getString("inTime") != null) {
-                    //     t = DateTime.now().isAfter(DateTime.parse(
-                    //         item.getString("inTime").toString()));
-                    //   }
-                    // });
-                    // if (t) {
-                    //   return;
-                    // }
+                    try {
+                      bool t = true;
+                      SharedPreferences.getInstance().then((item) {
+                        if (item.getString("inTime") != null) {
+                          t = DateTime.now().isAfter(DateTime.parse(
+                              item.getString("inTime").toString()));
+                        }
+                      });
+                      if (t) {
+                        return;
+                      }
+                    } catch (e) {
+                      print(e.toString());
+                    }
                     set();
                     setState(() {
                       _inTime = DateFormat("hh:MM").format(DateTime.now());
-                      ;
                     });
                   }),
                   child: Text("출근")),
@@ -66,16 +69,20 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    // bool t = true;
-                    // SharedPreferences.getInstance().then((item) {
-                    //   if (item.getString("outTime") != null) {
-                    //     t = DateTime.now().isAfter(DateTime.parse(
-                    //         item.getString("outTime").toString()));
-                    //   }
-                    // });
-                    // if (t) {
-                    //   return;
-                    // }
+                    try {
+                      bool t = true;
+                      SharedPreferences.getInstance().then((item) {
+                        if (item.getString("outTime") != null) {
+                          t = DateTime.now().isAfter(DateTime.parse(
+                              item.getString("outTime").toString()));
+                        }
+                      });
+                      if (t) {
+                        return;
+                      }
+                    } catch (e) {
+                      print(e.toString());
+                    }
                     checkOut();
                     setState(() {
                       _outTime = DateFormat("hh:MM").format(DateTime.now());
