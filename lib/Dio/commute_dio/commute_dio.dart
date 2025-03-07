@@ -20,7 +20,7 @@ class CommuteJsonParser {
         commNo: json['commNo'],
         checkDate: json['checkDate'],
         checkInTime: json['checkInTime'],
-        checkOutTime: json['checkOutTime'],
+        checkOutTime: json['checkOutTime'] ?? "--:--",
         empNo: json['empNo'],
       );
 
@@ -40,7 +40,13 @@ class CommuteDio {
     Response res = await DioInterceptor.dio
         .get("http://192.168.0.14:8080/api/commute/todayCommute/$empNo");
 
-    Map<String, dynamic> mapRes = res.data;
+    print("🚀 서버 응답 데이터: ${res.data}");
+    print(res.data['checkOutTime']);
+
+    Map<String, dynamic> mapRes = Map<String, dynamic>.from(res.data);
+    //checkOutTime이 null이면 "--:--" 기본값 사용
+    mapRes['checkOutTime'] = mapRes['checkOutTime'] ?? "--:--";
+
     CommuteJsonParser jsonParser = CommuteJsonParser.fromJson(mapRes);
     return jsonParser;
   }
