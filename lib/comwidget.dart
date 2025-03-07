@@ -44,16 +44,16 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    bool t = true;
-                    SharedPreferences.getInstance().then((item) {
-                      if (item.getString("inTime") != null) {
-                        t = DateTime.now().isAfter(DateTime.parse(
-                            item.getString("inTime").toString()));
-                      }
-                    });
-                    if (t) {
-                      return;
-                    }
+                    // bool t = true;
+                    // SharedPreferences.getInstance().then((item) {
+                    //   if (item.getString("inTime") != null) {
+                    //     t = DateTime.now().isAfter(DateTime.parse(
+                    //         item.getString("inTime").toString()));
+                    //   }
+                    // });
+                    // if (t) {
+                    //   return;
+                    // }
                     set();
                     setState(() {
                       _inTime = DateFormat("hh:MM").format(DateTime.now());
@@ -66,16 +66,16 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    bool t = true;
-                    SharedPreferences.getInstance().then((item) {
-                      if (item.getString("outTime") != null) {
-                        t = DateTime.now().isAfter(DateTime.parse(
-                            item.getString("outTime").toString()));
-                      }
-                    });
-                    if (t) {
-                      return;
-                    }
+                    // bool t = true;
+                    // SharedPreferences.getInstance().then((item) {
+                    //   if (item.getString("outTime") != null) {
+                    //     t = DateTime.now().isAfter(DateTime.parse(
+                    //         item.getString("outTime").toString()));
+                    //   }
+                    // });
+                    // if (t) {
+                    //   return;
+                    // }
                     checkOut();
                     setState(() {
                       _outTime = DateFormat("hh:MM").format(DateTime.now());
