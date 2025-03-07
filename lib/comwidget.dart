@@ -21,7 +21,7 @@ class Comwidget extends StatelessWidget {
           Row(
             children: [
               Text("출근"),
-              Text("$inTime"),
+              Text("${inTime == null ? "--:--" : inTime}"),
             ],
           ),
           Row(
