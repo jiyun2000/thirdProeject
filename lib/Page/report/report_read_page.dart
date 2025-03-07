@@ -247,7 +247,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                           itemBuilder: (context, index) {
                             String fileName = report.uploadFileNames[index];
                             String fileUrl =
-                                'http://211.248.242.138:8080/api/report/view/$fileName';
+                                'http://172.20.10.2:8080/api/report/view/$fileName';
                             return Card(
                               child: ListTile(
                                 title: Text('첨부 파일 ${index + 1}'),

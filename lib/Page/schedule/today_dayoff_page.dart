@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:thirdproject/Dio/CalendarDio/todayDayOffDio.dart';  
+import 'package:thirdproject/Dio/CalendarDio/todayDayOffDio.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
@@ -13,22 +13,22 @@ import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
 class Event {
-  final int empNo;  
-  final DateTime startDate;  
-  final DateTime endDate;   
-  final String title;        
-  final String type;     
+  final int empNo;
+  final DateTime startDate;
+  final DateTime endDate;
+  final String title;
+  final String type;
 
-  Event({
-    this.empNo = 0,
-    required this.startDate,  
-    required this.endDate,    
-    required this.title,
-    required this.type
-  });
+  Event(
+      {this.empNo = 0,
+      required this.startDate,
+      required this.endDate,
+      required this.title,
+      required this.type});
 }
+
 class TodayDayOffPage extends StatefulWidget {
-  final DateTime dayOffDate;  
+  final DateTime dayOffDate;
   const TodayDayOffPage({super.key, required this.dayOffDate});
 
   @override
@@ -41,7 +41,6 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
   late CalendarFormat _calendarFormat;
   List<Event> _deptAllEvents = [];
 
-
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('empNo') ?? 0;
@@ -49,18 +48,15 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
 
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
-
   Future<int> getDeptNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt("deptNo") ?? 0;
   }
 
-
   Future<String> getEmail() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('email') ?? '이메일 없음';
   }
-
 
   Future<String> getName(int empNo) async {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
@@ -73,20 +69,20 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
     _focusedDay = widget.dayOffDate;
     _selectedDay = widget.dayOffDate;
     _calendarFormat = CalendarFormat.month;
-    _loadAllDayOffEvents(); 
+    _loadAllDayOffEvents();
   }
 
-
   Future<void> _loadAllDayOffEvents() async {
-    var result = await todayDayOffDio().getAllDayOffList(); 
+    var result = await todayDayOffDio().getAllDayOffList();
 
-    List<Event> events = result.map((e) => Event(
-      empNo: e.empNo,
-      startDate: e.dayOffDate, 
-      endDate: e.dayOffDate,    
-      title: '연차',
-      type: 'dayoff'
-    )).toList();
+    List<Event> events = result
+        .map((e) => Event(
+            empNo: e.empNo,
+            startDate: e.dayOffDate,
+            endDate: e.dayOffDate,
+            title: '연차',
+            type: 'dayoff'))
+        .toList();
 
     setState(() {
       _deptAllEvents = events;
@@ -105,7 +101,6 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       drawer: Drawer(
         child: ListView(
           children: [
-
             FutureBuilder<String>(
               future: getEmail(),
               builder: (context, emailSnapshot) {
@@ -117,26 +112,31 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                   return FutureBuilder<int>(
                     future: getEmpNo(),
                     builder: (context, empNoSnapshot) {
-                      if (empNoSnapshot.connectionState == ConnectionState.waiting) {
+                      if (empNoSnapshot.connectionState ==
+                          ConnectionState.waiting) {
                         return Center(child: CircularProgressIndicator());
                       } else if (empNoSnapshot.hasError) {
-                        return Center(child: Text('Error: ${empNoSnapshot.error}'));
+                        return Center(
+                            child: Text('Error: ${empNoSnapshot.error}'));
                       } else if (empNoSnapshot.hasData) {
                         int empNo = empNoSnapshot.data!;
                         return FutureBuilder<String>(
                           future: getName(empNo),
                           builder: (context, nameSnapshot) {
-                            if (nameSnapshot.connectionState == ConnectionState.waiting) {
+                            if (nameSnapshot.connectionState ==
+                                ConnectionState.waiting) {
                               return Center(child: CircularProgressIndicator());
                             } else if (nameSnapshot.hasError) {
-                              return Center(child: Text('Error: ${nameSnapshot.error}'));
+                              return Center(
+                                  child: Text('Error: ${nameSnapshot.error}'));
                             } else if (nameSnapshot.hasData) {
                               return UserAccountsDrawerHeader(
                                 currentAccountPicture: CircleAvatar(),
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
-                                  color: const Color.fromARGB(255, 255, 255, 255),
+                                  color:
+                                      const Color.fromARGB(255, 255, 255, 255),
                                   borderRadius: BorderRadius.only(
                                     bottomLeft: Radius.circular(10.0),
                                     bottomRight: Radius.circular(10.0),
@@ -158,7 +158,6 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                 }
               },
             ),
-
             ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
@@ -247,7 +246,8 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
               title: Text('로그아웃'),
               onTap: () {
                 !DioInterceptor.isLogin();
-                Navigator.push(context, MaterialPageRoute(builder: (context) => MainApp()));
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainApp()));
               },
             ),
           ],
@@ -255,7 +255,6 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       ),
       body: Column(
         children: [
-
           TableCalendar(
             focusedDay: _focusedDay,
             firstDay: DateTime(2024, 1, 1),
@@ -267,7 +266,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
             calendarBuilders: CalendarBuilders(
               markerBuilder: (context, day, List<dynamic> events) {
                 List<Event> dayEvents = _deptAllEvents.where((event) {
-                  return isSameDay(day, event.startDate); 
+                  return isSameDay(day, event.startDate);
                 }).toList();
 
                 if (dayEvents.isNotEmpty) {
@@ -290,20 +289,20 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                   _focusedDay = focusedDay;
                 });
 
-                String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
+                String formattedDate =
+                    DateFormat("yyyy-MM-dd").format(selectedDay);
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: (context) => TableEvents(
                       selectedDay: formattedDate,
-                      type: 'dayoff',  
+                      type: 'dayoff',
                     ),
                   ),
                 );
               }
             },
-
             onFormatChanged: (format) {
               if (_calendarFormat != format) {
                 setState(() {
@@ -323,9 +322,9 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
 
 class TableEvents extends StatefulWidget {
   final String selectedDay;
-  final String type; 
+  final String type;
 
-  TableEvents({super.key, required this.selectedDay, required this.type});
+  const TableEvents({super.key, required this.selectedDay, required this.type});
 
   @override
   _TableEventsState createState() => _TableEventsState();
@@ -351,13 +350,14 @@ class _TableEventsState extends State<TableEvents> {
 
     if (widget.type == 'dayoff') {
       var result = await todayDayOffDio().getAllList(DateTime.parse(day));
-      List<Event> dayOffevt = result.map((e) => Event(
-        empNo: e.empNo,
-        startDate: e.dayOffDate,
-        endDate: e.dayOffDate,
-        title: '연차',
-        type: 'dayoff'
-      )).toList();
+      List<Event> dayOffevt = result
+          .map((e) => Event(
+              empNo: e.empNo,
+              startDate: e.dayOffDate,
+              endDate: e.dayOffDate,
+              title: '연차',
+              type: 'dayoff'))
+          .toList();
 
       setState(() {
         _selectedEvents.value = dayOffevt;
@@ -369,17 +369,25 @@ class _TableEventsState extends State<TableEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('✈️연차 신청 인원'), backgroundColor: Colors.white, centerTitle: true,),
+      appBar: AppBar(
+        title: Text('✈️연차 신청 인원'),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+      ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Padding(
             padding: EdgeInsets.all(16.0),
             child: Text(
-              widget.selectedDay != null 
-                ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
-                : '선택된 날짜 없음',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+              widget.selectedDay != null
+                  ? DateFormat('yyyy년 MM월 dd일')
+                      .format(DateTime.parse(widget.selectedDay))
+                  : '선택된 날짜 없음',
+              style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black),
             ),
           ),
           Expanded(
@@ -393,13 +401,16 @@ class _TableEventsState extends State<TableEvents> {
                     return FutureBuilder(
                       future: getName(event.empNo),
                       builder: (context, snapshot) {
-                        if (snapshot.connectionState == ConnectionState.waiting) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
                         } else if (snapshot.hasError) {
-                          return Center(child: Text('Error : ${snapshot.error}'));
+                          return Center(
+                              child: Text('Error : ${snapshot.error}'));
                         } else if (snapshot.hasData) {
                           return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            margin: EdgeInsets.symmetric(
+                                vertical: 8, horizontal: 16),
                             elevation: 4,
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(10),
@@ -408,9 +419,11 @@ class _TableEventsState extends State<TableEvents> {
                               contentPadding: EdgeInsets.all(16),
                               title: Text(
                                 '${snapshot.data}',
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                              trailing: Icon(Icons.account_circle, color: Colors.purple),
+                              trailing: Icon(Icons.account_circle,
+                                  color: Colors.purple),
                             ),
                           );
                         }
@@ -430,7 +443,8 @@ class _TableEventsState extends State<TableEvents> {
           int empNo = prefs.getInt("empNo") ?? 0;
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ReportAddPage(empNo: empNo)),
+            MaterialPageRoute(
+                builder: (context) => ReportAddPage(empNo: empNo)),
           );
         },
         child: Icon(Icons.add),

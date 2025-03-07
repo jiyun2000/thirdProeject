@@ -35,7 +35,6 @@ class JsonParser {
         "empNo": empNo,
         "deptNo": deptNo
       };
-
 }
 
 class DeptScheDio {
@@ -44,7 +43,7 @@ class DeptScheDio {
   Future<dynamic> modDeptSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
-        "http://211.248.242.138:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
+        "http://172.20.10.2:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
 
     Map data = {
       'startDate': startDate.toIso8601String(),
@@ -62,7 +61,7 @@ class DeptScheDio {
 
   Future<JsonParser> readDeptSche(int deptNo, int empNo, int deptSchNo) async {
     Response res = await DioInterceptor.dio.get(
-        "http://211.248.242.138:8080/deptSchedule/read/$deptNo/$empNo/$deptSchNo");
+        "http://172.20.10.2:8080/deptSchedule/read/$deptNo/$empNo/$deptSchNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
@@ -74,7 +73,7 @@ class DeptScheDio {
       int empNo, int deptNo, DateTime selectDate) async {
     String formated = DateFormat("yyyy-MM-dd").format(selectDate);
     Response res = await DioInterceptor.dio
-        .get("http://211.248.242.138:8080/deptTodo/read/$empNo/$deptNo/$formated");
+        .get("http://172.20.10.2:8080/deptTodo/read/$empNo/$deptNo/$formated");
     print(res.data);
     print('empNo : $empNo');
     print('deptNo: $deptNo');
@@ -87,7 +86,7 @@ class DeptScheDio {
 
   Future<dynamic> delDeptSche(int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
-        "http://211.248.242.138:8080/deptSchedule/delete/$deptNo/$deptSchNo");
+        "http://172.20.10.2:8080/deptSchedule/delete/$deptNo/$deptSchNo");
 
     var response = await DioInterceptor.dio.delete(uri.toString());
     print(response.data);

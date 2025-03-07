@@ -51,8 +51,7 @@ class _CalendarState extends State<CalendarPage> {
   CalendarFormat _calendarFormat = CalendarFormat.month;
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-   List<Event> _allEvents = [];
-
+  List<Event> _allEvents = [];
 
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
@@ -63,8 +62,6 @@ class _CalendarState extends State<CalendarPage> {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('deptNo') ?? 0;
   }
-
-
 
   @override
   void initState() {
@@ -84,7 +81,7 @@ class _CalendarState extends State<CalendarPage> {
       List<Event> empEvents = (events['empSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] ;
+        String dateOnly = text['scheduleText'];
         int empSchNo = text['empSchNo'];
         return Event(
           title: dateOnly,
@@ -98,7 +95,7 @@ class _CalendarState extends State<CalendarPage> {
       List<Event> deptEvents = (events['deptSchedule'] as List).map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] ;
+        String dateOnly = text['scheduleText'];
         int deptSchNo = text['deptSchNo'];
         return Event(
           title: dateOnly,
@@ -135,7 +132,8 @@ class _CalendarState extends State<CalendarPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('📆일정', style: TextStyle(fontWeight: FontWeight.bold)),
+        title:
+            const Text('📆일정', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       drawer: Drawer(
@@ -377,11 +375,10 @@ class TableEvents extends StatefulWidget {
 class _TableEventsState extends State<TableEvents> {
   late final ValueNotifier<Future<List<Event>>> _selectedEvents;
 
-    List<Event> _allEvents = [];
-    final ValueNotifier<bool> isDialOpen =
-      ValueNotifier(false); 
+  final List<Event> _allEvents = [];
+  final ValueNotifier<bool> isDialOpen = ValueNotifier(false);
 
-     void _navigateAndClose(Function() navigation) {
+  void _navigateAndClose(Function() navigation) {
     isDialOpen.value = false; // ✅ 메뉴 닫기
     Future.delayed(const Duration(milliseconds: 300), navigation);
   }
@@ -397,8 +394,8 @@ class _TableEventsState extends State<TableEvents> {
       var prefs = await SharedPreferences.getInstance();
       int empNo = prefs.getInt("empNo") ?? 0;
       int deptNo = prefs.getInt("deptNo") ?? 0;
-      empDto jsonParser =
-          await CalendarDio().todaySchedule(empNo, deptNo, DateTime.parse(day!));
+      empDto jsonParser = await CalendarDio()
+          .todaySchedule(empNo, deptNo, DateTime.parse(day!));
 
       List<Event> empEvents = jsonParser.empSchedule.map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
@@ -417,7 +414,7 @@ class _TableEventsState extends State<TableEvents> {
       List<Event> deptEvents = jsonParser.deptSchedule.map((text) {
         DateTime startDate = DateTime.parse(text['startDate']);
         DateTime endDate = DateTime.parse(text['endDate']);
-        String dateOnly = text['scheduleText'] ;
+        String dateOnly = text['scheduleText'];
         int deptSchNo = text['deptSchNo'];
         return Event(
           title: '[부서]  $dateOnly',
@@ -455,7 +452,8 @@ class _TableEventsState extends State<TableEvents> {
             padding: const EdgeInsets.all(16.0),
             child: Text(
               widget.selectedDay != null
-                  ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
+                  ? DateFormat('yyyy년 MM월 dd일')
+                      .format(DateTime.parse(widget.selectedDay!))
                   : '선택된 날짜 없음',
               style: TextStyle(
                 fontSize: 24,
@@ -465,7 +463,7 @@ class _TableEventsState extends State<TableEvents> {
             ),
           ),
           Expanded(
-            child: ValueListenableBuilder<Future<List<Event>>>( 
+            child: ValueListenableBuilder<Future<List<Event>>>(
               valueListenable: _selectedEvents,
               builder: (context, futureEvents, _) {
                 return FutureBuilder<List<Event>>(
@@ -567,20 +565,25 @@ class _TableEventsState extends State<TableEvents> {
         openCloseDial: isDialOpen,
         children: [
           SpeedDialChild(
-            child: Icon(Icons.person),
-            label: '개인 일정 등록',
-            backgroundColor: Colors.purple[100],
-            onTap: () => _navigateAndClose((){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => ScheduleAddPage()));
-            })
-          ),
+              child: Icon(Icons.person),
+              label: '개인 일정 등록',
+              backgroundColor: Colors.purple[100],
+              onTap: () => _navigateAndClose(() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => ScheduleAddPage()));
+                  })),
           SpeedDialChild(
-            child: Icon(Icons.group),
-            label: '부서 일정 등록',
-            backgroundColor: Colors.purple[100],
-            onTap: () => _navigateAndClose((){
-              Navigator.push(context, MaterialPageRoute(builder: (context) => DeptScheduleAdd()));
-            }))
+              child: Icon(Icons.group),
+              label: '부서 일정 등록',
+              backgroundColor: Colors.purple[100],
+              onTap: () => _navigateAndClose(() {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => DeptScheduleAdd()));
+                  }))
         ],
       ),
     );

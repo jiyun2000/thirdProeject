@@ -82,14 +82,14 @@ class BoardDio {
 
   Future<resDto> getAllList() async {
     Response res =
-        await DioInterceptor.dio.get("http://211.248.242.138:8080/api/board/list");
+        await DioInterceptor.dio.get("http://172.20.10.2:8080/api/board/list");
     resDto dto = resDto.fromdata(res.data);
     return dto;
   }
 
   Future<dynamic> addBoard(String title, String contents, String category,
       int empNo, String mailAddress) async {
-    var uri = Uri.parse("http://211.248.242.138:8080/api/board/add");
+    var uri = Uri.parse("http://172.20.10.2:8080/api/board/add");
 
     Map data = {
       'title': title,
@@ -107,7 +107,7 @@ class BoardDio {
   Future<dynamic> modBoard(String title, String contents, String category,
       String mailAddress, int boardNo) async {
     print('zz');
-    var uri = Uri.parse("http://211.248.242.138:8080/api/board/$boardNo");
+    var uri = Uri.parse("http://172.20.10.2:8080/api/board/$boardNo");
     print(uri);
 
     Map data = {
@@ -127,7 +127,7 @@ class BoardDio {
   Future<JsonParser> readBoard(int boardNo) async {
     print("readpage");
     Response res = await DioInterceptor.dio
-        .get("http://211.248.242.138:8080/api/board/read/$boardNo");
+        .get("http://172.20.10.2:8080/api/board/read/$boardNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);

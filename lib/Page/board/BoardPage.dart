@@ -238,14 +238,17 @@ class _BoardState extends State<BoardPage> {
                         );
                       },
                       itemBuilder: (context, index) {
-                        String regDate = DateFormat("yyyy-MM-dd HH:mm").format(DateTime.parse(parsingList.dtolist[index]['regdate']));
+                        String regDate = DateFormat("yyyy-MM-dd HH:mm").format(
+                            DateTime.parse(
+                                parsingList.dtolist[index]['regdate']));
                         return GestureDetector(
                           onTap: () {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
                                 builder: (context) => BoardReadpage(
-                                  BoardNo: '${parsingList.dtolist[index]['boardNo']}',
+                                  BoardNo:
+                                      '${parsingList.dtolist[index]['boardNo']}',
                                 ),
                               ),
                             );
@@ -254,7 +257,8 @@ class _BoardState extends State<BoardPage> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 8.0),
                                 child: Text(
                                   '${parsingList.dtolist[index]['title']}',
                                   style: TextStyle(
@@ -265,9 +269,10 @@ class _BoardState extends State<BoardPage> {
                                 ),
                               ),
                               Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
                                 child: Text(
-                                  '$regDate',
+                                  regDate,
                                   style: TextStyle(
                                     fontSize: 12,
                                     color: Colors.grey,

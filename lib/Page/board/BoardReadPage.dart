@@ -30,7 +30,7 @@ class _BoardState extends State<BoardReadpage> {
         title: Text("🎙️공지사항", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         centerTitle: true,
-        elevation: 0, 
+        elevation: 0,
       ),
       drawer: Drawer(
         child: ListView(
@@ -50,10 +50,16 @@ class _BoardState extends State<BoardReadpage> {
               ),
             ),
             _buildDrawerItem(Icons.home, '홈', MainPage()),
-            _buildDrawerItem(Icons.notifications_none_sharp, '공지사항', BoardPage()),
-            _buildDrawerItem(Icons.report, '보고서', ReceivedReportListPage(empNo: 0)),
+            _buildDrawerItem(
+                Icons.notifications_none_sharp, '공지사항', BoardPage()),
+            _buildDrawerItem(
+                Icons.report, '보고서', ReceivedReportListPage(empNo: 0)),
             _buildDrawerItem(Icons.calendar_month, '일정', CalendarPage()),
-            _buildDrawerItem(Icons.travel_explore_sharp, '연차', TodayDayOffPage(dayOffDate: DateFormat("yyyy-MM-dd").parse(dayFormat))),
+            _buildDrawerItem(
+                Icons.travel_explore_sharp,
+                '연차',
+                TodayDayOffPage(
+                    dayOffDate: DateFormat("yyyy-MM-dd").parse(dayFormat))),
             _buildDrawerItem(Icons.person, '마이페이지', MyPage()),
             _buildDrawerItem(Icons.logout, '로그아웃', null),
           ],
@@ -76,14 +82,16 @@ class _BoardState extends State<BoardReadpage> {
                   children: [
                     Text(
                       jsonParser.title,
-                      style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                      style:
+                          TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
                     SizedBox(height: 8),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          DateFormat('yyyy-MM-dd HH:mm').format(jsonParser.modDate),
+                          DateFormat('yyyy-MM-dd HH:mm')
+                              .format(jsonParser.modDate),
                           style: TextStyle(fontSize: 14, color: Colors.grey),
                           textAlign: TextAlign.left,
                         ),
@@ -94,7 +102,6 @@ class _BoardState extends State<BoardReadpage> {
                         ),
                       ],
                     ),
-
                     SizedBox(height: 20),
                     Text(
                       jsonParser.content,
@@ -110,15 +117,16 @@ class _BoardState extends State<BoardReadpage> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => BoardModPage(BoardNo: '${jsonParser.boardNo}')),
+                                builder: (context) => BoardModPage(
+                                    BoardNo: '${jsonParser.boardNo}')),
                           );
                         },
-                        child: Text('수정'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
+                        child: Text('수정'),
                       ),
                     ),
                     SizedBox(height: 30),
@@ -129,12 +137,12 @@ class _BoardState extends State<BoardReadpage> {
                         onPressed: () {
                           Navigator.pop(context);
                         },
-                        child: Text('돌아가기'),
                         style: ElevatedButton.styleFrom(
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(12),
                           ),
                         ),
+                        child: Text('돌아가기'),
                       ),
                     ),
                   ],
@@ -148,7 +156,6 @@ class _BoardState extends State<BoardReadpage> {
       ),
     );
   }
-
 
   Widget _buildDrawerItem(IconData icon, String title, Widget? page) {
     return ListTile(
