@@ -12,21 +12,19 @@ class Comwidget extends StatefulWidget {
 }
 
 class _ComwidgetState extends State<Comwidget> {
-  @override
-  String? _inTime;
-  String? _outTime;
+  String? _inTime = "--:--";
+  String? _outTime = "--:--";
   Widget build(BuildContext context) {
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
-      _inTime =
-          item.getString("inTime") ?? "--:--";
-      _outTime = item.getString("outTime") ?? "--:--";
+      try {
+        _inTime = item.getString("inTime") ?? "--:--";
+        _outTime = item.getString("outTime") ?? "--:--";
+      } catch (e) {
+        print("ddddd");
+      }
     });
-    bool t = true;
-    SharedPreferences.getInstance().then((item) {
-      t = DateTime.now()
-          .isAfter(DateTime.parse(item.getString("inTime").toString()));
-    });
+
     //plushTime();
     return Card(
       child: Column(
@@ -46,6 +44,11 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
+                    bool t = true;
+                    SharedPreferences.getInstance().then((item) {
+                      t = DateTime.now().isAfter(
+                          DateTime.parse(item.getString("inTime").toString()));
+                    });
                     if (t) {
                       return;
                     }
@@ -61,6 +64,11 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
+                    bool t = true;
+                    SharedPreferences.getInstance().then((item) {
+                      t = DateTime.now().isAfter(
+                          DateTime.parse(item.getString("inTime").toString()));
+                    });
                     if (t) {
                       return;
                     }
