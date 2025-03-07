@@ -7,13 +7,6 @@ import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
 
 class Comwidget extends StatefulWidget {
-
-=======
-  @override
-  State<Comwidget> createState() => _ComwidgetState();
-}
-
-
   @override
   State<Comwidget> createState() => _ComwidgetState();
 }
@@ -24,7 +17,6 @@ class _ComwidgetState extends State<Comwidget> {
   Widget build(BuildContext context) {
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
-
       try {
         _inTime = item.getString("inTime") ?? "--:--";
         _outTime = item.getString("outTime") ?? "--:--";
@@ -48,98 +40,49 @@ class _ComwidgetState extends State<Comwidget> {
             spacing: 25,
             children: [
               ElevatedButton(
-
                   onPressed: (() {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    try {
-                      bool t = true;
-                      SharedPreferences.getInstance().then((item) {
-                        if (item.getString("inTime") != null) {
-                          t = DateTime.now().isAfter(DateTime.parse(
-                              item.getString("inTime").toString()));
-                        }
-                      });
-                      if (t) {
-                        return;
-                      }
-                    } catch (e) {
-                      print(e.toString());
+                    bool t = true;
+                    SharedPreferences.getInstance().then((item) {
+                      if(item.getString("inTime") == null) return;
+                      t = DateTime.now().isAfter(
+                          DateTime.parse(item.getString("inTime").toString()));
+                    });
+                    if (t) {
+                      return;
                     }
                     set();
                     setState(() {
                       _inTime = DateFormat("hh:MM").format(DateTime.now());
+                      ;
                     });
                   }),
-                  icon: Icon(Icons.login),
-                  label: Text("출근"),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  ),
-                ),
-                ElevatedButton.icon(
+                  child: Text("출근")),
+              ElevatedButton(
                   onPressed: (() {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    try {
-                      bool t = true;
-                      SharedPreferences.getInstance().then((item) {
-                        if (item.getString("outTime") != null) {
-                          t = DateTime.now().isAfter(DateTime.parse(
-                              item.getString("outTime").toString()));
-                        }
-                      });
-                      if (t) {
-                        return;
-                      }
-                    } catch (e) {
-                      print(e.toString());
+                    bool t = true;
+                    SharedPreferences.getInstance().then((item) {
+                      if(item.getString("outTime") == null) return;
+                      t = DateTime.now().isAfter(
+                          DateTime.parse(item.getString("inTime").toString()));
+                    });
+                    if (t) {
+                      return;
                     }
                     checkOut();
                     setState(() {
                       _outTime = DateFormat("hh:MM").format(DateTime.now());
                     });
                   }),
-                  icon: Icon(Icons.logout),
-                  label: Text("퇴근"),
-                  style: ElevatedButton.styleFrom(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                  ),
-                ),
-//       child: Center(
-//         child: Column(
-//           mainAxisSize: MainAxisSize.min,
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             Row(
-//               children: [
-//               ],
-//             ),
-//             Row(
-//               spacing: 25,
-//               children: [
-//                 ElevatedButton(
-//                     onPressed: (() {
-//                       if (GeoCheck().getCurrentPosition()) {
-//                         return;
-//                       }
-//                       set();
-//                     }),
-//                     child: Text("출근")),
-//                 ElevatedButton(
-//                     onPressed: (() {
-//                       if (GeoCheck().getCurrentPosition()) {
-//                         return;
-//                       }
-//                       checkOut();
-//                     }),
-//                     child: Text("퇴근"))
-              ],
-            ),
-          ],
-        ),
+                  child: Text("퇴근"))
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -149,7 +92,7 @@ class _ComwidgetState extends State<Comwidget> {
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://192.168.0.51:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.post("http://211.248.242.138:8080/api/commute/set/$empNo");
   }
 
   void checkOut() async {
@@ -158,7 +101,7 @@ class _ComwidgetState extends State<Comwidget> {
     empNo = sp.get("empNo");
     sp.setString("outTime", DateTime.now().toString());
     DioInterceptor.dio
-        .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
+        .post("http://211.248.242.138:8080/api/commute/checkout/$empNo");
   }
 
   void set() async {
@@ -166,7 +109,7 @@ class _ComwidgetState extends State<Comwidget> {
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://192.168.0.51:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.put("http://211.248.242.138:8080/api/commute/set/$empNo");
   }
 
   void plushTime() {
@@ -177,6 +120,4 @@ class _ComwidgetState extends State<Comwidget> {
       }
     });
   }
-
-  
 }
