@@ -46,8 +46,10 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     bool t = true;
                     SharedPreferences.getInstance().then((item) {
-                      t = DateTime.now().isAfter(
-                          DateTime.parse(item.getString("inTime").toString()));
+                      if (item.getString("inTime") != null) {
+                        t = DateTime.now().isAfter(DateTime.parse(
+                            item.getString("inTime").toString()));
+                      }
                     });
                     if (t) {
                       return;
@@ -66,8 +68,10 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     bool t = true;
                     SharedPreferences.getInstance().then((item) {
-                      t = DateTime.now().isAfter(
-                          DateTime.parse(item.getString("inTime").toString()));
+                      if (item.getString("outTime") != null) {
+                        t = DateTime.now().isAfter(DateTime.parse(
+                            item.getString("outTime").toString()));
+                      }
                     });
                     if (t) {
                       return;
