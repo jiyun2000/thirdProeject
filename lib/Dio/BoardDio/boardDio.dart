@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'package:dio/dio.dart';
-import 'package:http/http.dart' as http;
 import 'package:thirdproject/diointercept%20.dart';
 
 class JsonParser {
@@ -83,7 +82,7 @@ class BoardDio {
 
   Future<resDto> getAllList() async {
     Response res =
-        await DioInterceptor.dio.get("http://localhost:8080/api/board/list");
+        await DioInterceptor.dio.get("http://192.168.0.51:8080/api/board/list");
     resDto dto = resDto.fromdata(res.data);
     return dto;
   }
@@ -100,7 +99,7 @@ class BoardDio {
       'mailAddress': mailAddress
     };
     var body = json.encode(data);
-    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.post(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
@@ -120,7 +119,7 @@ class BoardDio {
     };
     var body = json.encode(data);
     print(body);
-    var response = await DioInterceptor.dio.put(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.put(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }

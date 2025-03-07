@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
 import 'package:thirdproject/diointercept%20.dart';
@@ -45,8 +44,8 @@ class DeptScheDio {
   Future<dynamic> modDeptSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
-        "http://localhost:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
-   
+        "http://192.168.0.51:8080/deptSchedule/mod/$deptNo/$empNo/$deptSchNo");
+
     Map data = {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
@@ -56,14 +55,14 @@ class DeptScheDio {
       'deptSchNo': '$deptSchNo'
     };
     var body = json.encode(data);
-    var response = await DioInterceptor.dio.put(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.put(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
 
   Future<JsonParser> readDeptSche(int deptNo, int empNo, int deptSchNo) async {
     Response res = await DioInterceptor.dio.get(
-        "http://localhost:8080/deptSchedule/read/$deptNo/$empNo/$deptSchNo");
+        "http://192.168.0.51:8080/deptSchedule/read/$deptNo/$empNo/$deptSchNo");
     print(res.data); //맞음
     Map<String, dynamic> mapRes = res.data;
     JsonParser parser = JsonParser.fromJson(mapRes);
@@ -75,7 +74,7 @@ class DeptScheDio {
       int empNo, int deptNo, DateTime selectDate) async {
     String formated = DateFormat("yyyy-MM-dd").format(selectDate);
     Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/deptTodo/read/$empNo/$deptNo/$formated");
+        .get("http://192.168.0.51:8080/deptTodo/read/$empNo/$deptNo/$formated");
     print(res.data);
     print('empNo : $empNo');
     print('deptNo: $deptNo');
@@ -88,8 +87,8 @@ class DeptScheDio {
 
   Future<dynamic> delDeptSche(int deptNo, int deptSchNo) async {
     var uri = Uri.parse(
-        "http://localhost:8080/deptSchedule/delete/$deptNo/$deptSchNo");
-   
+        "http://192.168.0.51:8080/deptSchedule/delete/$deptNo/$deptSchNo");
+
     var response = await DioInterceptor.dio.delete(uri.toString());
     print(response.data);
     return response.data;

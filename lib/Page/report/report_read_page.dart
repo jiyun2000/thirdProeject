@@ -26,8 +26,10 @@ class _ReportReadPageState extends State<ReportReadPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text("보고서"),
+        backgroundColor: Colors.white,
         centerTitle: true,
       ),
       drawer: Drawer(
@@ -245,7 +247,7 @@ class _ReportReadPageState extends State<ReportReadPage> {
                           itemBuilder: (context, index) {
                             String fileName = report.uploadFileNames[index];
                             String fileUrl =
-                                'http://localhost:8080/api/report/view/$fileName';
+                                'http://192.168.0.51:8080/api/report/view/$fileName';
                             return Card(
                               child: ListTile(
                                 title: Text('첨부 파일 ${index + 1}'),

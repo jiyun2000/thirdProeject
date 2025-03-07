@@ -20,6 +20,7 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage> {
 
   int? _empNo;
 
+  @override
   void initState() {
     super.initState();
     _loadEmpNo();
@@ -38,10 +39,11 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
-        title: Text('개인 스케줄 수정'),
+        backgroundColor: Colors.white,
+        title: Text('📆개인 스케줄 수정', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
@@ -54,7 +56,8 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage> {
               return Center(child: Text('에러 발생: ${snapshot.error}'));
             } else if (snapshot.hasData) {
               JsonParser jsonParser = snapshot.data!;
-              _startDateController.text = jsonParser.startDate.toIso8601String();
+              _startDateController.text =
+                  jsonParser.startDate.toIso8601String();
               _endDateController.text = jsonParser.endDate.toIso8601String();
               _scheduleTextController.text = jsonParser.scheduleText;
               _empNoContorller.text = jsonParser.empNo.toString();
@@ -93,8 +96,10 @@ class _ScheduleEmpModState extends State<ScheduleEmpModPage> {
                     width: 200,
                     child: ElevatedButton(
                       onPressed: () {
-                        DateTime startDate = DateTime.parse(_startDateController.text);
-                        DateTime endDate = DateTime.parse(_endDateController.text);
+                        DateTime startDate =
+                            DateTime.parse(_startDateController.text);
+                        DateTime endDate =
+                            DateTime.parse(_endDateController.text);
 
                         if (startDate.isAfter(endDate)) {
                           showDialog(

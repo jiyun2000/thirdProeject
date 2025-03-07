@@ -7,16 +7,17 @@ import 'package:thirdproject/Dio/EmpDio/employeesDio.dart';
 import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/employee/MyPage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
+import 'package:thirdproject/Page/report/report_add_page.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
 class Event {
-  final int empNo;
-  final DateTime startDate; 
-  final DateTime endDate;  
-  final String title;
-  final String type;
+  final int empNo;  
+  final DateTime startDate;  
+  final DateTime endDate;   
+  final String title;        
+  final String type;     
 
   Event({
     this.empNo = 0,
@@ -26,9 +27,8 @@ class Event {
     required this.type
   });
 }
-
 class TodayDayOffPage extends StatefulWidget {
-  final DateTime dayOffDate;
+  final DateTime dayOffDate;  
   const TodayDayOffPage({super.key, required this.dayOffDate});
 
   @override
@@ -41,6 +41,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
   late CalendarFormat _calendarFormat;
   List<Event> _deptAllEvents = [];
 
+
   Future<int> getEmpNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt('empNo') ?? 0;
@@ -48,15 +49,18 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
 
   String strToday = DateFormat("yyyy-MM-dd").format(DateTime.now());
 
+
   Future<int> getDeptNo() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getInt("deptNo") ?? 0;
   }
 
+
   Future<String> getEmail() async {
     var prefs = await SharedPreferences.getInstance();
     return prefs.getString('email') ?? '이메일 없음';
   }
+
 
   Future<String> getName(int empNo) async {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
@@ -72,23 +76,22 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
     _loadAllDayOffEvents(); 
   }
 
+
   Future<void> _loadAllDayOffEvents() async {
-  var result = await todayDayOffDio().getAllDayOffList(); 
+    var result = await todayDayOffDio().getAllDayOffList(); 
 
-  List<Event> events = result.map((e) => Event(
-    empNo: e.empNo,
-    startDate: e.dayOffDate, 
-    endDate: e.dayOffDate,    
-    title: '연차',
-    type: 'dayoff'
-  )).toList();
+    List<Event> events = result.map((e) => Event(
+      empNo: e.empNo,
+      startDate: e.dayOffDate, 
+      endDate: e.dayOffDate,    
+      title: '연차',
+      type: 'dayoff'
+    )).toList();
 
-
-  setState(() {
-    _deptAllEvents = events;
-  });
-}
-
+    setState(() {
+      _deptAllEvents = events;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -96,11 +99,13 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('연차 사용 인원'),
+        title: Text('✈️연차', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       drawer: Drawer(
         child: ListView(
           children: [
+
             FutureBuilder<String>(
               future: getEmail(),
               builder: (context, emailSnapshot) {
@@ -153,6 +158,7 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                 }
               },
             ),
+
             ListTile(
               leading: Icon(Icons.home),
               iconColor: Colors.purple,
@@ -247,71 +253,72 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
           ],
         ),
       ),
-       body: Column(
-      children: [
-        TableCalendar(
-          focusedDay: _focusedDay,
-          firstDay: DateTime(2024, 1, 1),
-          lastDay: DateTime(2030, 12, 31),
-          calendarFormat: _calendarFormat,
-          selectedDayPredicate: (day) {
-            return isSameDay(_selectedDay, day);
-          },
-          calendarBuilders: CalendarBuilders(
-            markerBuilder: (context, day, List<dynamic> events) {
-              List<Event> dayEvents = _deptAllEvents.where((event) {
-                return isSameDay(day, event.startDate); 
-              }).toList();
+      body: Column(
+        children: [
 
-              if (dayEvents.isNotEmpty) {
-                return Container(
-                  width: 35,
-                  decoration: BoxDecoration(
-                    color: Colors.red.withOpacity(0.5),
-                    shape: BoxShape.circle,
+          TableCalendar(
+            focusedDay: _focusedDay,
+            firstDay: DateTime(2024, 1, 1),
+            lastDay: DateTime(2030, 12, 31),
+            calendarFormat: _calendarFormat,
+            selectedDayPredicate: (day) {
+              return isSameDay(_selectedDay, day);
+            },
+            calendarBuilders: CalendarBuilders(
+              markerBuilder: (context, day, List<dynamic> events) {
+                List<Event> dayEvents = _deptAllEvents.where((event) {
+                  return isSameDay(day, event.startDate); 
+                }).toList();
+
+                if (dayEvents.isNotEmpty) {
+                  return Container(
+                    width: 35,
+                    decoration: BoxDecoration(
+                      color: Colors.red.withOpacity(0.5),
+                      shape: BoxShape.circle,
+                    ),
+                  );
+                } else {
+                  return SizedBox();
+                }
+              },
+            ),
+            onDaySelected: (selectedDay, focusedDay) async {
+              if (!isSameDay(_selectedDay, selectedDay)) {
+                setState(() {
+                  _selectedDay = selectedDay;
+                  _focusedDay = focusedDay;
+                });
+
+                String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => TableEvents(
+                      selectedDay: formattedDate,
+                      type: 'dayoff',  
+                    ),
                   ),
                 );
-              } else {
-                return SizedBox();
               }
             },
+
+            onFormatChanged: (format) {
+              if (_calendarFormat != format) {
+                setState(() {
+                  _calendarFormat = format;
+                });
+              }
+            },
+            onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
           ),
-          onDaySelected: (selectedDay, focusedDay) async {
-            if (!isSameDay(_selectedDay, selectedDay)) {
-              setState(() {
-                _selectedDay = selectedDay;
-                _focusedDay = focusedDay;
-              });
-
-              String formattedDate = DateFormat("yyyy-MM-dd").format(selectedDay);
-
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => TableEvents(
-                    selectedDay: formattedDate,
-                    type: 'dayoff',  
-                  ),
-                ),
-              );
-            }
-          },
-
-          onFormatChanged: (format) {
-            if (_calendarFormat != format) {
-              setState(() {
-                _calendarFormat = format;
-              });
-            }
-          },
-          onPageChanged: (focusedDay) {
-            _focusedDay = focusedDay;
-          },
-        ),
-      ],
-    ),
-  );
-}
+        ],
+      ),
+    );
+  }
 }
 
 class TableEvents extends StatefulWidget {
@@ -326,6 +333,11 @@ class TableEvents extends StatefulWidget {
 
 class _TableEventsState extends State<TableEvents> {
   late final ValueNotifier<List<Event>> _selectedEvents;
+
+  Future<String> getName(int empNo) async {
+    var jsonParser = await Employeesdio().findByEmpNo(empNo);
+    return '${jsonParser.firstName} ${jsonParser.lastName}';
+  }
 
   @override
   void initState() {
@@ -357,33 +369,72 @@ class _TableEventsState extends State<TableEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('연차 사용 인원 목록'),backgroundColor: Colors.white,),
+      appBar: AppBar(title: Text('✈️연차 신청 인원'), backgroundColor: Colors.white, centerTitle: true,),
       body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(padding: EdgeInsets.all(16.0),
-          child: Text(widget.selectedDay != null ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
-                  : '선택된 날짜 없음',
-                  style: TextStyle(fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black))),
-          Expanded(child:  ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, events, _) {
-              return ListView.builder(
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  Event event = events[index];
-                  return ListTile(
-                    title: Text('사원 번호: ${event.empNo}'),
-                  );
-                },
-              );
-            },
-          ),)
-         
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              widget.selectedDay != null 
+                ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
+                : '선택된 날짜 없음',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          ),
+          Expanded(
+            child: ValueListenableBuilder<List<Event>>(
+              valueListenable: _selectedEvents,
+              builder: (context, events, _) {
+                return ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    Event event = events[index];
+                    return FutureBuilder(
+                      future: getName(event.empNo),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error : ${snapshot.error}'));
+                        } else if (snapshot.hasData) {
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(16),
+                              title: Text(
+                                '${snapshot.data}',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Icon(Icons.account_circle, color: Colors.purple),
+                            ),
+                          );
+                        }
+                        return Container();
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          var prefs = await SharedPreferences.getInstance();
+          int empNo = prefs.getInt("empNo") ?? 0;
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ReportAddPage(empNo: empNo)),
+          );
+        },
+        child: Icon(Icons.add),
       ),
     );
   }
 }
-

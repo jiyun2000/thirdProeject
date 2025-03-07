@@ -21,6 +21,7 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
   DateFormat format = DateFormat("yyyy-MM-dd HH:mm:ss");
   int? _empNo;
 
+  @override
   void initState() {
     super.initState();
     _loadEmpNo();
@@ -36,8 +37,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
     });
   }
 
-  Future<void> _selectDateTime(
-      BuildContext context, TextEditingController controller, bool isStart) async {
+  Future<void> _selectDateTime(BuildContext context,
+      TextEditingController controller, bool isStart) async {
     DateTime now = DateTime.now();
     DateTime initialDate = now;
 
@@ -95,114 +96,123 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-         backgroundColor: Colors.white,
-        title: Text('개인 일정 등록'),
+        backgroundColor: Colors.white,
+        title: Text('📆개인 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
+        centerTitle: true,
       ),
       body: Card(
         color: Colors.white,
-        child: Center(
-          child: Column(
-            // mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _startDateController,
-                  decoration: InputDecoration(
-                    labelText: '시작 시간',
-                    border: OutlineInputBorder(),
-                  ),
-                  onTap: () => _selectDateTime(context, _startDateController, true),
-                  readOnly: true,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _endDateController,
-                  decoration: InputDecoration(
-                    labelText: '끝난 시간',
-                    border: OutlineInputBorder(),
-                  ),
-                  onTap: () => _selectDateTime(context, _endDateController, false),
-                  readOnly: true,
-                ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _scheduleTextController,
-                  decoration: InputDecoration(
-                    labelText: '내용',
-                    border: OutlineInputBorder(),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Center(
+            child: Column(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _startDateController,
+                    decoration: InputDecoration(
+                      labelText: '시작 시간',
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () =>
+                        _selectDateTime(context, _startDateController, true),
+                    readOnly: true,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: TextField(
-                  controller: _empNoContorller,
-                  decoration: InputDecoration(
-                    labelText: '사원번호',
-                    border: OutlineInputBorder(),
-                    enabled: false,
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _endDateController,
+                    decoration: InputDecoration(
+                      labelText: '끝난 시간',
+                      border: OutlineInputBorder(),
+                    ),
+                    onTap: () =>
+                        _selectDateTime(context, _endDateController, false),
+                    readOnly: true,
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              SizedBox(
-                width: 200,
-                child: ElevatedButton(
-                  onPressed: () {
-                    try {
-                      DateTime startDate =
-                          format.parse(_startDateController.text);
-                      DateTime endDate = format.parse(_endDateController.text);
-                      int empNo = int.tryParse(_empNoContorller.text) ?? 0;
-
-                      if (startDate.isBefore(endDate) && empNo > 0) {
-                        CalendarDio().addEmpSchedule(
-                            startDate, endDate, _scheduleTextController.text, empNo);
-                        print("등록완료!");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarPage()));
-                      } else if (startDate.isAfter(endDate)) {
-                        _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
-                      } else {
-                        print("사원 번호 오류");
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _scheduleTextController,
+                    decoration: InputDecoration(
+                      labelText: '내용',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: TextField(
+                    controller: _empNoContorller,
+                    decoration: InputDecoration(
+                      labelText: '사원번호',
+                      border: OutlineInputBorder(),
+                      enabled: false,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 200,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      try {
+                        DateTime startDate =
+                            format.parse(_startDateController.text);
+                        DateTime endDate = format.parse(_endDateController.text);
+                        int empNo = int.tryParse(_empNoContorller.text) ?? 0;
+          
+                        if (startDate.isBefore(endDate) && empNo > 0) {
+                          CalendarDio().addEmpSchedule(startDate, endDate,
+                              _scheduleTextController.text, empNo);
+                          print("등록완료!");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CalendarPage()));
+                        } else if (startDate.isAfter(endDate)) {
+                          _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
+                        } else {
+                          print("사원 번호 오류");
+                        }
+                      } catch (e) {
+                        print("오류 발생: $e");
                       }
-                    } catch (e) {
-                      print("오류 발생: $e");
-                    }
-                  },
-                  child: Text('등록'),
+                    },
+                    child: Text('등록'),
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => DeptScheduleAdd()),
-          );
-        },
-        child: Text('부서 일정 등록',),
-      ),
+      // floatingActionButton: FloatingActionButton(
+      //   onPressed: () {
+      //     Navigator.push(
+      //       context,
+      //       MaterialPageRoute(builder: (context) => DeptScheduleAdd()),
+      //     );
+      //   },
+      //   child: Text('부서 일정 등록',),
+      // ),
     );
   }
 }

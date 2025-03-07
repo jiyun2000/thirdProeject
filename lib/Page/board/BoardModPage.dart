@@ -25,10 +25,11 @@ class _BoardModState extends State<BoardModPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-       backgroundColor: Colors.white,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: Text("공지사항 수정"),
+        title: Text("🎙️공지사항 수정", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
+        centerTitle: true,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -48,75 +49,65 @@ class _BoardModState extends State<BoardModPage> {
               _categoryController.text = jsonParser.category;
               _boardNoController.text = widget.BoardNo;
 
-              return ListView(
-                children: [
-                  TextField(
-                    controller: _titleController,
-                    decoration: InputDecoration(labelText: '제목'),
-                  ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: _contentController,
-                    decoration: InputDecoration(labelText: '내용'),
-                  ),
-                  SizedBox(height: 16),
-                  // TextField(
-                  //   controller: _categoryController,
-                  //   decoration: InputDecoration(labelText: '카테고리'),
-                  // ),
-                  SizedBox(
-                    width: 200,
-                    child: DropdownButtonFormField<String>(
-                      value: _selectedCategory,
-                      decoration: InputDecoration(
-                        labelText: '카테고리',
-                        border: OutlineInputBorder(),
+              return SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _buildInputField(
+                        controller: _titleController,
+                        labelText: '제목',
+                        hintText: '제목을 입력하세요',
                       ),
-                      items: _categories.map((String category) {
-                        return DropdownMenuItem<String>(
-                          value: category,
-                          child: Text(category),
-                        );
-                      }).toList(),
-                      onChanged: (String? newValue) {
-                        setState(() {
-                          _selectedCategory = newValue!;
-                        });
-                      },
-                    ),
+                      const SizedBox(height: 16),
+                      
+                      _buildInputField(
+                        controller: _contentController,
+                        labelText: '내용',
+                        hintText: '내용을 입력하세요',
+                      ),
+                      const SizedBox(height: 16),
+                      
+                      _buildDropdownField(),
+                      const SizedBox(height: 16),
+                      
+                      _buildInputField(
+                        controller: _emailController,
+                        labelText: '작성자',
+                        hintText: '작성자의 이메일',
+                        enabled: false,
+                      ),
+                      const SizedBox(height: 20),
+                      
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: () {
+                            BoardDio().modBoard(
+                              _titleController.text,
+                              _contentController.text,
+                              _selectedCategory,
+                              _emailController.text,
+                              int.parse(_boardNoController.text),
+                            );
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => BoardPage()),
+                            );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            minimumSize: Size(double.infinity, 50),
+                          ),
+                          child: Text('수정완료'),
+                        ),
+                      ),
+                    ],
                   ),
-                  SizedBox(height: 16),
-                  TextField(
-                    controller: _emailController,
-                    decoration: InputDecoration(labelText: '작성자'),
-                    enabled: false,
-                  ),
-                  SizedBox(height: 16),
-                  SizedBox(height: 50),
-                  SizedBox(
-                    width: 200,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        print(_titleController.text);
-                        print(_contentController.text);
-                        print(_categoryController.text);
-                        print(_emailController.text);
-                        print(int.parse(_boardNoController.text));
-
-                        BoardDio().modBoard(
-                          _titleController.text,
-                          _contentController.text,
-                          _categoryController.text,
-                          _emailController.text,
-                          int.parse(_boardNoController.text),
-                        ); 
-                         Navigator.push(context, MaterialPageRoute(builder: (context) => BoardPage()));
-                      },
-                      child: Text('수정완료'),     
-                    ),
-                    
-                  ),
-                ],
+                ),
               );
             } else {
               return Center(child: Text('데이터가 없습니다.'));
@@ -124,6 +115,48 @@ class _BoardModState extends State<BoardModPage> {
           },
         ),
       ),
+    );
+  }
+
+  Widget _buildInputField({
+    required TextEditingController controller,
+    required String labelText,
+    required String hintText,
+    bool enabled = true,
+  }) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: labelText,
+        hintText: hintText,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      enabled: enabled,
+    );
+  }
+
+  Widget _buildDropdownField() {
+    return DropdownButtonFormField<String>(
+      value: _selectedCategory,
+      decoration: InputDecoration(
+        labelText: '카테고리',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+      ),
+      items: _categories.map((String category) {
+        return DropdownMenuItem<String>(
+          value: category,
+          child: Text(category),
+        );
+      }).toList(),
+      onChanged: (String? newValue) {
+        setState(() {
+          _selectedCategory = newValue!;
+        });
+      },
     );
   }
 }

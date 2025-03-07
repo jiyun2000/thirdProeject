@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart';
 import 'package:intl/intl.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import 'package:thirdproject/diointercept%20.dart';
@@ -61,8 +60,8 @@ class CalendarDio {
 
   //전체 일정 리스트
   Future<Map<String, dynamic>> findByMap(int empNo, int deptNo) async {
-    Response res = await DioInterceptor.dio
-        .get("http://localhost:8080/empDeptSchedule/readSche/$deptNo/$empNo");
+    Response res = await DioInterceptor.dio.get(
+        "http://192.168.0.51:8080/empDeptSchedule/readSche/$deptNo/$empNo");
     print(res.data);
     print('empNO => $empNo');
     print('deptNo => $deptNo');
@@ -73,7 +72,7 @@ class CalendarDio {
   //개인 일정 등록
   Future<dynamic> addEmpSchedule(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo) async {
-    var uri = Uri.parse("http://localhost:8080/empSchedule/register/$empNo");
+    var uri = Uri.parse("http://192.168.0.51:8080/empSchedule/register/$empNo");
     Map data = {
       'startDate': startDate.toIso8601String(),
       'endDate': endDate.toIso8601String(),
@@ -83,7 +82,7 @@ class CalendarDio {
 
     var body = json.encode(data);
     print("url => ${uri.path}");
-    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.post(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
@@ -91,8 +90,8 @@ class CalendarDio {
   //부서 일정 등록
   Future<dynamic> addDeptSche(DateTime startDate, DateTime endDate,
       String scheduleText, int empNo, int deptNo) async {
-    var uri =
-        Uri.parse("http://localhost:8080/deptSchedule/register/$deptNo/$empNo");
+    var uri = Uri.parse(
+        "http://192.168.0.51:8080/deptSchedule/register/$deptNo/$empNo");
 
     Map data = {
       'startDate': startDate.toIso8601String(),
@@ -102,7 +101,7 @@ class CalendarDio {
       'deptNo': '$deptNo'
     };
     var body = json.encode(data);
-    var response = await DioInterceptor.dio.post(uri.toString(), data:data);
+    var response = await DioInterceptor.dio.post(uri.toString(), data: data);
     print(response.data);
     return response.data;
   }
@@ -112,7 +111,7 @@ class CalendarDio {
       int empNo, int deptNo, DateTime selectDate) async {
     String formated = (DateFormat("yyyy-MM-dd").format(selectDate));
     Response res = await DioInterceptor.dio.get(
-        "http://localhost:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
+        "http://192.168.0.51:8080/empDeptSchedule/list/$deptNo/$empNo/$formated");
     // print(res.data);
     // print(res.data['empSchedule']);
     // print(res.data['empSchedule'][0]['empSchNo']);

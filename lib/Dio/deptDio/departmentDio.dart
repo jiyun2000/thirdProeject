@@ -1,29 +1,26 @@
 import 'package:dio/dio.dart';
+import 'package:thirdproject/diointercept%20.dart';
 
 class JsonParser {
   final int deptNo;
   final String deptName;
   final String deptAddress;
-  final String phoneNo;
 
   JsonParser({
     required this.deptNo,
     required this.deptName,
     required this.deptAddress,
-    required this.phoneNo,
   });
 
   factory JsonParser.fromJson(Map<String, dynamic> json) => JsonParser(
       deptNo: json['deptNo'],
       deptName: json['deptName'],
-      deptAddress: json['deptAddress'],
-      phoneNo: json['phoneNo']);
+      deptAddress: json['deptAddress']);
 
   Map<String, dynamic> toJson() => {
         "deptNo": deptNo,
         "deptName": deptName,
         "deptAddress": deptAddress,
-        "phoneNo": phoneNo
       };
 }
 
@@ -34,7 +31,9 @@ class DeparmentDio {
     print("read dept dio");
 
     Response res =
-        await dio.get("http://localhost:8080/api/deptinfo/read/$deptNo");
+
+        await DioInterceptor.dio.get("http://localhost:8080/api/deptinfo/read/$deptNo");
+
 
     print(res.data);
     Map<String, dynamic> mapRes = res.data;
