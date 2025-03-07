@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
@@ -23,6 +24,11 @@ class _ComwidgetState extends State<Comwidget> {
           ? "--:--"
           : item.getString("outTime");
     });
+    bool t = true;
+    SharedPreferences.getInstance().then((item) {
+      t = DateTime.now()
+          .isAfter(DateTime.parse(item.getString("inTime").toString()));
+    });
     //plushTime();
     return Card(
       child: Column(
@@ -42,15 +48,15 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    bool t = true;
-                    SharedPreferences.getInstance().then((item) {
-                      t = DateTime.now().isAfter(
-                          DateTime.parse(item.getString("inTime").toString()));
-                    });
                     if (t) {
                       return;
                     }
                     set();
+                    setState(() {
+                      _inTime = DateFormat("hh:MM")
+                          .parse(DateTime.now().toString())
+                          .toString();
+                    });
                   }),
                   child: Text("출근")),
               ElevatedButton(
@@ -67,6 +73,11 @@ class _ComwidgetState extends State<Comwidget> {
                       return;
                     }
                     checkOut();
+                    setState(() {
+                      _outTime = DateFormat("hh:MM")
+                          .parse(DateTime.now().toString())
+                          .toString();
+                    });
                   }),
                   child: Text("퇴근"))
             ],
