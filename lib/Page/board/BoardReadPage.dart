@@ -30,6 +30,7 @@ class _BoardState extends State<BoardReadpage> {
         title: Text("🎙️공지사항", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: Colors.white,
         centerTitle: true,
+        elevation: 0, 
       ),
       drawer: Drawer(
         child: ListView(
@@ -40,106 +41,21 @@ class _BoardState extends State<BoardReadpage> {
               ),
               accountEmail: Text("admin"),
               accountName: Text("관리자"),
-              // onDetailsPressed: (){},
               decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 255, 255),
-                  borderRadius: BorderRadius.only(
-                    bottomLeft: Radius.circular(10.0),
-                    bottomRight: Radius.circular(10.0),
-                  )),
+                color: Colors.white,
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(10.0),
+                  bottomRight: Radius.circular(10.0),
+                ),
+              ),
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('홈'),
-              onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage()));
-              },
-              // trailing: Icon(Icons.navigate_next),
-            ),
-            ListTile(
-              leading: Icon(Icons.notifications_none_sharp),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('공지사항'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const BoardPage()),
-                );
-              },
-              // trailing: Icon(Icons.navigate_next),
-            ),
-            ListTile(
-              leading: Icon(Icons.report),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('보고서'),
-              onTap: () async {
-                var prefs = await SharedPreferences.getInstance();
-                int empNo = prefs.getInt("empNo") ?? 0;
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage(
-                            empNo: empNo,
-                          )),
-                );
-              },
-              // trailing: Icon(Icons.navigate_next),
-            ),
-            ListTile(
-              leading: Icon(Icons.calendar_month),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('일정'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const CalendarPage()),
-                );
-              },
-              // trailing: Icon(Icons.navigate_next),
-            ),
-            ListTile(
-              leading: Icon(Icons.travel_explore_sharp),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('연차'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => TodayDayOffPage(
-                          dayOffDate:
-                              DateFormat("yyyy-MM-dd").parse(dayFormat))),
-                );
-              },
-              // trailing: Icon(Icons.navigate_next),
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('마이페이지'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MyPage()),
-                );
-              },
-              // trailing: Icon(Icons.navigate_next),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              iconColor: Colors.purple,
-              focusColor: Colors.purple,
-              title: Text('로그아웃'),
-              onTap: () {},
-              // trailing: Icon(Icons.navigate_next),
-            ),
+            _buildDrawerItem(Icons.home, '홈', MainPage()),
+            _buildDrawerItem(Icons.notifications_none_sharp, '공지사항', BoardPage()),
+            _buildDrawerItem(Icons.report, '보고서', ReceivedReportListPage(empNo: 0)),
+            _buildDrawerItem(Icons.calendar_month, '일정', CalendarPage()),
+            _buildDrawerItem(Icons.travel_explore_sharp, '연차', TodayDayOffPage(dayOffDate: DateFormat("yyyy-MM-dd").parse(dayFormat))),
+            _buildDrawerItem(Icons.person, '마이페이지', MyPage()),
+            _buildDrawerItem(Icons.logout, '로그아웃', null),
           ],
         ),
       ),
@@ -162,53 +78,65 @@ class _BoardState extends State<BoardReadpage> {
                       jsonParser.title,
                       style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                     ),
-                    Text(
-                      DateFormat('yyyy-MM-dd HH:mm').format(jsonParser.modDate),
-                      style: TextStyle(fontSize: 14),
-                      textAlign: TextAlign.left,
+                    SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween, 
+                      children: [
+                        Text(
+                          DateFormat('yyyy-MM-dd HH:mm').format(jsonParser.modDate),
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                          textAlign: TextAlign.left,
+                        ),
+                        Text(
+                          jsonParser.mailAddress,
+                          style: TextStyle(fontSize: 14, color: Colors.grey),
+                          textAlign: TextAlign.right,
+                        ),
+                      ],
                     ),
-                    // Text(
-                    //   '${jsonParser.category}',
-                    //   style: TextStyle(fontSize: 14), textAlign: TextAlign.center,
-                    // ),
-                    Text(
-                      jsonParser.mailAddress,
-                      style: TextStyle(fontSize: 14),
-                      textAlign: TextAlign.right,
-                    ),
+
                     SizedBox(height: 20),
-                    Text(' ${jsonParser.content}',
-                        style: TextStyle(fontSize: 16),
-                        textAlign: TextAlign.center),
-                    SizedBox(
-                      height: 50,
+                    Text(
+                      jsonParser.content,
+                      style: TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
                     ),
+                    SizedBox(height: 50),
                     SizedBox(
                       height: 50,
+                      width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BoardModPage(
-                                        BoardNo: '${jsonParser.boardNo}')));
-                          },
-                          child: Text('수정')),
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => BoardModPage(BoardNo: '${jsonParser.boardNo}')),
+                          );
+                        },
+                        child: Text('수정'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
                     ),
-                    SizedBox(
-                      height: 30,
-                    ),
+                    SizedBox(height: 30),
                     SizedBox(
                       height: 50,
+                      width: double.infinity,
                       child: ElevatedButton(
-                          onPressed: () {
-                            Navigator.pop(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => BoardPage()));
-                          },
-                          child: Text('돌아가기')),
-                    )
+                        onPressed: () {
+                          Navigator.pop(context);
+                        },
+                        child: Text('돌아가기'),
+                        style: ElevatedButton.styleFrom(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               );
@@ -218,6 +146,22 @@ class _BoardState extends State<BoardReadpage> {
           },
         ),
       ),
+    );
+  }
+
+
+  Widget _buildDrawerItem(IconData icon, String title, Widget? page) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.purple),
+      title: Text(title),
+      onTap: () {
+        if (page != null) {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+          );
+        }
+      },
     );
   }
 }
