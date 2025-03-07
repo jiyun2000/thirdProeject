@@ -5,13 +5,23 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
 
-class Comwidget extends StatelessWidget {
+class Comwidget extends StatefulWidget {
   @override
+  State<Comwidget> createState() => _ComwidgetState();
+}
+
+class _ComwidgetState extends State<Comwidget> {
+  @override
+  String? _inTime;
+  String? _outTime;
   Widget build(BuildContext context) {
-    var inTime;
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
-      inTime = item.getString("inTime");
+      _inTime =
+          item.getString("inTime") == null ? "--:--" : item.getString("inTime");
+      _outTime = item.getString("outTime") == null
+          ? "--:--"
+          : item.getString("outTime");
     });
     //plushTime();
     return Card(
@@ -21,7 +31,7 @@ class Comwidget extends StatelessWidget {
           Row(
             children: [
               Text("출근"),
-              Text("${inTime == null ? "--:--" : inTime}"),
+              Text("$_inTime"),
             ],
           ),
           Row(
@@ -32,12 +42,28 @@ class Comwidget extends StatelessWidget {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
+                    bool t = true;
+                    SharedPreferences.getInstance().then((item) {
+                      t = DateTime.now().isAfter(
+                          DateTime.parse(item.getString("inTime").toString()));
+                    });
+                    if (t) {
+                      return;
+                    }
                     set();
                   }),
                   child: Text("출근")),
               ElevatedButton(
                   onPressed: (() {
                     if (GeoCheck().getCurrentPosition()) {
+                      return;
+                    }
+                    bool t = true;
+                    SharedPreferences.getInstance().then((item) {
+                      t = DateTime.now().isAfter(
+                          DateTime.parse(item.getString("outTime").toString()));
+                    });
+                    if (t) {
                       return;
                     }
                     checkOut();
@@ -62,7 +88,7 @@ class Comwidget extends StatelessWidget {
     var empNo;
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
-    sp.setString("inTime", DateTime.now().toString());
+    sp.setString("outTime", DateTime.now().toString());
     DioInterceptor.dio
         .post("http://192.168.0.51:8080/api/commute/checkout/$empNo");
   }
