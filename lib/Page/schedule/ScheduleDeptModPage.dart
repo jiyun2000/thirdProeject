@@ -150,6 +150,7 @@ class _ScheduleDeptModPageState extends State<ScheduleDeptModPage> {
                                   int.parse(_deptNoController.text),
                                   int.parse(_deptSchNoController.text));
                             }
+                            
                           },
                           child: Text('수정'))),
                   SizedBox(

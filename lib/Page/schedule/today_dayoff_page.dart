@@ -333,6 +333,7 @@ class TableEvents extends StatefulWidget {
 
 class _TableEventsState extends State<TableEvents> {
   late final ValueNotifier<List<Event>> _selectedEvents;
+
   Future<String> getName(int empNo) async {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
     return '${jsonParser.firstName} ${jsonParser.lastName}';
@@ -368,52 +369,68 @@ class _TableEventsState extends State<TableEvents> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('✈️연차 신청 인원'),backgroundColor: Colors.white,centerTitle: true,),
+      appBar: AppBar(title: Text('✈️연차 신청 인원'), backgroundColor: Colors.white, centerTitle: true,),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(padding: EdgeInsets.all(16.0),
-          child: Text(widget.selectedDay != null ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!) )
-                  : '선택된 날짜 없음',
-                  style: TextStyle(fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.black))),
-          Expanded(child:  ValueListenableBuilder<List<Event>>(
-            valueListenable: _selectedEvents,
-            builder: (context, events, _) {
-              return ListView.builder(
-                itemCount: events.length,
-                itemBuilder: (context, index) {
-                  Event event = events[index];
-                    return FutureBuilder(future:getName(event.empNo), 
-                    builder: (context, snapshot) {
-                      if(snapshot.connectionState == ConnectionState.waiting){
-                        return Center(child: CircularProgressIndicator());
-                      }else if(snapshot.hasError){
-                        return Center(child: Text('Error : ${snapshot.error}'));
-                      }else if(snapshot.hasData){
-                          return ListTile(
-                        title: Text(' ${snapshot.data}'),
-                        
-                      );
-                      }
-                      return Container();
-                    },);
-                    
-                },
-              );
-            },
-          ),)
-         
+          Padding(
+            padding: EdgeInsets.all(16.0),
+            child: Text(
+              widget.selectedDay != null 
+                ? DateFormat('yyyy년 MM월 dd일').format(DateTime.parse(widget.selectedDay!))
+                : '선택된 날짜 없음',
+              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black),
+            ),
+          ),
+          Expanded(
+            child: ValueListenableBuilder<List<Event>>(
+              valueListenable: _selectedEvents,
+              builder: (context, events, _) {
+                return ListView.builder(
+                  itemCount: events.length,
+                  itemBuilder: (context, index) {
+                    Event event = events[index];
+                    return FutureBuilder(
+                      future: getName(event.empNo),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Error : ${snapshot.error}'));
+                        } else if (snapshot.hasData) {
+                          return Card(
+                            margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: ListTile(
+                              contentPadding: EdgeInsets.all(16),
+                              title: Text(
+                                '${snapshot.data}',
+                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              trailing: Icon(Icons.account_circle, color: Colors.purple),
+                            ),
+                          );
+                        }
+                        return Container();
+                      },
+                    );
+                  },
+                );
+              },
+            ),
+          ),
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async{
+        onPressed: () async {
           var prefs = await SharedPreferences.getInstance();
-                int empNo = prefs.getInt("empNo") ?? 0;
+          int empNo = prefs.getInt("empNo") ?? 0;
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => ReportAddPage(empNo:empNo))
+            MaterialPageRoute(builder: (context) => ReportAddPage(empNo: empNo)),
           );
         },
         child: Icon(Icons.add),
