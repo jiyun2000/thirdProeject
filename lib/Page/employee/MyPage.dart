@@ -8,6 +8,7 @@ import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
+import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
 class MyPage extends StatefulWidget {
@@ -48,13 +49,14 @@ class _MyPageState extends State<MyPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 255, 255, 255),
+      backgroundColor: const Color(0xFFF9F9F9), 
       appBar: AppBar(
-          centerTitle: true,
-          title: Text("👩‍💻 마이 페이지",
-              style: TextStyle(fontWeight: FontWeight.bold)),
-          backgroundColor: const Color.fromARGB(255, 255, 255, 255)),
-      drawer: Drawer(
+        centerTitle: true,
+        title: Text("👩‍💻 마이 페이지", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22, color: Colors.black)),
+        backgroundColor: Colors.white,
+        elevation: 0, 
+      ),
+      drawer:Drawer(
         child: ListView(
           children: [
             FutureBuilder<String>(
@@ -124,8 +126,10 @@ class _MyPageState extends State<MyPage> {
               focusColor: Colors.purple,
               title: Text('홈'),
               onTap: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MainPage()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MainPage()),
+                );
               },
             ),
             ListTile(
@@ -151,9 +155,10 @@ class _MyPageState extends State<MyPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => ReceivedReportListPage(
-                            empNo: empNo,
-                          )),
+                    builder: (context) => ReceivedReportListPage(
+                      empNo: empNo,
+                    ),
+                  ),
                 );
               },
             ),
@@ -176,13 +181,12 @@ class _MyPageState extends State<MyPage> {
               title: Text('연차'),
               onTap: () {
                 Navigator.push(
-                  context,
-                  MaterialPageRoute(
+                    context,
+                    MaterialPageRoute(
                       builder: (context) => TodayDayOffPage(
-                          dayOffDate: DateFormat("yyyy-MM-dd").parse(
-                              DateFormat("yyyy-MM-dd")
-                                  .format(DateTime.now())))),
-                );
+                        dayOffDate: DateFormat("yyyy-MM-dd").parse(strToday),
+                      ),
+                    ));
               },
             ),
             ListTile(
@@ -202,7 +206,11 @@ class _MyPageState extends State<MyPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-              onTap: () {},
+              onTap: () {
+                !DioInterceptor.isLogin();
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => MainApp()));
+              },
             ),
           ],
         ),
@@ -231,44 +239,53 @@ class _MyPageState extends State<MyPage> {
                     return FutureBuilder(
                       future: getDeptName(jsonParser.deptNo),
                       builder: (context, deptNoSnapshot) {
-                        if (deptNoSnapshot.connectionState ==
-                            ConnectionState.waiting) {
+                        if (deptNoSnapshot.connectionState == ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
                         } else if (deptNoSnapshot.hasError) {
-                          return Center(
-                              child: Text('에러 : ${deptNoSnapshot.error}'));
+                          return Center(child: Text('에러 : ${deptNoSnapshot.error}'));
                         } else if (deptNoSnapshot.hasData) {
                           String deptName = deptNoSnapshot.data!;
 
                           return Padding(
                             padding: const EdgeInsets.all(16.0),
-                            child: ListView(
-                              children: [
-                                _buildProfileCard(
-                                    '사원번호', jsonParser.empNo.toString()),
-                                _buildProfileCard('이름',
-                                    '${jsonParser.firstName} ${jsonParser.lastName}'),
-                                _buildProfileCard(
-                                    '메일주소', jsonParser.mailAddress),
-                                _buildProfileCard('주소', jsonParser.address),
-                                _buildProfileCard('전화번호',
-                                    '${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}'),
-                                _buildProfileCard('성별',
-                                    jsonParser.gender == 'm' ? '남성' : '여성'),
-                                _buildProfileCard(
-                                    '생일',
-                                    DateFormat("yyyy-MM-dd")
-                                        .format(jsonParser.birthday)),
-                                _buildProfileCard('주민등록번호',
-                                    '${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}'),
-                                _buildProfileCard(
-                                    '입사일',
-                                    DateFormat("yyyy-MM-dd")
-                                        .format(jsonParser.hireDate)),
-                                _buildProfileCard('부서명', deptName),
-                                _buildProfileCard(
-                                    '연봉', jsonParser.salary.toString()),
-                              ],
+                            child: Card(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15.0),
+                              ),
+                              elevation: 5,
+                              color: Colors.white,
+                              child: Padding(
+                                padding: const EdgeInsets.all(16.0),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(16.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      _buildProfileRow('|', '사원번호', jsonParser.empNo.toString()),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '이름', '${jsonParser.firstName} ${jsonParser.lastName}'),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '메일주소', jsonParser.mailAddress),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '주소', jsonParser.address),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '전화번호', '${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}'),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '성별', jsonParser.gender == 'm' ? '남성' : '여성'),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '생일', DateFormat("yyyy-MM-dd").format(jsonParser.birthday)),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '주민등록번호', '${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}'),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '입사일', DateFormat("yyyy-MM-dd").format(jsonParser.hireDate)),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '부서명', deptName),
+                                      _buildDivider(),
+                                      _buildProfileRow('|', '연봉', jsonParser.salary.toString()),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           );
                         } else {
@@ -290,27 +307,34 @@ class _MyPageState extends State<MyPage> {
     );
   }
 
-  Widget _buildProfileCard(String label, String value) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Row(
-          children: [
-            Text(
-              '$label: ',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-            ),
-            Expanded(
-              child: Text(
-                value,
-                style: TextStyle(fontSize: 16),
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
+  Widget _buildProfileRow(String prefix, String label, String value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Text(prefix, style: TextStyle(fontSize: 18, color: Colors.purple)),  
+          SizedBox(width: 8),
+          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+          Expanded(child: Text(value, style: TextStyle(fontSize: 16), overflow: TextOverflow.ellipsis)),
+        ],
       ),
+    );
+  }
+
+  Widget _buildDivider() {
+    return Divider(
+      thickness: 1,
+      color: Colors.grey[300],
+    );
+  }
+
+  Widget _buildDrawerTile(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon),
+      iconColor: Colors.purple,
+      focusColor: Colors.purple,
+      title: Text(title),
+      onTap: onTap,
     );
   }
 }

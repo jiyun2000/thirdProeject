@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class DioInterceptor {
   static final DioInterceptor dioIn = DioInterceptor._internal();
   static final dio = Dio(BaseOptions(
-    baseUrl: 'http://192.168.0.14:8080/api',
+    baseUrl: 'http://192.168.0.51:8080/api',
     receiveDataWhenStatusError: true,
     connectTimeout: const Duration(seconds: 10), // 응답 타임아웃 (10초)
     receiveTimeout: const Duration(seconds: 10), // 응답 타임아웃 (10초)
@@ -97,7 +97,7 @@ class DioInterceptor {
         perf.get("empNo");
         perf.get("deptNo");
         // if (perf.get("accessToken") != null && perf.get("refreshToken") != null) {
-        //   dio.get("http://192.168.0.14:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
+        //   dio.get("http://192.168.0.51:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
         //     perf.setString("accessToken", item.data['accessToken']);
         //     perf.setString("refreshToken", item.data['refreshToken']);
         //   });
