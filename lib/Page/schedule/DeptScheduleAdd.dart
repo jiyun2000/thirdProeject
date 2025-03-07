@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
-import 'package:thirdproject/Page/schedule/ScheduleAddPage.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 
 class DeptScheduleAdd extends StatefulWidget {
@@ -114,7 +113,8 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
-        title: Text('📆부서 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
+        title:
+            Text('📆부서 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -132,8 +132,9 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                       labelText: '시작 시간',
                       border: OutlineInputBorder(),
                     ),
-                    onTap: () => _selectDateTime(context, _startDateController, true),
-                    readOnly: true, 
+                    onTap: () =>
+                        _selectDateTime(context, _startDateController, true),
+                    readOnly: true,
                   ),
                 ),
                 SizedBox(
@@ -148,7 +149,8 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                       labelText: '끝난 시간',
                       border: OutlineInputBorder(),
                     ),
-                    onTap: () => _selectDateTime(context, _endDateController, false),
+                    onTap: () =>
+                        _selectDateTime(context, _endDateController, false),
                     readOnly: true,
                   ),
                 ),
@@ -177,7 +179,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                       hintText: '사원번호를 입력하세요',
                       labelText: '사원번호',
                       border: OutlineInputBorder(),
-                      enabled: false, 
+                      enabled: false,
                     ),
                   ),
                 ),
@@ -192,7 +194,7 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                       hintText: '부서번호를 입력하세요',
                       labelText: '부서번호',
                       border: OutlineInputBorder(),
-                      enabled: false, 
+                      enabled: false,
                     ),
                   ),
                 ),
@@ -203,44 +205,49 @@ class _DeptScheduleState extends State<DeptScheduleAdd> {
                   width: 200,
                   child: ElevatedButton(
                     onPressed: () {
-                    try {
-                      if (_startDateController.text.isEmpty || _endDateController.text.isEmpty) {
-                        _showErrorDialog(context, '날짜를 모두 입력해주세요.');
-                        return; 
-                      }
-                      DateTime startDate;
-                      DateTime endDate;
                       try {
-                        startDate = format.parse(_startDateController.text);
+                        if (_startDateController.text.isEmpty ||
+                            _endDateController.text.isEmpty) {
+                          _showErrorDialog(context, '날짜를 모두 입력해주세요.');
+                          return;
+                        }
+                        DateTime startDate;
+                        DateTime endDate;
+                        try {
+                          startDate = format.parse(_startDateController.text);
+                        } catch (e) {
+                          _showErrorDialog(context, '시작 시간을 올바르게 입력해주세요.');
+                          return;
+                        }
+
+                        try {
+                          endDate = format.parse(_endDateController.text);
+                        } catch (e) {
+                          _showErrorDialog(context, '끝 시간을 올바르게 입력해주세요.');
+                          return;
+                        }
+
+                        int empNo = int.tryParse(_empNoController.text) ?? 0;
+                        int deptNo = int.tryParse(_deptNoController.text) ?? 0;
+
+                        if (startDate.isBefore(endDate) && empNo > 0) {
+                          CalendarDio().addDeptSche(startDate, endDate,
+                              _scheduleTextController.text, empNo, deptNo);
+                          print("등록완료!");
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => CalendarPage()));
+                        } else if (startDate.isAfter(endDate)) {
+                          _showErrorDialog(
+                              context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
+                        } else {
+                          _showErrorDialog(context, '사원번호와 부서번호를 확인해주세요.');
+                        }
                       } catch (e) {
-                        _showErrorDialog(context, '시작 시간을 올바르게 입력해주세요.');
-                        return; 
+                        print("오류 발생: $e");
                       }
-            
-                      try {
-                        endDate = format.parse(_endDateController.text);
-                      } catch (e) {
-                        _showErrorDialog(context, '끝 시간을 올바르게 입력해주세요.');
-                        return; 
-                      }
-            
-                      int empNo = int.tryParse(_empNoController.text) ?? 0;
-                      int deptNo = int.tryParse(_deptNoController.text) ?? 0;
-            
-                      if (startDate.isBefore(endDate) && empNo > 0) {
-                        CalendarDio().addDeptSche(startDate, endDate,
-                            _scheduleTextController.text, empNo, deptNo);
-                        print("등록완료!");
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => CalendarPage()));
-                      } else if (startDate.isAfter(endDate)) {
-                        _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
-                      } else {
-                        _showErrorDialog(context, '사원번호와 부서번호를 확인해주세요.');
-                      }
-                    } catch (e) {
-                      print("오류 발생: $e");
-                    }
-                  },
+                    },
                     child: Text('등록'),
                   ),
                 ),

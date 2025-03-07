@@ -13,7 +13,6 @@ import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/comwidget.dart';
-import 'package:thirdproject/comwidget2.dart';
 import 'package:thirdproject/diointercept%20.dart';
 
 void main() async {
@@ -35,7 +34,7 @@ class _MainAppState extends State<MainApp> {
   void login() async {
     log("!!!");
     var response = await DioInterceptor.postHttp(
-      "http://211.248.242.138:8080/auth",
+      "http://172.20.10.2:8080/auth",
       {
         "username": mailContorller.text,
         "password": passwordController.text,

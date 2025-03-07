@@ -80,7 +80,7 @@ class DioInterceptor {
         perf.get("empNo");
         perf.get("deptNo");
         // if (perf.get("accessToken") != null && perf.get("refreshToken") != null) {
-        //   dio.get("http://211.248.242.138:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
+        //   dio.get("http://172.20.10.2:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
         //     perf.setString("accessToken", item.data['accessToken']);
         //     perf.setString("refreshToken", item.data['refreshToken']);
         //   });

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/calendarDio.dart';
-import 'package:thirdproject/Page/schedule/DeptScheduleAdd.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 
 class ScheduleAddPage extends StatefulWidget {
@@ -99,7 +98,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: Text('📆개인 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
+        title:
+            Text('📆개인 일정 등록', style: TextStyle(fontWeight: FontWeight.bold)),
         centerTitle: true,
       ),
       body: Card(
@@ -176,9 +176,10 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                       try {
                         DateTime startDate =
                             format.parse(_startDateController.text);
-                        DateTime endDate = format.parse(_endDateController.text);
+                        DateTime endDate =
+                            format.parse(_endDateController.text);
                         int empNo = int.tryParse(_empNoContorller.text) ?? 0;
-          
+
                         if (startDate.isBefore(endDate) && empNo > 0) {
                           CalendarDio().addEmpSchedule(startDate, endDate,
                               _scheduleTextController.text, empNo);
@@ -188,7 +189,8 @@ class _ScheduleAddState extends State<ScheduleAddPage> {
                               MaterialPageRoute(
                                   builder: (context) => CalendarPage()));
                         } else if (startDate.isAfter(endDate)) {
-                          _showErrorDialog(context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
+                          _showErrorDialog(
+                              context, '시작 날짜가 끝나는 날짜보다 클 수 없습니다.');
                         } else {
                           print("사원 번호 오류");
                         }

@@ -30,10 +30,8 @@ class DeparmentDio {
   Future<JsonParser> findByDept(int deptNo) async {
     print("read dept dio");
 
-    Response res =
-
-        await DioInterceptor.dio.get("http://localhost:8080/api/deptinfo/read/$deptNo");
-
+    Response res = await DioInterceptor.dio
+        .get("http://172.20.10.2:8080/api/deptinfo/read/$deptNo");
 
     print(res.data);
     Map<String, dynamic> mapRes = res.data;

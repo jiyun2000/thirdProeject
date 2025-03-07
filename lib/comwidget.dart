@@ -7,6 +7,8 @@ import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
 
 class Comwidget extends StatefulWidget {
+  const Comwidget({super.key});
+
   @override
   State<Comwidget> createState() => _ComwidgetState();
 }
@@ -14,6 +16,7 @@ class Comwidget extends StatefulWidget {
 class _ComwidgetState extends State<Comwidget> {
   String? _inTime = "--:--";
   String? _outTime = "--:--";
+  @override
   Widget build(BuildContext context) {
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
@@ -46,7 +49,7 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     bool t = true;
                     SharedPreferences.getInstance().then((item) {
-                      if(item.getString("inTime") == null) return;
+                      if (item.getString("inTime") == null) return;
                       t = DateTime.now().isAfter(
                           DateTime.parse(item.getString("inTime").toString()));
                     });
@@ -56,7 +59,6 @@ class _ComwidgetState extends State<Comwidget> {
                     set();
                     setState(() {
                       _inTime = DateFormat("hh:MM").format(DateTime.now());
-                      ;
                     });
                   }),
                   child: Text("출근")),
@@ -67,7 +69,7 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     bool t = true;
                     SharedPreferences.getInstance().then((item) {
-                      if(item.getString("outTime") == null) return;
+                      if (item.getString("outTime") == null) return;
                       t = DateTime.now().isAfter(
                           DateTime.parse(item.getString("inTime").toString()));
                     });
@@ -88,28 +90,28 @@ class _ComwidgetState extends State<Comwidget> {
   }
 
   void checkIn() async {
-    var empNo;
+    Object? empNo;
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://211.248.242.138:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.post("http://172.20.10.2:8080/api/commute/set/$empNo");
   }
 
   void checkOut() async {
-    var empNo;
+    Object? empNo;
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("outTime", DateTime.now().toString());
     DioInterceptor.dio
-        .post("http://211.248.242.138:8080/api/commute/checkout/$empNo");
+        .post("http://172.20.10.2:8080/api/commute/checkout/$empNo");
   }
 
   void set() async {
-    var empNo;
+    Object? empNo;
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.put("http://211.248.242.138:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.put("http://172.20.10.2:8080/api/commute/set/$empNo");
   }
 
   void plushTime() {

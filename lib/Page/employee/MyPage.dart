@@ -8,7 +8,6 @@ import 'package:thirdproject/Page/board/BoardPage.dart';
 import 'package:thirdproject/Page/report/received_report_list_page.dart';
 import 'package:thirdproject/Page/schedule/SchedulePage.dart';
 import 'package:thirdproject/Page/schedule/today_dayoff_page.dart';
-import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/main.dart';
 
 class MyPage extends StatefulWidget {
@@ -40,8 +39,8 @@ class _MyPageState extends State<MyPage> {
     var jsonParser = await Employeesdio().findByEmpNo(empNo);
     return '${jsonParser.firstName} ${jsonParser.lastName}';
   }
-  
-  Future<String> getDeptName(int deptNo) async{
+
+  Future<String> getDeptName(int deptNo) async {
     var deptJsonParser = await dept.DeparmentDio().findByDept(deptNo);
     return deptJsonParser.deptName;
   }
@@ -51,14 +50,13 @@ class _MyPageState extends State<MyPage> {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 255, 255, 255),
       appBar: AppBar(
-        centerTitle: true,
-        title: Text("👩‍💻 마이 페이지", style: TextStyle(fontWeight: FontWeight.bold)),
-        backgroundColor: const Color.fromARGB(255, 255, 255, 255)
-      ),
+          centerTitle: true,
+          title: Text("👩‍💻 마이 페이지",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          backgroundColor: const Color.fromARGB(255, 255, 255, 255)),
       drawer: Drawer(
         child: ListView(
           children: [
-
             FutureBuilder<String>(
               future: getEmail(),
               builder: (context, emailSnapshot) {
@@ -119,7 +117,6 @@ class _MyPageState extends State<MyPage> {
                   return Center(child: Text('이메일 실패'));
                 }
               },
-
             ),
             ListTile(
               leading: Icon(Icons.home),
@@ -205,7 +202,6 @@ class _MyPageState extends State<MyPage> {
               iconColor: Colors.purple,
               focusColor: Colors.purple,
               title: Text('로그아웃'),
-
               onTap: () {},
             ),
           ],
@@ -239,7 +235,8 @@ class _MyPageState extends State<MyPage> {
                             ConnectionState.waiting) {
                           return Center(child: CircularProgressIndicator());
                         } else if (deptNoSnapshot.hasError) {
-                          return Center(child: Text('에러 : ${deptNoSnapshot.error}'));
+                          return Center(
+                              child: Text('에러 : ${deptNoSnapshot.error}'));
                         } else if (deptNoSnapshot.hasData) {
                           String deptName = deptNoSnapshot.data!;
 
@@ -249,23 +246,28 @@ class _MyPageState extends State<MyPage> {
                               children: [
                                 _buildProfileCard(
                                     '사원번호', jsonParser.empNo.toString()),
+                                _buildProfileCard('이름',
+                                    '${jsonParser.firstName} ${jsonParser.lastName}'),
                                 _buildProfileCard(
-                                    '이름', '${jsonParser.firstName} ${jsonParser.lastName}'),
-                                _buildProfileCard('메일주소', jsonParser.mailAddress),
+                                    '메일주소', jsonParser.mailAddress),
                                 _buildProfileCard('주소', jsonParser.address),
-                                _buildProfileCard(
-                                    '전화번호',
+                                _buildProfileCard('전화번호',
                                     '${jsonParser.phoneNum.substring(0, 3)}-${jsonParser.phoneNum.substring(3, 7)}-${jsonParser.phoneNum.substring(7, 11)}'),
+                                _buildProfileCard('성별',
+                                    jsonParser.gender == 'm' ? '남성' : '여성'),
                                 _buildProfileCard(
-                                    '성별', jsonParser.gender == 'm' ? '남성' : '여성'),
-                                _buildProfileCard(
-                                    '생일', DateFormat("yyyy-MM-dd").format(jsonParser.birthday)),
+                                    '생일',
+                                    DateFormat("yyyy-MM-dd")
+                                        .format(jsonParser.birthday)),
                                 _buildProfileCard('주민등록번호',
                                     '${jsonParser.citizenId.substring(0, 6)}-${jsonParser.citizenId.substring(6)}'),
-                                _buildProfileCard('입사일',
-                                    DateFormat("yyyy-MM-dd").format(jsonParser.hireDate)),
+                                _buildProfileCard(
+                                    '입사일',
+                                    DateFormat("yyyy-MM-dd")
+                                        .format(jsonParser.hireDate)),
                                 _buildProfileCard('부서명', deptName),
-                                _buildProfileCard('연봉', jsonParser.salary.toString()),
+                                _buildProfileCard(
+                                    '연봉', jsonParser.salary.toString()),
                               ],
                             ),
                           );
@@ -284,7 +286,6 @@ class _MyPageState extends State<MyPage> {
             }
           },
         ),
-
       ),
     );
   }
