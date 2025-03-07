@@ -19,10 +19,8 @@ class _ComwidgetState extends State<Comwidget> {
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
       _inTime =
-          item.getString("inTime") == null ? "--:--" : item.getString("inTime");
-      _outTime = item.getString("outTime") == null
-          ? "--:--"
-          : item.getString("outTime");
+          item.getString("inTime") ?? "--:--";
+      _outTime = item.getString("outTime") ?? "--:--";
     });
     bool t = true;
     SharedPreferences.getInstance().then((item) {
