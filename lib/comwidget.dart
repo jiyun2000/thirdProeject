@@ -29,6 +29,11 @@ class _ComwidgetState extends State<Comwidget> {
       t = DateTime.now()
           .isAfter(DateTime.parse(item.getString("inTime").toString()));
     });
+    bool t2 = true;
+    SharedPreferences.getInstance().then((item) {
+      t2 = DateTime.now()
+          .isAfter(DateTime.parse(item.getString("outTime").toString()));
+    });
     //plushTime();
     return Card(
       child: Column(
@@ -64,12 +69,7 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    bool t = true;
-                    SharedPreferences.getInstance().then((item) {
-                      t = DateTime.now().isAfter(
-                          DateTime.parse(item.getString("outTime").toString()));
-                    });
-                    if (t) {
+                    if (t2) {
                       return;
                     }
                     checkOut();
