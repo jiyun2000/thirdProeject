@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/Dio/CalendarDio/todayDayOffDio.dart';
@@ -131,7 +132,11 @@ class _TodayDayOffState extends State<TodayDayOffPage> {
                                   child: Text('Error: ${nameSnapshot.error}'));
                             } else if (nameSnapshot.hasData) {
                               return UserAccountsDrawerHeader(
-                                currentAccountPicture: CircleAvatar(),
+                                currentAccountPicture: Container(
+                                  child: SvgPicture.asset(
+                                    "assets/image/logo.svg",
+                                  ),
+                                ),
                                 accountEmail: Text(emailSnapshot.data!),
                                 accountName: Text(nameSnapshot.data!),
                                 decoration: BoxDecoration(
@@ -390,10 +395,17 @@ class _TableEventsState extends State<TableEvents> {
                   color: Colors.black),
             ),
           ),
+          
           Expanded(
             child: ValueListenableBuilder<List<Event>>(
               valueListenable: _selectedEvents,
               builder: (context, events, _) {
+                if(events.isEmpty){
+                  return Center(
+                    child: Text('오늘은 연차를 신청한 직원이 없습니다.',style: TextStyle(fontSize: 18),),
+                  );
+                }
+
                 return ListView.builder(
                   itemCount: events.length,
                   itemBuilder: (context, index) {

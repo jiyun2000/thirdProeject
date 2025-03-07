@@ -38,7 +38,7 @@ class CommuteDio {
 
   Future<CommuteJsonParser> todayCommute(int empNo) async {
     Response res = await DioInterceptor.dio
-        .get("http://192.168.0.14:8080/api/commute/todayCommute/$empNo");
+        .get("http://192.168.0.51:8080/api/commute/todayCommute/$empNo");
 
     print("🚀 서버 응답 데이터: ${res.data}");
     print(res.data['checkOutTime']);
