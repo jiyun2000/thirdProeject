@@ -7,7 +7,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class DioInterceptor {
   static final DioInterceptor dioIn = DioInterceptor._internal();
-  static final dio = Dio();
+  static final dio = Dio(BaseOptions(
+    baseUrl: 'http://192.168.0.14:8080/api',
+    receiveDataWhenStatusError: true,
+    connectTimeout: const Duration(seconds: 10), // 응답 타임아웃 (10초)
+    receiveTimeout: const Duration(seconds: 10), // 응답 타임아웃 (10초)
+    sendTimeout: const Duration(seconds: 10), // 전송 타임아웃 (10초)
+  ));
   factory DioInterceptor() {
     getInterceptor().then((item) {
       dio.interceptors.add(item);
@@ -28,8 +34,19 @@ class DioInterceptor {
           data: jsonEncode(data));
       storeToken(res.data);
       return true;
+    } on DioException catch (e) {
+      if (e.type == DioExceptionType.connectionTimeout) {
+        log("⚠️ Connection Timeout: 서버에 연결할 수 없습니다.");
+      } else if (e.type == DioExceptionType.receiveTimeout) {
+        log("⚠️ Receive Timeout: 서버 응답이 지연되고 있습니다.");
+      } else if (e.type == DioExceptionType.badResponse) {
+        log("⚠️ 서버 오류: ${e.response?.statusCode} - ${e.response?.data}");
+      } else {
+        log("⚠️ DioException 발생: ${e.message}");
+      }
+      return false;
     } catch (e) {
-      log(e.toString());
+      log("⚠️ 알 수 없는 오류 발생: ${e.toString()}");
       return false;
     }
   }
@@ -80,7 +97,7 @@ class DioInterceptor {
         perf.get("empNo");
         perf.get("deptNo");
         // if (perf.get("accessToken") != null && perf.get("refreshToken") != null) {
-        //   dio.get("http://172.20.10.2:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
+        //   dio.get("http://192.168.0.14:8080/auth/refresh",data:{"refreshToken":perf.get("refreshToken")}).then((item) {
         //     perf.setString("accessToken", item.data['accessToken']);
         //     perf.setString("refreshToken", item.data['refreshToken']);
         //   });

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
@@ -57,7 +55,7 @@ class Comwidget2 extends StatelessWidget {
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://172.20.10.2:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.post("http://192.168.0.14:8080/api/commute/set/$empNo");
   }
 
   void checkOut() async {
@@ -66,7 +64,7 @@ class Comwidget2 extends StatelessWidget {
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
     DioInterceptor.dio
-        .put("http://172.20.10.2:8080/api/commute/checkout/$empNo");
+        .put("http://192.168.0.14:8080/api/commute/checkout/$empNo");
   }
 
   void set() async {
@@ -74,7 +72,7 @@ class Comwidget2 extends StatelessWidget {
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
     sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://172.20.10.2:8080/api/commute/set/$empNo");
+    DioInterceptor.dio.post("http://192.168.0.14:8080/api/commute/set/$empNo");
   }
 
   void plushTime() {

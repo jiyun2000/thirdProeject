@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:thirdproject/Dio/commute_dio/commute_dio.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
 
@@ -14,21 +13,57 @@ class Comwidget extends StatefulWidget {
 }
 
 class _ComwidgetState extends State<Comwidget> {
-  String? _inTime = "--:--";
-  String? _outTime = "--:--";
+  final CommuteDio _commuteDio = CommuteDio(); // CommuteDio 인스턴스 생성
+
+  String _inTime = "--:--";
+  String _outTime = "--:--";
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCommuteData();
+  }
+
+  Future<void> _loadCommuteData() async {
+    final sp = await SharedPreferences.getInstance();
+    final empNo = sp.getInt("empNo"); // empNo 가져오기
+
+    if (empNo != null) {
+      try {
+        final commuteData =
+            await _commuteDio.todayCommute(empNo); // CommuteDio 사용
+
+        setState(() {
+          _inTime = _formatTime(commuteData.checkInTime);
+          _outTime = _formatTime(commuteData.checkOutTime);
+        });
+      } catch (e) {
+        print("출퇴근 정보 불러오기 실패: $e");
+      }
+    }
+  }
+
+  ///날짜 형식 변환 (null 및 빈 문자열 체크)
+  String _formatTime(String? time) {
+    if (time == null || time.isEmpty) return "--:--";
+
+    try {
+      // "HH:mm" 형식 (예: "15:21")을 DateTime 객체로 변환
+      DateFormat inputFormat = DateFormat("HH:mm");
+      DateTime parsedTime = inputFormat.parse(time);
+
+      // 변환된 시간을 "HH:mm" 형식으로 다시 출력
+      return DateFormat("HH:mm").format(parsedTime);
+    } catch (e) {
+      print("날짜 변환 오류: $e");
+      return "--:--"; // 변환 실패 시 기본값 반환
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     GeoCheck.getPermission();
-    SharedPreferences.getInstance().then((item) {
-      try {
-        _inTime = item.getString("inTime") ?? "--:--";
-        _outTime = item.getString("outTime") ?? "--:--";
-      } catch (e) {
-        print("ddddd");
-      }
-    });
 
-    //plushTime();
     return Card(
       elevation: 4,
       margin: EdgeInsets.all(16),
@@ -57,24 +92,11 @@ class _ComwidgetState extends State<Comwidget> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: (() {
-                    if (GeoCheck().getCurrentPosition()) {
-                      return;
-                    }
-                    bool t = true;
-                    SharedPreferences.getInstance().then((item) {
-                      if (item.getString("inTime") == null) return;
-                      t = DateTime.now().isAfter(
-                          DateTime.parse(item.getString("inTime").toString()));
-                    });
-                    if (t) {
-                      return;
-                    }
-                    set();
-                    setState(() {
-                      _inTime = DateFormat("hh:MM").format(DateTime.now());
-                    });
-                  }),
+                  onPressed: () async {
+                    if (await GeoCheck().getCurrentPosition()) return;
+                    await checkIn();
+                    _loadCommuteData(); // 출근 후 데이터 다시 불러오기
+                  },
                   icon: Icon(Icons.login),
                   label: Text("출근"),
                   style: ElevatedButton.styleFrom(
@@ -82,24 +104,11 @@ class _ComwidgetState extends State<Comwidget> {
                   ),
                 ),
                 ElevatedButton.icon(
-                  onPressed: (() {
-                    if (GeoCheck().getCurrentPosition()) {
-                      return;
-                    }
-                    bool t = true;
-                    SharedPreferences.getInstance().then((item) {
-                      if (item.getString("outTime") == null) return;
-                      t = DateTime.now().isAfter(
-                          DateTime.parse(item.getString("inTime").toString()));
-                    });
-                    if (t) {
-                      return;
-                    }
-                    checkOut();
-                    setState(() {
-                      _outTime = DateFormat("hh:MM").format(DateTime.now());
-                    });
-                  }),
+                  onPressed: () async {
+                    if (await GeoCheck().getCurrentPosition()) return;
+                    await checkOut();
+                    _loadCommuteData(); // 퇴근 후 데이터 다시 불러오기
+                  },
                   icon: Icon(Icons.logout),
                   label: Text("퇴근"),
                   style: ElevatedButton.styleFrom(
@@ -113,97 +122,24 @@ class _ComwidgetState extends State<Comwidget> {
       ),
     );
   }
-  //   return Card(
-  //     child: Column(
-  //       mainAxisSize: MainAxisSize.min,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Text("출근"),
-  //             Text("$_inTime"),
-  //           ],
-  //         ),
-  //         Row(
-  //           spacing: 25,
-  //           children: [
-  //             ElevatedButton(
-  //                 onPressed: (() {
-  //                   if (GeoCheck().getCurrentPosition()) {
-  //                     return;
-  //                   }
-  //                   bool t = true;
-  //                   SharedPreferences.getInstance().then((item) {
-  //                     if (item.getString("inTime") == null) return;
-  //                     t = DateTime.now().isAfter(
-  //                         DateTime.parse(item.getString("inTime").toString()));
-  //                   });
-  //                   if (t) {
-  //                     return;
-  //                   }
-  //                   set();
-  //                   setState(() {
-  //                     _inTime = DateFormat("hh:MM").format(DateTime.now());
-  //                   });
-  //                 }),
-  //                 child: Text("출근")),
-  //             ElevatedButton(
-  //                 onPressed: (() {
-  //                   if (GeoCheck().getCurrentPosition()) {
-  //                     return;
-  //                   }
-  //                   bool t = true;
-  //                   SharedPreferences.getInstance().then((item) {
-  //                     if (item.getString("outTime") == null) return;
-  //                     t = DateTime.now().isAfter(
-  //                         DateTime.parse(item.getString("inTime").toString()));
-  //                   });
-  //                   if (t) {
-  //                     return;
-  //                   }
-  //                   checkOut();
-  //                   setState(() {
-  //                     _outTime = DateFormat("hh:MM").format(DateTime.now());
-  //                   });
-  //                 }),
-  //                 child: Text("퇴근"))
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
 
-  void checkIn() async {
-    Object? empNo;
+  Future<void> checkIn() async {
     final sp = await SharedPreferences.getInstance();
-    empNo = sp.get("empNo");
-    sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.post("http://172.20.10.2:8080/api/commute/set/$empNo");
+    final empNo = sp.getInt("empNo");
+
+    if (empNo != null) {
+      await DioInterceptor.dio
+          .post("http://192.168.0.14:8080/api/commute/set/$empNo");
+    }
   }
 
-  void checkOut() async {
-    Object? empNo;
+  Future<void> checkOut() async {
     final sp = await SharedPreferences.getInstance();
-    empNo = sp.get("empNo");
-    sp.setString("outTime", DateTime.now().toString());
-    DioInterceptor.dio
-        .post("http://172.20.10.2:8080/api/commute/checkout/$empNo");
-  }
+    final empNo = sp.getInt("empNo");
 
-  void set() async {
-    Object? empNo;
-    final sp = await SharedPreferences.getInstance();
-    empNo = sp.get("empNo");
-    sp.setString("inTime", DateTime.now().toString());
-    DioInterceptor.dio.put("http://172.20.10.2:8080/api/commute/set/$empNo");
-  }
-
-  void plushTime() {
-    SharedPreferences.getInstance().then((item) {
-      var time = item.getString("inTime");
-      if (DateTime.now().isAfter(DateTime.parse(time.toString()))) {
-        item.remove("inTime");
-      }
-    });
+    if (empNo != null) {
+      await DioInterceptor.dio
+          .put("http://192.168.0.14:8080/api/commute/checkout/$empNo");
+    }
   }
 }
