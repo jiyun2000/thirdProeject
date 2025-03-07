@@ -1,59 +1,76 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:thirdproject/diointercept%20.dart';
 import 'package:thirdproject/geocheck.dart';
 
 class Comwidget extends StatefulWidget {
+
+=======
+  @override
+  State<Comwidget> createState() => _ComwidgetState();
+}
+
+
   @override
   State<Comwidget> createState() => _ComwidgetState();
 }
 
 class _ComwidgetState extends State<Comwidget> {
-  @override
-  void initState() {
-    super.initState();
-    GeoCheck.getPermission();
-  }
-
-  @override
+  String? _inTime = "--:--";
+  String? _outTime = "--:--";
   Widget build(BuildContext context) {
-    var inTime;
     GeoCheck.getPermission();
     SharedPreferences.getInstance().then((item) {
-      print("inTime");
-      print(inTime);
-      inTime = item.get("inTime");
+
+      try {
+        _inTime = item.getString("inTime") ?? "--:--";
+        _outTime = item.getString("outTime") ?? "--:--";
+      } catch (e) {
+        print("ddddd");
+      }
     });
+
+    //plushTime();
     return Card(
-      elevation: 4,
-      margin: EdgeInsets.all(16),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      child: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              "출근 정보",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 8),
-            Text(
-              "출근 시간: $inTime",
-              style: TextStyle(fontSize: 16, color: Colors.blue),
-            ),
-            SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton.icon(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Text("출근"),
+              Text("$_inTime"),
+            ],
+          ),
+          Row(
+            spacing: 25,
+            children: [
+              ElevatedButton(
+
                   onPressed: (() {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
+                    try {
+                      bool t = true;
+                      SharedPreferences.getInstance().then((item) {
+                        if (item.getString("inTime") != null) {
+                          t = DateTime.now().isAfter(DateTime.parse(
+                              item.getString("inTime").toString()));
+                        }
+                      });
+                      if (t) {
+                        return;
+                      }
+                    } catch (e) {
+                      print(e.toString());
+                    }
                     set();
+                    setState(() {
+                      _inTime = DateFormat("hh:MM").format(DateTime.now());
+                    });
                   }),
                   icon: Icon(Icons.login),
                   label: Text("출근"),
@@ -66,7 +83,24 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
+                    try {
+                      bool t = true;
+                      SharedPreferences.getInstance().then((item) {
+                        if (item.getString("outTime") != null) {
+                          t = DateTime.now().isAfter(DateTime.parse(
+                              item.getString("outTime").toString()));
+                        }
+                      });
+                      if (t) {
+                        return;
+                      }
+                    } catch (e) {
+                      print(e.toString());
+                    }
                     checkOut();
+                    setState(() {
+                      _outTime = DateFormat("hh:MM").format(DateTime.now());
+                    });
                   }),
                   icon: Icon(Icons.logout),
                   label: Text("퇴근"),
@@ -122,7 +156,7 @@ class _ComwidgetState extends State<Comwidget> {
     var empNo;
     final sp = await SharedPreferences.getInstance();
     empNo = sp.get("empNo");
-    sp.setString("inTime", DateTime.now().toString());
+    sp.setString("outTime", DateTime.now().toString());
     DioInterceptor.dio
         .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
   }
