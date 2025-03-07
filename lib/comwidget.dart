@@ -29,11 +29,6 @@ class _ComwidgetState extends State<Comwidget> {
       t = DateTime.now()
           .isAfter(DateTime.parse(item.getString("inTime").toString()));
     });
-    bool t2 = true;
-    SharedPreferences.getInstance().then((item) {
-      t2 = DateTime.now()
-          .isAfter(DateTime.parse(item.getString("outTime").toString()));
-    });
     //plushTime();
     return Card(
       child: Column(
@@ -58,9 +53,8 @@ class _ComwidgetState extends State<Comwidget> {
                     }
                     set();
                     setState(() {
-                      _inTime = DateFormat("hh:MM")
-                          .parse(DateTime.now().toString())
-                          .toString();
+                      _inTime = DateFormat("hh:MM").format(DateTime.now());
+                      ;
                     });
                   }),
                   child: Text("출근")),
@@ -69,14 +63,12 @@ class _ComwidgetState extends State<Comwidget> {
                     if (GeoCheck().getCurrentPosition()) {
                       return;
                     }
-                    if (t2) {
+                    if (t) {
                       return;
                     }
                     checkOut();
                     setState(() {
-                      _outTime = DateFormat("hh:MM")
-                          .parse(DateTime.now().toString())
-                          .toString();
+                      _outTime = DateFormat("hh:MM").format(DateTime.now());
                     });
                   }),
                   child: Text("퇴근"))
