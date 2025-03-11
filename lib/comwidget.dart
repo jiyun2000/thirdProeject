@@ -129,7 +129,7 @@ class _ComwidgetState extends State<Comwidget> {
 
     if (empNo != null) {
       await DioInterceptor.dio
-          .post("http://192.168.0.51:8080/api/commute/set/$empNo");
+          .post("http://192.168.0.109:8080/api/commute/set/$empNo");
     }
   }
 
@@ -139,7 +139,7 @@ class _ComwidgetState extends State<Comwidget> {
 
     if (empNo != null) {
       await DioInterceptor.dio
-          .put("http://192.168.0.51:8080/api/commute/checkout/$empNo");
+          .put("http://192.168.0.109:8080/api/commute/checkout/$empNo");
     }
   }
 }

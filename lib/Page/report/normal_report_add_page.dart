@@ -25,8 +25,14 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
 
   final ValueNotifier<List<int>> _sendingItemsNotifier = ValueNotifier([]);
 
+  // FocusNode 추가
+  final FocusNode _contentFocusNode = FocusNode();
+  final FocusNode _titleFocusNode = FocusNode();
+
   @override
   void dispose() {
+    _contentFocusNode.dispose();
+    _titleFocusNode.dispose();
     _sendingItemsNotifier.dispose();
     super.dispose();
   }
@@ -59,8 +65,15 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
       backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text('보고서 추가 ✍️'),
+        backgroundColor: Colors.white,
       ),
-      body: Center(
+      body: GestureDetector(
+        // GestureDetector로 화면 터치 시 키보드 내려가도록 설정
+        onTap: () {
+          // 화면의 다른 부분을 터치하면 포커스를 해제하여 키보드 내려감
+          _contentFocusNode.unfocus();
+          _titleFocusNode.unfocus();
+        },
         child: SingleChildScrollView(
           child: Column(
             children: <Widget>[
@@ -99,6 +112,7 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
                     : 250,
                 child: TextField(
                   controller: _titleController,
+                  focusNode: _titleFocusNode, // FocusNode 할당
                   decoration: InputDecoration(
                     hintText: "제목을 입력하세요",
                     labelText: '제목',
@@ -115,6 +129,7 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
                     : 250,
                 child: TextField(
                   controller: _contentController,
+                  focusNode: _contentFocusNode, // FocusNode 할당
                   maxLines: 5,
                   decoration: InputDecoration(
                     hintText: "내용을 입력하세요",
@@ -126,6 +141,7 @@ class _NormalReportAddState extends State<NormalReportAddPage> {
               SizedBox(height: 20),
 
               FutureBuilder<List<DropdownItem<int>>>(
+                // 나머지 코드 그대로 유지
                 future: EmpDetailDio().getAllEmpListToDropDown(widget.empNo),
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {

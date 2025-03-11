@@ -35,7 +35,7 @@ class todayDayOffDio {
     String formated = DateFormat("yyyy-MM-dd").format(dayOffDate);
     print("formated : $formated");
     Response res = await DioInterceptor.dio
-        .get("http://192.168.0.51:8080/api/dayoff/todayList/$formated");
+        .get("http://192.168.0.109:8080/api/dayoff/todayList/$formated");
 
     print("res data");
     print(res.data);
@@ -49,7 +49,7 @@ class todayDayOffDio {
 
   Future<List<JsonParser>> getAllDayOffList() async {
     Response res = await DioInterceptor.dio
-        .get("http://192.168.0.51:8080/api/dayoff/allDayOff");
+        .get("http://192.168.0.109:8080/api/dayoff/allDayOff");
     print("res data all");
     print(res.data);
     print("res data all");
